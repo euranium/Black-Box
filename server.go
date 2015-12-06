@@ -1,13 +1,10 @@
 package main
 
 import (
-	"bytes"
-	"fmt"
 	"github.com/gorilla/mux"
-	"log"
+	"io/ioutil"
 	"net/http"
 	"os/exec"
-	"strings"
 )
 
 type User struct {
@@ -17,30 +14,31 @@ type User struct {
 	hash       string
 }
 
+var Tasks = make(chan *exec.Cmd, 64)
+
 func main() {
-	fmt.Println("main")
 	r := mux.NewRouter()
+
+	go RunCmd()
+
 	r.HandleFunc("/", home)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/{user}", users)
 	r.HandleFunc("/{user}/files", files)
 	r.HandleFunc("/{user}/files/{id}", file)
+
+	r.HandleFunc("/java30/read", java30Read)
+	r.HandleFunc("/java500/read", java500Read)
+	r.HandleFunc("/java30/run", java30Run)
+	r.HandleFunc("/java500/run", java500Run)
+
 	http.Handle("/", r)
 	http.ListenAndServe(":8080", r)
 }
 
 // home site
 func home(w http.ResponseWriter, r *http.Request) {
-	cmd := exec.Command("python3", "api.py", "2", "2")
-	cmd.Stdin = strings.NewReader("input")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
-	result := fmt.Sprintf("api return %s", out.String())
-	w.Write([]byte(result))
+	w.Write([]byte("home page\n"))
 	return
 }
 
@@ -65,5 +63,45 @@ func files(w http.ResponseWriter, r *http.Request) {
 // specific user file
 func file(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("user file\n"))
+	return
+}
+
+func java30Run(w http.ResponseWriter, r *http.Request) {
+	Tasks <- exec.Command("java", "javaProg30Sec", "rand")
+	w.Write([]byte("running 30 sec java\n"))
+	return
+}
+
+func java500Run(w http.ResponseWriter, r *http.Request) {
+	Tasks <- exec.Command("java", "javaProg500Sec", "rand")
+	w.Write([]byte("running 500 sec java\n"))
+	return
+}
+
+func java30Read(w http.ResponseWriter, r *http.Request) {
+	if CheckFile("javaProg30SecOutput.txt") {
+		data, err := ioutil.ReadFile("javaProg30SecOutput.txt")
+		if err != nil {
+			w.Write([]byte("Error retrieving file\n"))
+			return
+		}
+		w.Write(data)
+	} else {
+		w.Write([]byte("File not found\n"))
+	}
+	return
+}
+
+func java500Read(w http.ResponseWriter, r *http.Request) {
+	if CheckFile("javaProg500SecOutput.txt") {
+		data, err := ioutil.ReadFile("javaProg30SecOutput.txt")
+		if err != nil {
+			w.Write([]byte("Error retrieving file\n"))
+			return
+		}
+		w.Write(data)
+	} else {
+		w.Write([]byte("File not found\n"))
+	}
 	return
 }
