@@ -24,9 +24,6 @@ func main() {
 
 	go RunCmd()
 
-	//r.HandleFunc("/java30/read", java30Read)
-	//r.HandleFunc("/java30/run", java30Run)
-
 	http.Handle("/", r)
 	http.ListenAndServe(":8080", r)
 }
