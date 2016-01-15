@@ -1,44 +1,106 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os/exec"
-    "path"
+	"path"
 )
-
-type User struct {
-	user_name  string
-	first_name string
-	last_name  string
-	hash       string
-}
 
 var (
-    Tasks = make(chan *exec.Cmd, 64)
-    progDir = "executables"
+	Tasks       = make(chan *exec.Cmd, 64)
+	progDir     = "executables/"
+	userDir     = "users/"
+	templateDir = "templates/"
 )
 
+var routes = Routes{}
+
 func main() {
-	r := mux.NewRouter()
+	r := NewRouter()
 
 	go RunCmd()
 
-	r.HandleFunc("/", home)
-	r.HandleFunc("/login", login)
-	r.HandleFunc("/{user}", users)
-	r.HandleFunc("/{user}/files", files)
-	r.HandleFunc("/{user}/files/{id}", file)
-
-	r.HandleFunc("/java30/read", java30Read)
-	r.HandleFunc("/java500/read", java500Read)
-	r.HandleFunc("/java30/run", java30Run)
-	r.HandleFunc("/java500/run", java500Run)
-    r.HandleFunc("/xml", xmlToString);
+	//r.HandleFunc("/java30/read", java30Read)
+	//r.HandleFunc("/java30/run", java30Run)
 
 	http.Handle("/", r)
 	http.ListenAndServe(":8080", r)
+}
+
+/*
+generate a new router from RouteList
+*/
+func NewRouter() *mux.Router {
+	router := mux.NewRouter().StrictSlash(true)
+	for _, route := range RouteList {
+		router.
+			Methods(route.Method).
+			Path(route.Pattern).
+			Name(route.Name).
+			Handler(route.HandleFunc)
+	}
+	return router
+}
+
+func progInput(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("submited form\n"))
+}
+
+/*
+handle web interface to getting input for programs
+*/
+func program(w http.ResponseWriter, r *http.Request) {
+	// get html template for program
+	pth := r.URL.Path[10:]
+	temp, err := ioutil.ReadFile(path.Join(progDir, pth, "index.html"))
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	tmpl, err := template.New("exec").Parse(string(temp[:]))
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+}
+
+/*
+list programs that can be run
+*/
+func prog(w http.ResponseWriter, r *http.Request) {
+	// get a list of all programs in a dir
+	list, err := ListDir(progDir)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	progs := Programs{list}
+
+	// get the html template and fill it with data
+	temp, err := ioutil.ReadFile(path.Join(templateDir, "programs.html"))
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	tmpl, err := template.New("programs").Parse(string(temp[:]))
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	err = tmpl.Execute(w, progs)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
 }
 
 // home site
@@ -77,12 +139,6 @@ func java30Run(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func java500Run(w http.ResponseWriter, r *http.Request) {
-	Tasks <- exec.Command("java", "javaProg500Sec", "rand")
-	w.Write([]byte("running 500 sec java\n"))
-	return
-}
-
 func java30Read(w http.ResponseWriter, r *http.Request) {
 	if CheckFile("javaProg30SecOutput.txt") {
 		data, err := ioutil.ReadFile("javaProg30SecOutput.txt")
@@ -95,35 +151,4 @@ func java30Read(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("File not found\n"))
 	}
 	return
-}
-
-func java500Read(w http.ResponseWriter, r *http.Request) {
-	if CheckFile("javaProg500SecOutput.txt") {
-		data, err := ioutil.ReadFile("javaProg30SecOutput.txt")
-		if err != nil {
-			w.Write([]byte("Error retrieving file\n"))
-			return
-		}
-		w.Write(data)
-	} else {
-		w.Write([]byte("File not found\n"))
-	}
-	return
-}
-
-func structToxml(w http.ResponseWriter, r *http.Request) {
-}
-
-func xmlToString(w http.ResponseWriter, r *http.Request) {
-    if CheckFile("xml/test.xml") {
-        data, err := ioutil.ReadFile("xml/test.xml")
-        if (err != nil) {
-			w.Write([]byte("Error retrieving file\n"))
-			return
-        }
-        w.Write(data)
-    } else {
-        w.Write([]byte("Error"));
-        return
-    }
 }

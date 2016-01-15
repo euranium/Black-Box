@@ -1,0 +1,10 @@
+<html>
+	<head>
+		<title>List of Programs</title>
+	</head>
+	<body>
+		{{ range $val := .Files }}
+		<a href="/programs/{{ $val }}">{{ $val }}</a>
+		{{ end }}
+	</body>
+</html>

@@ -1,4 +1,10 @@
 #!/bin/sh
 
 clear
-./research
+go build
+if [ $? -eq 0 ]; then
+	echo 'running'
+	./research
+else
+	echo 'error'
+fi

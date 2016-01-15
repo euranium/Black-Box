@@ -2,14 +2,25 @@ package main
 
 import (
 	"gopkg.in/fsnotify.v1"
+	"io/ioutil"
 	"log"
 	"os"
 )
 
+func GetFile(filePath string) (file []byte, err error) {
+	file, err = ioutil.ReadFile(filePath)
+	if err != nil {
+		return
+	}
+	return
+}
+
+/* check if dir exists */
 func CheckDir(user string) (exists bool) {
 	return false
 }
 
+/* check if file exists */
 func CheckFile(file string) (exists bool) {
 	if _, err := os.Stat(file); err == nil {
 		return true
@@ -17,7 +28,15 @@ func CheckFile(file string) (exists bool) {
 	return false
 }
 
-func ListDir(user string) (list []string) {
+/* list all files in directory */
+func ListDir(directory string) (list []string, err error) {
+	dir, err := ioutil.ReadDir(directory)
+	if err != nil {
+		return nil, err
+	}
+	for _, n := range dir {
+		list = append(list, n.Name())
+	}
 	return
 }
 
