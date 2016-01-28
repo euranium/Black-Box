@@ -44,6 +44,8 @@ func NewRouter() *mux.Router {
 }
 
 func progInput(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	fmt.Println("%v\n", r.Form)
 	w.Write([]byte("submited form\n"))
 }
 
