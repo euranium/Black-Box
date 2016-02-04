@@ -7,7 +7,10 @@ import (
 	"os"
 )
 
-func GetFile(filePath string) (file []byte, err error) {
+/*
+get the contents of a file,
+*/
+func ReadFile(filePath string) (file []byte, err error) {
 	file, err = ioutil.ReadFile(filePath)
 	if err != nil {
 		return

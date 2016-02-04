@@ -4,6 +4,8 @@ import (
 	"net/http"
 )
 
+type Empty struct{}
+
 type Route struct {
 	Name       string
 	Method     string

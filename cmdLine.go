@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+/*
+to have program run,
+Tasks <- exec.Command("args0", "args1", ...)
+example:
+Tasks <- exec.Command("java", path.Join(progDir, "javaProg30Sec"), "rand")
+Only runs one exec at a time right now
+*/
 func RunCmd() (err error) {
 	for {
 		select {

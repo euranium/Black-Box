@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"html/template"
-	"io/ioutil"
 	"net/http"
 	"os/exec"
 	"path"
@@ -15,6 +14,7 @@ var (
 	progDir     = "executables/"
 	userDir     = "users/"
 	templateDir = "templates/"
+	empty       Empty
 )
 
 var routes = Routes{}
@@ -30,7 +30,7 @@ func main() {
 
 /*
 generate a new router from RouteList
-to edit, edit routes.go
+to edit or for more information, go to routes.go
 */
 func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
@@ -42,6 +42,27 @@ func NewRouter() *mux.Router {
 			Handler(route.HandleFunc)
 	}
 	return router
+}
+
+/*
+generic template handler
+*/
+func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
+	temp, err := ReadFile(file)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	tmpl, err := template.New(name).Parse(string(temp[:]))
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
 }
 
 /*
@@ -64,23 +85,8 @@ TODO: better URL grabbing management:
 	- integrate db for checking programs, faster and more secure
 */
 func program(w http.ResponseWriter, r *http.Request) {
-	// get html template for program
 	pth := r.URL.Path[10:]
-	temp, err := ioutil.ReadFile(path.Join(progDir, pth, "index.tmpl"))
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	tmpl, err := template.New("exec").Parse(string(temp[:]))
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	err = tmpl.Execute(w, nil)
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
+	sendTemplate(w, path.Join(progDir, pth, "index.tmpl"), "exec", empty)
 }
 
 /*
@@ -90,35 +96,15 @@ TODO: pretty up template
 func prog(w http.ResponseWriter, r *http.Request) {
 	// get a list of all programs in a dir
 	list, err := ListDir(progDir)
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
 	progs := Programs{list}
-
-	// get the html template and fill it with data
-	temp, err := ioutil.ReadFile(path.Join(templateDir, "programs.tmpl"))
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	tmpl, err := template.New("programs").Parse(string(temp[:]))
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	err = tmpl.Execute(w, progs)
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
+	sendTemplate(w, path.Join(templateDir, "programs.tmpl"), "programs", progs)
 }
 
 /* home site
 TODO: pretty up template
 */
 func home(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("home page\n <a href='/programs'>programs</a>"))
+	sendTemplate(w, path.Join(templateDir, "home.tmpl"), "home", empty)
 	return
 }
 
@@ -149,6 +135,7 @@ func file(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+/*
 func java30Run(w http.ResponseWriter, r *http.Request) {
 	Tasks <- exec.Command("java", path.Join(progDir, "javaProg30Sec"), "rand")
 	w.Write([]byte("running 30 sec java\n"))
@@ -168,3 +155,4 @@ func java30Read(w http.ResponseWriter, r *http.Request) {
 	}
 	return
 }
+*/

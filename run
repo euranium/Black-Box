@@ -1,10 +1,18 @@
 #!/bin/sh
-
+# build the go project, check if succesfull
+# if success, mv executable to an .o file for .gitinore
+# then run
 clear
 go build
 if [ $? -eq 0 ]; then
-	echo 'running'
-	./Black-Box
+	fld=${PWD##*/}
+	if [ -f $fld ]; then
+		mv $fld ${fld}.o
+		echo 'running'
+		./${fld}.o
+	else
+		echo 'built'
+	fi
 else
 	echo 'error'
 fi

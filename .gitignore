@@ -2,12 +2,13 @@
 *.o
 *.a
 *.so
-!*.*
 
 # Folders
 _obj
 _test
 programs
+# uncomment out later, folder holding example programs
+# executables
 
 # Architecture specific extensions/prefixes
 *.[568vq]
