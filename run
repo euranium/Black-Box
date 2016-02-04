@@ -4,7 +4,7 @@ clear
 go build
 if [ $? -eq 0 ]; then
 	echo 'running'
-	./research
+	./Black-Box
 else
 	echo 'error'
 fi

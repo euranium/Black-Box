@@ -1,0 +1,7 @@
+<program name="sampleProgV1">
+  <runParams>
+    <time min="1" max="10" val="sec" />
+    <numTimes val="5" />
+    <content word="wwu" />
+  </runParams>
+</program>

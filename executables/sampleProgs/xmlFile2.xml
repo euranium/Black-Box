@@ -1,0 +1,7 @@
+<program name="sampleProgV1">
+  <runParams>
+    <time min="10" max="20" val="sec" />
+    <numTimes val="100" />
+    <content word="viking" />
+  </runParams>
+</program>

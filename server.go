@@ -30,6 +30,7 @@ func main() {
 
 /*
 generate a new router from RouteList
+to edit, edit routes.go
 */
 func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
@@ -43,6 +44,13 @@ func NewRouter() *mux.Router {
 	return router
 }
 
+/*
+handle post data
+TODO: make generic:
+	- handle any input from pages
+	- parse input and parse xml imput requirements
+	- handle errors, pass back to correct url
+*/
 func progInput(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	fmt.Println("%v\n", r.Form)
@@ -51,11 +59,14 @@ func progInput(w http.ResponseWriter, r *http.Request) {
 
 /*
 handle web interface to getting input for programs
+TODO: better URL grabbing management:
+	- parse to make sure no injection
+	- integrate db for checking programs, faster and more secure
 */
 func program(w http.ResponseWriter, r *http.Request) {
 	// get html template for program
 	pth := r.URL.Path[10:]
-	temp, err := ioutil.ReadFile(path.Join(progDir, pth, "index.html"))
+	temp, err := ioutil.ReadFile(path.Join(progDir, pth, "index.tmpl"))
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
@@ -74,6 +85,7 @@ func program(w http.ResponseWriter, r *http.Request) {
 
 /*
 list programs that can be run
+TODO: pretty up template
 */
 func prog(w http.ResponseWriter, r *http.Request) {
 	// get a list of all programs in a dir
@@ -85,7 +97,7 @@ func prog(w http.ResponseWriter, r *http.Request) {
 	progs := Programs{list}
 
 	// get the html template and fill it with data
-	temp, err := ioutil.ReadFile(path.Join(templateDir, "programs.html"))
+	temp, err := ioutil.ReadFile(path.Join(templateDir, "programs.tmpl"))
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
@@ -102,13 +114,18 @@ func prog(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// home site
+/* home site
+TODO: pretty up template
+*/
 func home(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("home page\n"))
+	w.Write([]byte("home page\n <a href='/programs'>programs</a>"))
 	return
 }
 
-// login page if needed, can just ust user hash instead of auth
+/*
+login page
+TODO: pretty up template, integrate db, actually do
+*/
 func login(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("login\n"))
 	return

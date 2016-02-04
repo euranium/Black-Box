@@ -1,0 +1,7 @@
+<program name="sampleProgV1">
+  <runParams>
+    <time min="5" max="15" val="sec" />
+    <numTimes val="30" />
+    <content word="bellingham" />
+  </runParams>
+</program>
