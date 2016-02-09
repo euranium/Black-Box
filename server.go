@@ -65,6 +65,11 @@ func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
 	}
 }
 
+func testInput(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	frm := r.Form["xml"]
+}
+
 /*
 handle post data
 TODO: make generic:
