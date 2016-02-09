@@ -96,6 +96,10 @@ TODO: pretty up template
 func prog(w http.ResponseWriter, r *http.Request) {
 	// get a list of all programs in a dir
 	list, err := ListDir(progDir)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
 	progs := Programs{list}
 	sendTemplate(w, path.Join(templateDir, "programs.tmpl"), "programs", progs)
 }

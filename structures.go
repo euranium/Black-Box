@@ -1,11 +1,18 @@
 package main
 
+/*
+structure definitions
+drop any structures that will be used here
+*/
+
 import (
 	"net/http"
 )
 
+// empty struct when no data is needing to be passed
 type Empty struct{}
 
+// routing information for each page
 type Route struct {
 	Name       string
 	Method     string
@@ -22,15 +29,4 @@ type User struct {
 
 type Programs struct {
 	Files []string
-}
-
-type example struct {
-	menu []food
-}
-
-type food struct {
-	name        string
-	price       string
-	description string
-	calories    int
 }
