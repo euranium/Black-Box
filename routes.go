@@ -33,6 +33,12 @@ var RouteList = Routes{
 		program,
 	},
 	Route{
+		"testInput",
+		"POST",
+		"/programs/sampleProgs",
+		testInput,
+	},
+	Route{
 		"progInput",
 		"POST",
 		"/programs/{prog}",
