@@ -81,7 +81,8 @@ TODO: make generic:
 */
 func progInput(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	fmt.Println("%v\n", r.Form)
+	val := r.Form["xml"]
+	fmt.Println("%s\n", val)
 	w.Write([]byte("submited form\n"))
 }
 
