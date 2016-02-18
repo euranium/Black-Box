@@ -68,7 +68,8 @@ func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
 func testInput(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	frm := r.Form["xml"]
-	Tasks <- exec.Command("java", path.Join(progDir, "sampleProgs/sampleProgV1"), frm[0])
+	fmt.Println("java -classpath", "executables/sampleProgs/ sampleProgV1", path.Join("executables/sampleProgs/", frm[0]))
+	Tasks <- exec.Command("java", "-classpath", "executables/sampleProgs/", "sampleProgV1", path.Join("executables/sampleProgs/", frm[0]))
 	w.Write([]byte("submited form\n"))
 }
 
@@ -81,8 +82,6 @@ TODO: make generic:
 */
 func progInput(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	val := r.Form["xml"]
-	fmt.Println("%s\n", val)
 	w.Write([]byte("submited form\n"))
 }
 
