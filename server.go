@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 	"html/template"
 	"net/http"
 	"os/exec"
@@ -10,11 +10,12 @@ import (
 )
 
 var (
-	Tasks       = make(chan *exec.Cmd, 64)
-	progDir     = "executables/"
+	empty       Empty
 	userDir     = "users/"
 	templateDir = "templates/"
-	empty       Empty
+	progDir     = "executables/"
+	Tasks       = make(chan *exec.Cmd, 64)
+	store       = sessions.NewCookieStore([]byte("something-secret-or-not"))
 )
 
 var routes = Routes{}
@@ -26,22 +27,6 @@ func main() {
 
 	http.Handle("/", r)
 	http.ListenAndServe(":8080", r)
-}
-
-/*
-generate a new router from RouteList
-to edit or for more information, go to routes.go
-*/
-func NewRouter() *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
-	for _, route := range RouteList {
-		router.
-			Methods(route.Method).
-			Path(route.Pattern).
-			Name(route.Name).
-			Handler(route.HandleFunc)
-	}
-	return router
 }
 
 /*
@@ -65,11 +50,29 @@ func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
 	}
 }
 
+func checkLogin(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	id := r.Form["id"]
+	exists, err := CheckDir(path.Join("objects", id))
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	if !exists {
+		http.Redirect("/login")
+		return
+	}
+	session.Values["id"] = id
+	http.Redirect("/")
+	return
+}
+
 func testInput(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	frm := r.Form["xml"]
-	fmt.Println("java -classpath", "executables/sampleProgs/ sampleProgV1", path.Join("executables/sampleProgs/", frm[0]))
-	Tasks <- exec.Command("java", "-classpath", "executables/sampleProgs/", "sampleProgV1", path.Join("executables/sampleProgs/", frm[0]))
+	args := []string{"-classpath", "executables/sampleProgs/", "sampleProgV1", path.Join("executables/sampleProgs/", frm[0])}
+	fmt.Println(args)
+	Tasks <- exec.Command("java", args...)
 	w.Write([]byte("submited form\n"))
 }
 

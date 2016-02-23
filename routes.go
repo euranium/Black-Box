@@ -1,8 +1,26 @@
 package main
 
-import ()
+import (
+	"github.com/gorilla/mux"
+)
 
 type Routes []Route
+
+/*
+generate a new router from RouteList
+to edit or for more information, go to routes.go
+*/
+func NewRouter() *mux.Router {
+	router := mux.NewRouter().StrictSlash(true)
+	for _, route := range RouteList {
+		router.
+			Methods(route.Method).
+			Path(route.Pattern).
+			Name(route.Name).
+			Handler(route.HandleFunc)
+	}
+	return router
+}
 
 /*
 list of routes, their methods, paths and hanlder funcs
@@ -19,6 +37,12 @@ var RouteList = Routes{
 		"GET",
 		"/login",
 		login,
+	},
+	Route{
+		"login",
+		"POST",
+		"/login",
+		checkLogin,
 	},
 	Route{
 		"programs",

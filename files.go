@@ -19,8 +19,15 @@ func ReadFile(filePath string) (file []byte, err error) {
 }
 
 /* check if dir exists */
-func CheckDir(user string) (exists bool) {
-	return false
+func CheckDir(path string) (exists bool, err error) {
+	_, err = os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }
 
 /* check if file exists */
