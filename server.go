@@ -85,10 +85,9 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	r.ParseForm()
-	fmt.Println(r.Form)
-	id := r.Form["id"]
+	id := r.Form["id"][0]
 	fmt.Println(id)
-	exists, err := CheckDir(path.Join(userDir, id[0]))
+	exists, err := CheckDir(path.Join(userDir, id))
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
@@ -97,7 +96,7 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", 302)
 		return
 	}
-	user := &User{id[0], id[0]}
+	user := &User{id, id}
 	session.Values["id"] = user
 	session.Save(r, w)
 	http.Redirect(w, r, "/", 302)
@@ -111,7 +110,6 @@ TODO: remove when test page no longer needed
 func testInput(w http.ResponseWriter, r *http.Request) {
 	// primative user auth checking
 	r.ParseForm()
-	fmt.Println("form", r.Form)
 	fmt.Println("form action", r.Form["action"])
 	var person = &User{}
 	if err := isLoggedIn(w, r, person); err != nil || person.user_name == "" {
