@@ -8,10 +8,12 @@ if [ $? -eq 0 ]; then
 	fld=${PWD##*/}
 	if [ -f $fld ]; then
 		mv $fld ${fld}.o
-		echo 'running'
-		./${fld}.o
-	else
-		echo 'built'
+		if [ "$1" = "test" ]; then
+			echo 'sucess'
+		else
+			echo 'running'
+			./${fld}.o
+		fi
 	fi
 else
 	echo 'error'

@@ -4,8 +4,21 @@ import (
 	"gopkg.in/fsnotify.v1"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
+	"time"
 )
+
+func RandomString(strlen int) string {
+	rand.Seed(time.Now().UTC().UnixNano())
+	const chars = "abcdefghipqrstuvwxyzABCDEFGHIPQRSTUVWXYZ0123456789"
+	result := make([]byte, strlen)
+	for i := 0; i < strlen; i++ {
+		result[i] = chars[rand.Intn(len(chars))]
+	}
+	return string(result)
+
+}
 
 /*
 get the contents of a file,
@@ -20,6 +33,9 @@ func ReadFile(filePath string) (file []byte, err error) {
 
 /* check if dir exists */
 func CheckDir(path string) (exists bool, err error) {
+	if path == "" {
+		return false, nil
+	}
 	_, err = os.Stat(path)
 	if err == nil {
 		return true, nil
