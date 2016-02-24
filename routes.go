@@ -81,9 +81,21 @@ var RouteList = Routes{
 		files,
 	},
 	Route{
-		"userFile",
+		"news",
 		"GET",
-		"/user/{user}/files/{file}",
+		"/news",
+		file,
+	},
+	Route{
+		"publications",
+		"GET",
+		"/",
+		file,
+	},
+	Route{
+		"people",
+		"GET",
+		"/people",
 		file,
 	},
 }

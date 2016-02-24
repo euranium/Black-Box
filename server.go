@@ -111,7 +111,8 @@ TODO: remove when test page no longer needed
 func testInput(w http.ResponseWriter, r *http.Request) {
 	// primative user auth checking
 	r.ParseForm()
-	fmt.Println(r.Form)
+	fmt.Println("form", r.Form)
+	fmt.Println("form action", r.Form["action"])
 	var person = &User{}
 	if err := isLoggedIn(w, r, person); err != nil || person.user_name == "" {
 		return
