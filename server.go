@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gorilla/sessions"
 	"html/template"
@@ -30,6 +31,33 @@ func main() {
 }
 
 /*
+check is a user is logged in/valid
+TODO: add actuall auth, link with db
+*/
+func isLoggedIn(w http.ResponseWriter, r *http.Request, person *User) error {
+	session, err := store.Get(r, "user")
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return err
+	}
+	val := session.Values["id"]
+	if val == nil {
+		http.Redirect(w, r, "/login", 302)
+		return errors.New("Not logged In")
+	}
+	ok := false
+	if person, ok = val.(*User); !ok {
+		http.Redirect(w, r, "/login", 302)
+		return errors.New("Session Error")
+	}
+	if val, err := CheckDir(path.Join(userDir, person.user_name)); err != nil && val {
+		http.Redirect(w, r, "/login", 302)
+		return errors.New("Not logged In")
+	}
+	return nil
+}
+
+/*
 generic template handler
 */
 func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
@@ -51,23 +79,43 @@ func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
 }
 
 func checkLogin(w http.ResponseWriter, r *http.Request) {
+	session, err := store.Get(r, "user")
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
 	r.ParseForm()
+	fmt.Println(r.Form)
 	id := r.Form["id"]
-	exists, err := CheckDir(path.Join("objects", id))
+	fmt.Println(id)
+	exists, err := CheckDir(path.Join(userDir, id[0]))
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
 	if !exists {
-		http.Redirect("/login")
+		http.Redirect(w, r, "/login", 302)
 		return
 	}
-	session.Values["id"] = id
-	http.Redirect("/")
+	user := &User{id[0], id[0]}
+	session.Values["id"] = user
+	session.Save(r, w)
+	http.Redirect(w, r, "/", 302)
 	return
 }
 
+/*
+sample handler
+TODO: remove when test page no longer needed
+*/
 func testInput(w http.ResponseWriter, r *http.Request) {
+	// primative user auth checking
+	r.ParseForm()
+	fmt.Println(r.Form)
+	var person = &User{}
+	if err := isLoggedIn(w, r, person); err != nil || person.user_name == "" {
+		return
+	}
 	r.ParseForm()
 	frm := r.Form["xml"]
 	args := []string{"-classpath", "executables/sampleProgs/", "sampleProgV1", path.Join("executables/sampleProgs/", frm[0])}
@@ -127,7 +175,7 @@ login page
 TODO: pretty up template, integrate db, actually do
 */
 func login(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("login\n"))
+	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
 	return
 }
 

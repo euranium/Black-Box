@@ -21,10 +21,8 @@ type Route struct {
 }
 
 type User struct {
-	user_name  string
-	first_name string
-	last_name  string
-	hash       string
+	user_name string
+	hash      string
 }
 
 type Programs struct {
