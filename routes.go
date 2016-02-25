@@ -84,18 +84,18 @@ var RouteList = Routes{
 		"news",
 		"GET",
 		"/news",
-		file,
+		news,
 	},
 	Route{
 		"publications",
 		"GET",
 		"/",
-		file,
+		publications,
 	},
 	Route{
 		"people",
 		"GET",
 		"/people",
-		file,
+		people,
 	},
 }

@@ -36,11 +36,14 @@ TODO: add actuall auth, link with db
 */
 func isLoggedIn(w http.ResponseWriter, r *http.Request, person *User) error {
 	session, err := store.Get(r, "user")
+	fmt.Println(session)
 	if err != nil {
+		fmt.Println("nil")
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return err
 	}
 	val := session.Values["id"]
+	fmt.Println(val)
 	if val == nil {
 		http.Redirect(w, r, "/login", 302)
 		return errors.New("Not logged In")
@@ -50,7 +53,8 @@ func isLoggedIn(w http.ResponseWriter, r *http.Request, person *User) error {
 		http.Redirect(w, r, "/login", 302)
 		return errors.New("Session Error")
 	}
-	if val, err := CheckDir(path.Join(userDir, person.user_name)); err != nil && val {
+	fmt.Println(person)
+	if val := CheckDir(path.Join(userDir, person.user_name)); val {
 		http.Redirect(w, r, "/login", 302)
 		return errors.New("Not logged In")
 	}
@@ -86,12 +90,7 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	r.ParseForm()
 	id := r.Form["id"][0]
-	fmt.Println(id)
-	exists, err := CheckDir(path.Join(userDir, id))
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
+	exists := CheckDir(path.Join(userDir, id))
 	if !exists {
 		http.Redirect(w, r, "/login", 302)
 		return
@@ -110,14 +109,19 @@ TODO: remove when test page no longer needed
 func testInput(w http.ResponseWriter, r *http.Request) {
 	// primative user auth checking
 	r.ParseForm()
-	fmt.Println("form action", r.Form["action"])
 	var person = &User{}
+	fmt.Println("checking isLoggedIn")
 	if err := isLoggedIn(w, r, person); err != nil || person.user_name == "" {
 		return
 	}
+	dir := path.Join(userDir, RandomString(24))
+	err := CopyDir("executables/sampleProgs/", dir)
+	if err != nil {
+		w.Write([]byte("Error processing\n"))
+	}
 	r.ParseForm()
 	frm := r.Form["xml"]
-	args := []string{"-classpath", "executables/sampleProgs/", "sampleProgV1", path.Join("executables/sampleProgs/", frm[0])}
+	args := []string{"-classpath", dir, "sampleProgV1", path.Join("executables/sampleProgs/", frm[0])}
 	fmt.Println(args)
 	Tasks <- exec.Command("java", args...)
 	w.Write([]byte("submited form\n"))
@@ -190,30 +194,17 @@ func files(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// specific user file
-func file(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("user file\n"))
+func news(w http.ResponseWriter, r *http.Request) {
+	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
 	return
 }
 
-/*
-func java30Run(w http.ResponseWriter, r *http.Request) {
-	Tasks <- exec.Command("java", path.Join(progDir, "javaProg30Sec"), "rand")
-	w.Write([]byte("running 30 sec java\n"))
+func publications(w http.ResponseWriter, r *http.Request) {
+	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
 	return
 }
 
-func java30Read(w http.ResponseWriter, r *http.Request) {
-	if CheckFile("javaProg30SecOutput.txt") {
-		data, err := ioutil.ReadFile("javaProg30SecOutput.txt")
-		if err != nil {
-			w.Write([]byte("Error retrieving file\n"))
-			return
-		}
-		w.Write(data)
-	} else {
-		w.Write([]byte("File not found\n"))
-	}
+func people(w http.ResponseWriter, r *http.Request) {
+	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
 	return
 }
-*/
