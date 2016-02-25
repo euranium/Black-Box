@@ -1,13 +1,103 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"gopkg.in/fsnotify.v1"
+	"io"
 	"io/ioutil"
 	"log"
 	"math/rand"
 	"os"
+	"path"
 	"time"
 )
+
+/*
+copy all files from a directory to a new dir
+creates a hard link if possible, else just copy
+file contents
+*/
+func CopyDir(src, dst string) (err error) {
+	// make sure old exists and new does not
+	if !CheckDir(src) || CheckDir(dst) {
+		return errors.New("Directory Location Error")
+	}
+	sfi, err := os.Stat(src)
+	if err != nil {
+		return
+	}
+	dir, _ := os.Open(src)
+	if err != nil {
+		return
+	}
+	err = os.Mkdir(dst, sfi.Mode())
+	objs, err := dir.Readdir(-1)
+
+	for _, obj := range objs {
+		srcptr := path.Join(src, obj.Name())
+		dstptr := path.Join(dst, obj.Name())
+
+		if obj.IsDir() {
+			err = CopyDir(srcptr, dstptr)
+			if err != nil {
+				return
+			}
+		} else {
+			err = CopyFile(srcptr, dstptr)
+			if err != nil {
+				return
+			}
+		}
+	}
+	return
+}
+
+func CopyFile(src, dst string) (err error) {
+	sfi, err := os.Stat(src)
+	if err != nil {
+		return
+	}
+	if !sfi.Mode().IsRegular() {
+		return fmt.Errorf("CopyFile: non-regular source file %s (%q)", sfi.Name(), sfi.Mode().String())
+	}
+	dfi, err := os.Stat(dst)
+	if !(dfi.Mode().IsRegular()) {
+		return fmt.Errorf("CopyFile: non-regular destination file %s (%q)", dfi.Name(), dfi.Mode().String())
+	}
+	if os.SameFile(sfi, dfi) {
+		return
+	}
+	if err = os.Link(src, dst); err == nil {
+		return
+	}
+	err = copyFileContents(src, dst)
+	return
+}
+
+func copyFileContents(src, dst string) (err error) {
+	in, err := os.Open(src)
+	if err != nil {
+		return
+	}
+	defer in.Close()
+	out, err := os.Create(dst)
+	if err != nil {
+		return
+	}
+	defer func() {
+		cerr := out.Close()
+		if err == nil {
+			err = cerr
+		}
+	}()
+	if _, err = io.Copy(out, in); err != nil {
+		return
+	}
+	err = out.Sync()
+	return
+
+}
 
 func RandomString(strlen int) string {
 	rand.Seed(time.Now().UTC().UnixNano())
@@ -23,8 +113,8 @@ func RandomString(strlen int) string {
 /*
 get the contents of a file,
 */
-func ReadFile(filePath string) (file []byte, err error) {
-	file, err = ioutil.ReadFile(filePath)
+func ReadFile(path string) (file []byte, err error) {
+	file, err = ioutil.ReadFile(path)
 	if err != nil {
 		return
 	}
@@ -32,22 +122,19 @@ func ReadFile(filePath string) (file []byte, err error) {
 }
 
 /* check if dir exists */
-func CheckDir(path string) (exists bool, err error) {
+func CheckDir(path string) (exists bool) {
 	if path == "" {
-		return false, nil
+		return false
 	}
-	_, err = os.Stat(path)
+	_, err := os.Stat(path)
 	if err == nil {
-		return true, nil
+		return true
 	}
-	if os.IsNotExist(err) {
-		return false, nil
-	}
-	return false, err
+	return false
 }
 
 /* check if file exists */
-func CheckFile(file string) (exists bool) {
+func CheckFile(file string) bool {
 	if _, err := os.Stat(file); err == nil {
 		return true
 	}
