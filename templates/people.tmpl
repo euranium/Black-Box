@@ -16,7 +16,7 @@
 			<li><a href="/news">News</a></li>
 			<li><a href="/programs">Programs</a></li>
 			<li><a href="/publications">Publications</a></li>
-			<li clas="active"><a href="/people">People</a></li>
+			<li class="active"><a href="/people">People</a></li>
 			<li><a href="/login">Login</a></li>
 		</ul>
 
@@ -34,20 +34,44 @@
 
 <div class="section">
 	<div class="container">
-		<h1 class="header orange-text">Available Programs</h1>
-		<div class="collection">
-			{{ range $val := .Files }}
-			<a href="/programs/{{ $val }}" class="collection-item avatar">
-				<i class="material-icons circle green">insert_chart</i>
-				<span class="title">{{ $val }}</span>
-				<p>Some descriptive text <br> Some more text</p>
-			</a>
-			{{ end }}
+		<h1 class="header orange-text">Meet The Team</h1>
+		<div class="row">
+			<div class="col s12 m2 center-on-small-only">
+				<div class="image-container">
+					<img style="max-width: 100%;" src="http://i.ytimg.com/vi/nPER_vv2SyU/hqdefault.jpg"></img>
+				</div>
+			</div>
+			<div class="col s12 m10">
+				<h4>Rainier Harvey</h4>
+				<p>Rainier is a badass ass mofo. Coding by day, fighting crime by night</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 m2 center-on-small-only">
+				<div class="image-container">
+					<img style="max-width: 100%;" src="https://i.ytimg.com/vi/icqDxNab3Do/maxresdefault.jpg"></img>
+				</div>
+			</div>
+			<div class="col s12 m10">
+				<h4>Jesse Sliter</h4>
+				<p>Perfesional person extraordinaire, Jesse once kept his tamagotchi avlive for 4 days.</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 m2 center-on-small-only">
+				<div class="image-container">
+					<img style="max-width: 100%;" src="https://i.ytimg.com/vi/tntOCGkgt98/maxresdefault.jpg"></img>
+				</div>
+			</div>
+			<div class="col s12 m10">
+				<h4>Rainier Harvey</h4>
+				<p>Rainier is a badass ass mofo. Coding by day, fighting crime by night</p>
+			</div>
 		</div>
 	</div>
 </div>
 
-<footer class="page-footer orange" style="position: absolute; bottom: 0%; width: 100%;">
+<footer class="page-footer orange">
 <div class="container">
 		<div class="row">
 			<div class="col l6 s12">
