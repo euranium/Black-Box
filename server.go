@@ -205,6 +205,6 @@ func publications(w http.ResponseWriter, r *http.Request) {
 }
 
 func people(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
+	sendTemplate(w, path.Join(templateDir, "people.tmpl"), "home", empty)
 	return
 }
