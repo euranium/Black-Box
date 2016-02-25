@@ -2,7 +2,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-<title>Home</title>
+<title>Programs</title>
 
 <!-- CSS  -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -12,88 +12,42 @@
 <nav class="light-blue lighten-1" role="navigation">
 	<div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
 		<ul class="right hide-on-med-and-down">
-			<li class="active"><a href="/">Home</a></li>
+			<li><a href="/">Home</a></li>
 			<li><a href="/news">News</a></li>
 			<li><a href="/programs">Programs</a></li>
 			<li><a href="/publications">Publications</a></li>
-			<li><a href="/people">People</a></li>
+			<li clas="active"><a href="/people">People</a></li>
 			<li><a href="/login">Login</a></li>
 		</ul>
 
 		<ul id="nav-mobile" class="side-nav">
-			<li class="active"><a href="/">Home</a></li>
+			<li><a href="/">Home</a></li>
 			<li><a href="/news">News</a></li>
 			<li><a href="/programs">Programs</a></li>
 			<li><a href="/publications">Publications</a></li>
-			<li><a href="/people">People</a></li>
+			<li class="active"><a href="/people">People</a></li>
 			<li><a href="/login">Login</a></li>
-			<li><a href="/home">Home</a></li>
 		</ul>
 		<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
 	</div>
 </nav>
-<div class="section no-pad-bot" id="index-banner">
+
+<div class="section">
 	<div class="container">
-		<br><br>
-		<h1 class="header center orange-text">Some Title</h1>
-		<div class="row center">
-			<h5 class="header col s12 light">A quick description about using the site</h5>
+		<h1 class="header orange-text">Available Programs</h1>
+		<div class="collection">
+			{{ range $val := .Files }}
+			<a href="/programs/{{ $val }}" class="collection-item avatar">
+				<i class="material-icons circle green">insert_chart</i>
+				<span class="title">{{ $val }}</span>
+				<p>Some descriptive text <br> Some more text</p>
+			</a>
+			{{ end }}
 		</div>
-		<div class="row center">
-			<a href="/programs" id="download-button" class="btn-large waves-effect waves-light orange">view programs</a>
-		</div>
-		<br><br>
-
 	</div>
 </div>
 
-<div class="container">
-	<div class="section">
-
-		
-		<div class="row">
-			<div class="col s12 m4">
-				<div class="icon-block">
-					<h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
-					<h5 class="center">Sub header 1</h5>
-
-					<p class="light">
-					Chambray typewriter bitters, brooklyn semiotics chillwave single-origin coffee. Chambray schlitz stumptown irony jean shorts, sustainable lo-fi biodiesel. XOXO iPhone PBR&B kitsch butcher. Bicycle rights sartorial YOLO scenester chartreuse dreamcatcher blog, post-ironic paleo polaroid disrupt.
-				</div>
-			</div>
-
-			<div class="col s12 m4">
-				<div class="icon-block">
-					<h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
-					<h5 class="center">Sub header 2</h5>
-
-					<p class="light">
-						Chambray typewriter bitters, brooklyn semiotics chillwave single-origin coffee. Chambray schlitz stumptown irony jean shorts, sustainable lo-fi biodiesel. XOXO iPhone PBR&B kitsch butcher. Bicycle rights sartorial YOLO scenester chartreuse dreamcatcher blog, post-ironic paleo polaroid disrupt.
-					</p>
-				</div>
-			</div>
-
-			<div class="col s12 m4">
-				<div class="icon-block">
-					<h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
-					<h5 class="center">Sub header 3</h5>
-
-					<p class="light">
-						Chambray typewriter bitters, brooklyn semiotics chillwave single-origin coffee. Chambray schlitz stumptown irony jean shorts, sustainable lo-fi biodiesel. XOXO iPhone PBR&B kitsch butcher. Bicycle rights sartorial YOLO scenester chartreuse dreamcatcher blog, post-ironic paleo polaroid disrupt.
-					</p>
-				</div>
-			</div>
-		</div>
-
-	</div>
-	<br><br>
-
-	<div class="section">
-
-	</div>
-</div>
-
-<footer class="page-footer orange" style="position: 0%; width: 100%;">
+<footer class="page-footer orange" style="position: absolute; bottom: 0%; width: 100%;">
 <div class="container">
 		<div class="row">
 			<div class="col l6 s12">
@@ -136,3 +90,4 @@
 
 </body>
 </html>
+
