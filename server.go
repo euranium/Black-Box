@@ -45,6 +45,15 @@ func NewRouter() *mux.Router {
 }
 
 /*
+send public data such as js and css files
+*/
+func public(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	fmt.Println("vars: ", vars)
+	w.Write([]byte("public!"))
+}
+
+/*
 generic template handler
 */
 func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
@@ -106,9 +115,13 @@ func prog(w http.ResponseWriter, r *http.Request) {
 /* home site
 TODO: pretty up template
 */
-func home(w http.ResponseWriter, r *http.Request) {
+func home(w http.responsewriter, r *http.request) {
 	sendTemplate(w, path.Join(templateDir, "home.tmpl"), "home", empty)
 	return
+}
+
+func userHome(w http.responsewriter, r *http.request) {
+	sendTemplate(w, path.Join(templateDir, "userHome.tmpl"), "userHome", empty)
 }
 
 /*

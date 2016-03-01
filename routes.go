@@ -98,4 +98,16 @@ var RouteList = Routes{
 		"/people",
 		people,
 	},
+	Route{
+		"public",
+		"GET",
+		"/public/{route}",
+		public,
+	},
+	Route{
+		"userHome",
+		"GET",
+		"/userHome",
+		userHome,
+	},
 }
