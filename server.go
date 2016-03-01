@@ -26,6 +26,7 @@ func main() {
 
 	go RunCmd()
 
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	http.Handle("/", r)
 	http.ListenAndServe(":8080", r)
 }
@@ -79,15 +80,6 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 	sessions.Save(r, w)
 	http.Redirect(w, r, "/", 302)
 	return
-}
-
-/*
-send public data such as js and css files
-*/
-func public(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	fmt.Println("vars: ", vars)
-	w.Write([]byte("public!"))
 }
 
 /*
@@ -177,12 +169,12 @@ func prog(w http.ResponseWriter, r *http.Request) {
 /* home site
 TODO: pretty up template
 */
-func home(w http.responsewriter, r *http.request) {
+func home(w http.ResponseWriter, r *http.Request) {
 	sendTemplate(w, path.Join(templateDir, "home.tmpl"), "home", empty)
 	return
 }
 
-func userHome(w http.responsewriter, r *http.request) {
+func userHome(w http.ResponseWriter, r *http.Request) {
 	sendTemplate(w, path.Join(templateDir, "userHome.tmpl"), "userHome", empty)
 }
 
