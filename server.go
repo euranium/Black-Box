@@ -1,8 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 	"html/template"
 	"net/http"
 	"os/exec"
@@ -10,11 +11,12 @@ import (
 )
 
 var (
-	Tasks       = make(chan *exec.Cmd, 64)
-	progDir     = "executables/"
+	empty       Empty
 	userDir     = "users/"
 	templateDir = "templates/"
-	empty       Empty
+	progDir     = "executables/"
+	Tasks       = make(chan *exec.Cmd, 64)
+	store       = sessions.NewCookieStore([]byte("something-secret-or-not"))
 )
 
 var routes = Routes{}
@@ -29,19 +31,54 @@ func main() {
 }
 
 /*
-generate a new router from RouteList
-to edit or for more information, go to routes.go
+check is a user is logged in/valid
+TODO: add actuall auth, link with db
 */
-func NewRouter() *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
-	for _, route := range RouteList {
-		router.
-			Methods(route.Method).
-			Path(route.Pattern).
-			Name(route.Name).
-			Handler(route.HandleFunc)
+func isLoggedIn(w http.ResponseWriter, r *http.Request, person *User) error {
+	session, err := store.Get(r, "user")
+	fmt.Println("values:", session.Values)
+	if err != nil {
+		fmt.Println("nil")
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return err
 	}
-	return router
+	val := session.Values["id"]
+	fmt.Println(val)
+	if val == nil {
+		http.Redirect(w, r, "/login", 302)
+		return errors.New("Not logged In")
+	}
+	ok := false
+	if person, ok = val.(*User); !ok {
+		http.Redirect(w, r, "/login", 302)
+		return errors.New("Session Error")
+	}
+	fmt.Println(person)
+	if val := CheckDir(path.Join(userDir, person.user_name)); val {
+		http.Redirect(w, r, "/login", 302)
+		return errors.New("Not logged In")
+	}
+	return nil
+}
+
+func checkLogin(w http.ResponseWriter, r *http.Request) {
+	session, err := store.Get(r, "user")
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	r.ParseForm()
+	id := r.Form["id"][0]
+	exists := CheckDir(path.Join(userDir, id))
+	if !exists {
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+	user := &User{id, id}
+	session.Values["id"] = user
+	sessions.Save(r, w)
+	http.Redirect(w, r, "/", 302)
+	return
 }
 
 /*
@@ -75,6 +112,31 @@ func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
 }
 
 /*
+sample handler
+TODO: remove when test page no longer needed
+*/
+func testInput(w http.ResponseWriter, r *http.Request) {
+	// primative user auth checking
+	r.ParseForm()
+	var person = &User{}
+	fmt.Println("checking isLoggedIn")
+	if err := isLoggedIn(w, r, person); err != nil || person.user_name == "" {
+		return
+	}
+	dir := path.Join(userDir, RandomString(24))
+	err := CopyDir("executables/sampleProgs/", dir)
+	if err != nil {
+		w.Write([]byte("Error processing\n"))
+	}
+	r.ParseForm()
+	frm := r.Form["xml"]
+	args := []string{"-classpath", dir, "sampleProgV1", path.Join("executables/sampleProgs/", frm[0])}
+	fmt.Println(args)
+	Tasks <- exec.Command("java", args...)
+	w.Write([]byte("submited form\n"))
+}
+
+/*
 handle post data
 TODO: make generic:
 	- handle any input from pages
@@ -83,7 +145,6 @@ TODO: make generic:
 */
 func progInput(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	fmt.Println("%v\n", r.Form)
 	w.Write([]byte("submited form\n"))
 }
 
@@ -107,6 +168,7 @@ func prog(w http.ResponseWriter, r *http.Request) {
 	list, err := ListDir(progDir)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
 	}
 	progs := Programs{list}
 	sendTemplate(w, path.Join(templateDir, "programs.tmpl"), "programs", progs)
@@ -129,7 +191,7 @@ login page
 TODO: pretty up template, integrate db, actually do
 */
 func login(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("login\n"))
+	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
 	return
 }
 
@@ -145,30 +207,17 @@ func files(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// specific user file
-func file(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("user file\n"))
+func news(w http.ResponseWriter, r *http.Request) {
+	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
 	return
 }
 
-/*
-func java30Run(w http.ResponseWriter, r *http.Request) {
-	Tasks <- exec.Command("java", path.Join(progDir, "javaProg30Sec"), "rand")
-	w.Write([]byte("running 30 sec java\n"))
+func publications(w http.ResponseWriter, r *http.Request) {
+	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
 	return
 }
 
-func java30Read(w http.ResponseWriter, r *http.Request) {
-	if CheckFile("javaProg30SecOutput.txt") {
-		data, err := ioutil.ReadFile("javaProg30SecOutput.txt")
-		if err != nil {
-			w.Write([]byte("Error retrieving file\n"))
-			return
-		}
-		w.Write(data)
-	} else {
-		w.Write([]byte("File not found\n"))
-	}
+func people(w http.ResponseWriter, r *http.Request) {
+	sendTemplate(w, path.Join(templateDir, "people.tmpl"), "home", empty)
 	return
 }
-*/
