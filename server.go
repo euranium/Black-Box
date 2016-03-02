@@ -23,9 +23,13 @@ var routes = Routes{}
 
 func main() {
 	r := NewRouter()
+	store.Options = &sessions.Options{
+		Path: "/",
+	}
 
 	go RunCmd()
 
+	// serve static files for stuff like css, js , imgs
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	http.Handle("/", r)
 	http.ListenAndServe(":8080", r)
@@ -35,49 +39,60 @@ func main() {
 check is a user is logged in/valid
 TODO: add actuall auth, link with db
 */
-func isLoggedIn(w http.ResponseWriter, r *http.Request, person *User) error {
-	session, err := store.Get(r, "user")
-	fmt.Println("values:", session.Values)
+func isLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error) {
+	ses, err := store.Get(r, "user")
+	fmt.Println("session:", ses.Values)
 	if err != nil {
 		fmt.Println("nil")
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return err
+		return
 	}
-	val := session.Values["id"]
-	fmt.Println(val)
-	if val == nil {
+	name := ses.Values["user_name"].(string)
+	id := ses.Values["id"].(string)
+	fmt.Println("name:", name, "id:", id)
+	if id == "" {
 		http.Redirect(w, r, "/login", 302)
-		return errors.New("Not logged In")
+		return nil, errors.New("Session Error")
 	}
-	ok := false
-	if person, ok = val.(*User); !ok {
+	if name == "" {
+		name = id
+	}
+	person = &User{}
+	(*person).user_name = name
+	(*person).hash = id
+	if !CheckDir(path.Join(userDir, (*person).hash)) {
+		fmt.Println("not a valid user")
 		http.Redirect(w, r, "/login", 302)
-		return errors.New("Session Error")
+		return nil, errors.New("Not logged In")
 	}
-	fmt.Println(person)
-	if val := CheckDir(path.Join(userDir, person.user_name)); val {
-		http.Redirect(w, r, "/login", 302)
-		return errors.New("Not logged In")
-	}
-	return nil
+	return
 }
 
 func checkLogin(w http.ResponseWriter, r *http.Request) {
-	session, err := store.Get(r, "user")
+	ses, err := store.Get(r, "user")
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
 	r.ParseForm()
-	id := r.Form["id"][0]
+	id := r.FormValue("id")
+	name := r.FormValue("name")
+	if name == "" {
+		name = id
+	}
 	exists := CheckDir(path.Join(userDir, id))
 	if !exists {
 		http.Redirect(w, r, "/login", 302)
 		return
 	}
-	user := &User{id, id}
-	session.Values["id"] = user
-	sessions.Save(r, w)
+	ses.Values["id"] = id
+	//TODO: update if user is
+	ses.Values["user_name"] = id
+	err = ses.Save(r, w)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
 	http.Redirect(w, r, "/", 302)
 	return
 }
@@ -108,21 +123,22 @@ sample handler
 TODO: remove when test page no longer needed
 */
 func testInput(w http.ResponseWriter, r *http.Request) {
-	// primative user auth checking
-	r.ParseForm()
-	var person = &User{}
-	fmt.Println("checking isLoggedIn")
-	if err := isLoggedIn(w, r, person); err != nil || person.user_name == "" {
+	// user auth checking
+	person, err := isLoggedIn(w, r)
+	fmt.Println("checked login")
+	if err != nil || person.user_name == "" {
 		return
 	}
-	dir := path.Join(userDir, RandomString(24))
-	err := CopyDir("executables/sampleProgs/", dir)
+	dir := path.Join(userDir, person.hash, RandomString(24))
+	fmt.Println("copying to:", dir)
+	err = CopyDir("executables/sampleProgs/", dir)
 	if err != nil {
+		fmt.Println("error:", err.Error())
 		w.Write([]byte("Error processing\n"))
 	}
 	r.ParseForm()
 	frm := r.Form["xml"]
-	args := []string{"-classpath", dir, "sampleProgV1", path.Join("executables/sampleProgs/", frm[0])}
+	args := []string{"-classpath", dir, "sampleProgV1", path.Join(dir, frm[0])}
 	fmt.Println(args)
 	Tasks <- exec.Command("java", args...)
 	w.Write([]byte("submited form\n"))

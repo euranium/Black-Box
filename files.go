@@ -44,6 +44,7 @@ func CopyDir(src, dst string) (err error) {
 				return
 			}
 		} else {
+			fmt.Println("srcptr:", srcptr, "dstptr:", dstptr)
 			err = CopyFile(srcptr, dstptr)
 			if err != nil {
 				return
@@ -54,6 +55,7 @@ func CopyDir(src, dst string) (err error) {
 }
 
 func CopyFile(src, dst string) (err error) {
+	fmt.Println("copying", src, "to", dst)
 	sfi, err := os.Stat(src)
 	if err != nil {
 		return
@@ -61,14 +63,13 @@ func CopyFile(src, dst string) (err error) {
 	if !sfi.Mode().IsRegular() {
 		return fmt.Errorf("CopyFile: non-regular source file %s (%q)", sfi.Name(), sfi.Mode().String())
 	}
-	dfi, err := os.Stat(dst)
-	if !(dfi.Mode().IsRegular()) {
-		return fmt.Errorf("CopyFile: non-regular destination file %s (%q)", dfi.Name(), dfi.Mode().String())
-	}
-	if os.SameFile(sfi, dfi) {
+	// if destination does exist
+	if err != nil && !os.IsNotExist(err) {
 		return
 	}
+	fmt.Println("linking")
 	if err = os.Link(src, dst); err == nil {
+		fmt.Errorf("Link file: %s, %s", src, dst)
 		return
 	}
 	err = copyFileContents(src, dst)
@@ -76,6 +77,7 @@ func CopyFile(src, dst string) (err error) {
 }
 
 func copyFileContents(src, dst string) (err error) {
+	fmt.Println("hard copying")
 	in, err := os.Open(src)
 	if err != nil {
 		return
