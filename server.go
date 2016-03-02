@@ -33,6 +33,8 @@ func main() {
 	// serve static files for stuff like css, js , imgs
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	http.Handle("/", r)
+
+	// pass opt flag -port=# to specify an operating port
 	flgs := flag.String("port", "8080", "a string")
 	flag.Parse()
 	fmt.Println("running on port:", *flgs)
