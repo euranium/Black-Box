@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"github.com/gorilla/sessions"
 	"html/template"
@@ -32,7 +33,12 @@ func main() {
 	// serve static files for stuff like css, js , imgs
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	http.Handle("/", r)
-	http.ListenAndServe(":8080", r)
+	flgs := flag.String("port", "8080", "a string")
+	flag.Parse()
+	fmt.Println("running on port:", *flgs)
+	port := ":" + *flgs
+
+	http.ListenAndServe(port, r)
 }
 
 /*
