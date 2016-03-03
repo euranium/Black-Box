@@ -12,7 +12,8 @@
 <nav class="light-blue lighten-1" role="navigation">
 	<div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
 		<ul class="right hide-on-med-and-down">
-			<li class="active"><a href="/">Home</a></li>
+			<li><a href="/">Home</a></li>
+			<li class="active"><a href="/userHome">Dashboard</a></li>
 			<li><a href="/news">News</a></li>
 			<li><a href="/programs">Programs</a></li>
 			<li><a href="/publications">Publications</a></li>
@@ -20,18 +21,17 @@
 			<li><a href="/login">Login</a></li>
 		</ul>
 
-		<ul id="nav-mobile" class="side-nav fixed" style="width: 240px;">
-			<li class="active"><a href="/">Home</a></li>
-			<li><a href="/news">News</a></li>
-			<li><a href="/programs">Programs</a></li>
-			<li><a href="/publications">Publications</a></li>
-			<li><a href="/people">People</a></li>
-			<li><a href="/login">Login</a></li>
-			<li><a href="/home">Home</a></li>
+		<ul id="nav-mobile" class="side-nav fixed">
+			{{ range $val := .Folders }}
+			<li>
+				{{ $val }}
+			</li>
+			{{ end }}
 		</ul>
 		<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
 	</div>
 </nav>
+
 <div class="section no-pad-bot" id="index-banner">
 	<div class="container">
 		<br><br>
@@ -43,52 +43,6 @@
 			<a href="/programs" id="download-button" class="btn-large waves-effect waves-light orange">view programs</a>
 		</div>
 		<br><br>
-
-	</div>
-</div>
-
-<div class="container">
-	<div class="section">
-
-		
-		<div class="row">
-			<div class="col s12 m4">
-				<div class="icon-block">
-					<h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
-					<h5 class="center">Sub header 1</h5>
-
-					<p class="light">
-					Chambray typewriter bitters, brooklyn semiotics chillwave single-origin coffee. Chambray schlitz stumptown irony jean shorts, sustainable lo-fi biodiesel. XOXO iPhone PBR&B kitsch butcher. Bicycle rights sartorial YOLO scenester chartreuse dreamcatcher blog, post-ironic paleo polaroid disrupt.
-				</div>
-			</div>
-
-			<div class="col s12 m4">
-				<div class="icon-block">
-					<h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
-					<h5 class="center">Sub header 2</h5>
-
-					<p class="light">
-						Chambray typewriter bitters, brooklyn semiotics chillwave single-origin coffee. Chambray schlitz stumptown irony jean shorts, sustainable lo-fi biodiesel. XOXO iPhone PBR&B kitsch butcher. Bicycle rights sartorial YOLO scenester chartreuse dreamcatcher blog, post-ironic paleo polaroid disrupt.
-					</p>
-				</div>
-			</div>
-
-			<div class="col s12 m4">
-				<div class="icon-block">
-					<h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
-					<h5 class="center">Sub header 3</h5>
-
-					<p class="light">
-						Chambray typewriter bitters, brooklyn semiotics chillwave single-origin coffee. Chambray schlitz stumptown irony jean shorts, sustainable lo-fi biodiesel. XOXO iPhone PBR&B kitsch butcher. Bicycle rights sartorial YOLO scenester chartreuse dreamcatcher blog, post-ironic paleo polaroid disrupt.
-					</p>
-				</div>
-			</div>
-		</div>
-
-	</div>
-	<br><br>
-
-	<div class="section">
 
 	</div>
 </div>
