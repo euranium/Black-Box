@@ -10,7 +10,6 @@
 </head>
 <body>
 <nav class="light-blue lighten-1" role="navigation">
-	<div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
 		<ul class="right hide-on-med-and-down">
 			<li><a href="/">Home</a></li>
 			<li class="active"><a href="/userHome">Dashboard</a></li>
@@ -22,11 +21,19 @@
 		</ul>
 
 		<ul id="nav-mobile" class="side-nav fixed" style="color: black;">
-			{{ range $val := .Files }}
-			<li>
-				{{ $val }}
+			<li style="color: black;">
+				Logo
 			</li>
-			{{ end }}
+			<li>
+				Results
+			<li>
+			<ul>
+				{{ range $val := .Files }}
+				<li>
+				{{ $val }}
+				</li>
+				{{ end }}
+			</ul>
 		</ul>
 		<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
 	</div>
