@@ -44,7 +44,6 @@ func CopyDir(src, dst string) (err error) {
 				return
 			}
 		} else {
-			fmt.Println("srcptr:", srcptr, "dstptr:", dstptr)
 			err = CopyFile(srcptr, dstptr)
 			if err != nil {
 				return
@@ -55,7 +54,6 @@ func CopyDir(src, dst string) (err error) {
 }
 
 func CopyFile(src, dst string) (err error) {
-	fmt.Println("copying", src, "to", dst)
 	sfi, err := os.Stat(src)
 	if err != nil {
 		return
@@ -67,7 +65,6 @@ func CopyFile(src, dst string) (err error) {
 	if err != nil && !os.IsNotExist(err) {
 		return
 	}
-	fmt.Println("linking")
 	if err = os.Link(src, dst); err == nil {
 		fmt.Errorf("Link file: %s, %s", src, dst)
 		return
@@ -108,7 +105,16 @@ func RandomString(strlen int) string {
 	for i := 0; i < strlen; i++ {
 		result[i] = chars[rand.Intn(len(chars))]
 	}
-	return string(result)
+	// place a '-' every 4 chars
+	var str string
+	for i := 0; i < strlen; i++ {
+		if (i+1)%4 == 0 {
+			str += "-"
+		} else {
+			str += string(result[i])
+		}
+	}
+	return str
 
 }
 

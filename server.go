@@ -139,7 +139,7 @@ func testInput(w http.ResponseWriter, r *http.Request) {
 	if err != nil || person.user_name == "" {
 		return
 	}
-	dir := path.Join(userDir, person.hash, RandomString(24))
+	dir := path.Join(userDir, person.hash, RandomString(12))
 	fmt.Println("copying to:", dir)
 	err = CopyDir("executables/sampleProgs/", dir)
 	if err != nil {
@@ -227,7 +227,6 @@ func userHome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	folders := List{list}
-	fmt.Println("folder list:", folders)
 	sendTemplate(w, path.Join(templateDir, "userHome.tmpl"), "userHome", folders)
 }
 
