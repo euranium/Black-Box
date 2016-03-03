@@ -49,15 +49,17 @@ TODO: add actuall auth, link with db
 */
 func isLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error) {
 	ses, err := store.Get(r, "user")
-	fmt.Println("session:", ses.Values)
 	if err != nil {
 		fmt.Println("nil")
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
+	if ses.Values["user_name"] == nil || ses.Values["id"] == nil {
+		http.Redirect(w, r, "/login", 302)
+		return nil, errors.New("Session Error")
+	}
 	name := ses.Values["user_name"].(string)
 	id := ses.Values["id"].(string)
-	fmt.Println("name:", name, "id:", id)
 	if id == "" {
 		http.Redirect(w, r, "/login", 302)
 		return nil, errors.New("Session Error")
@@ -200,7 +202,7 @@ func prog(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	progs := Programs{list}
+	progs := List{list}
 	sendTemplate(w, path.Join(templateDir, "programs.tmpl"), "programs", progs)
 }
 
@@ -214,13 +216,19 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 func userHome(w http.ResponseWriter, r *http.Request) {
 	person, err := isLoggedIn(w, r)
-	if err != nil || person.hash == "" {
+	if err != nil || (*person).hash == "" {
 		http.Redirect(w, r, "/programs", 302)
 		return
 	}
-	//folder := path.Join(userDir, person.hash)
-	//folders := ListDir(folder)
-	sendTemplate(w, path.Join(templateDir, "userHome.tmpl"), "userHome", empty)
+	folder := path.Join(userDir, person.hash)
+	list, err := ListDir(folder)
+	if err != nil {
+		http.Redirect(w, r, "/programs", 302)
+		return
+	}
+	folders := List{list}
+	fmt.Println("folder list:", folders)
+	sendTemplate(w, path.Join(templateDir, "userHome.tmpl"), "userHome", folders)
 }
 
 /*

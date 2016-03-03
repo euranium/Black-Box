@@ -14,7 +14,7 @@ if [ $? -eq 0 ]; then
 	fld=${PWD##*/}
 	if [ -f $fld ]; then
 		mv $fld ${fld}.o
-		if [ "$1" = "test" ]; then
+		if [ "$1" = "t" ]; then
 			echo 'sucess'
 		else
 			./${fld}.o $@

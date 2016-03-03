@@ -25,6 +25,6 @@ type User struct {
 	hash      string
 }
 
-type Programs struct {
+type List struct {
 	Files []string
 }
