@@ -69,12 +69,6 @@ var RouteList = Routes{
 		progInput,
 	},
 	Route{
-		"user",
-		"GET",
-		"/user/{user}",
-		users,
-	},
-	Route{
 		"userFiles",
 		"GET",
 		"/user/{user}/files",

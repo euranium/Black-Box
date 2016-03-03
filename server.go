@@ -172,7 +172,21 @@ TODO: better URL grabbing management:
 */
 func program(w http.ResponseWriter, r *http.Request) {
 	pth := r.URL.Path[10:]
-	sendTemplate(w, path.Join(progDir, pth, "index.tmpl"), "exec", empty)
+	if pth == "" {
+		http.Redirect(w, r, "/programs", 302)
+		return
+	}
+	folder := path.Join(progDir, pth)
+	if !CheckDir(folder) {
+		http.Redirect(w, r, "/programs", 302)
+		return
+	}
+	folder = path.Join(folder, "index.tmpl")
+	if !CheckFile(folder) {
+		http.Redirect(w, r, "/programs", 302)
+		return
+	}
+	sendTemplate(w, folder, "exec", empty)
 }
 
 /*
@@ -199,6 +213,13 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func userHome(w http.ResponseWriter, r *http.Request) {
+	person, err := isLoggedIn(w, r)
+	if err != nil || person.hash == "" {
+		http.Redirect(w, r, "/programs", 302)
+		return
+	}
+	//folder := path.Join(userDir, person.hash)
+	//folders := ListDir(folder)
 	sendTemplate(w, path.Join(templateDir, "userHome.tmpl"), "userHome", empty)
 }
 
@@ -208,12 +229,6 @@ TODO: pretty up template, integrate db, actually do
 */
 func login(w http.ResponseWriter, r *http.Request) {
 	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
-	return
-}
-
-// use home page
-func users(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("home\n"))
 	return
 }
 
