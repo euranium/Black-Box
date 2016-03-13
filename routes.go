@@ -96,6 +96,6 @@ var RouteList = Routes{
 		"userHome",
 		"GET",
 		"/dashboard",
-		userHome,
+		dashboard,
 	},
 }
