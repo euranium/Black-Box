@@ -249,7 +249,7 @@ func news(w http.ResponseWriter, r *http.Request) {
 }
 
 func publications(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "publics.tmpl"), "content", empty)
+	sendTemplate(w, path.Join(templateDir, "publications.tmpl"), "content", empty)
 	return
 }
 
