@@ -87,7 +87,7 @@ func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	err = temp.ExecuteTemplate(w, "content", data)
+	err = temp.ExecuteTemplate(w, name, data)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error executing: %s\n", err.Error())))
 		return
@@ -212,7 +212,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func userHome(w http.ResponseWriter, r *http.Request) {
+func dashboard(w http.ResponseWriter, r *http.Request) {
 	person, err := isLoggedIn(w, r)
 	if err != nil || (*person).hash == "" {
 		http.Redirect(w, r, "/programs", 302)
@@ -225,7 +225,7 @@ func userHome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	folders := List{list}
-	sendTemplate(w, path.Join(templateDir, "userHome.tmpl"), "userHome", folders)
+	sendTemplate(w, path.Join(templateDir, "dashboard.tmpl"), "content", folders)
 }
 
 /*
