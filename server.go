@@ -82,14 +82,14 @@ func isLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 generic template handler
 */
 func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
-	temp := template.New(name)
-	temp, err := temp.ParseFiles("./templates/header.tmlp", file)
-	if err != nil {
-		w.Write([]byte("Error templating\n"))
-	}
-	err = temp.ExecuteTemplate(w, name, data)
+	temp, err := template.ParseFiles("templates/header.tmpl", file)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	err = temp.ExecuteTemplate(w, "content", data)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error executing: %s\n", err.Error())))
 		return
 	}
 	/*
