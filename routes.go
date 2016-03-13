@@ -83,7 +83,7 @@ var RouteList = Routes{
 	Route{
 		"publications",
 		"GET",
-		"/",
+		"/publications",
 		publications,
 	},
 	Route{
