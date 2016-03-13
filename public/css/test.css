@@ -1,1 +1,27 @@
-hello
+nav{
+  border-color: #222222 !important;
+}
+
+.item{
+  width: 100%;
+  padding-left: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #9d9d9d;
+}
+
+.item:hover{
+  color: white;
+  cursor: pointer;
+  background: #303030;
+}
+
+.type{
+  width: 100%;
+  margin-top: 10px;
+  padding-left: 15px;
+  color: white;
+  font-size: 20px;
+}
