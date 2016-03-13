@@ -201,14 +201,14 @@ func prog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	progs := List{list}
-	sendTemplate(w, path.Join(templateDir, "programs.tmpl"), "programs", progs)
+	sendTemplate(w, path.Join(templateDir, "programs.tmpl"), "content", progs)
 }
 
 /* home site
 TODO: pretty up template
 */
 func home(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "home.tmpl"), "home", empty)
+	sendTemplate(w, path.Join(templateDir, "home.tmpl"), "content", empty)
 	return
 }
 
@@ -233,7 +233,7 @@ login page
 TODO: pretty up template, integrate db, actually do
 */
 func login(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
+	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "content", empty)
 	return
 }
 
@@ -244,16 +244,16 @@ func files(w http.ResponseWriter, r *http.Request) {
 }
 
 func news(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
+	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "content", empty)
 	return
 }
 
 func publications(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "publics.tmpl"), "home", empty)
+	sendTemplate(w, path.Join(templateDir, "publics.tmpl"), "content", empty)
 	return
 }
 
 func people(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "people.tmpl"), "home", empty)
+	sendTemplate(w, path.Join(templateDir, "people.tmpl"), "content", empty)
 	return
 }
