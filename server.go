@@ -92,23 +92,6 @@ func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
 		w.Write([]byte(fmt.Sprintf("Error executing: %s\n", err.Error())))
 		return
 	}
-	/*
-		temp, err := ReadFile(file)
-		if err != nil {
-			w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-			return
-		}
-		tmpl, err := template.New(name).Parse(string(temp[:]))
-		if err != nil {
-			w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-			return
-		}
-		err = tmpl.Execute(w, data)
-		if err != nil {
-			w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-			return
-		}
-	*/
 }
 
 /*
@@ -266,7 +249,7 @@ func news(w http.ResponseWriter, r *http.Request) {
 }
 
 func publications(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "home", empty)
+	sendTemplate(w, path.Join(templateDir, "publics.tmpl"), "home", empty)
 	return
 }
 
