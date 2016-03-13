@@ -78,54 +78,37 @@ func isLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 	return
 }
 
-func checkLogin(w http.ResponseWriter, r *http.Request) {
-	ses, err := store.Get(r, "user")
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	r.ParseForm()
-	id := r.FormValue("id")
-	name := r.FormValue("name")
-	if name == "" {
-		name = id
-	}
-	exists := CheckDir(path.Join(userDir, id))
-	if !exists {
-		http.Redirect(w, r, "/login", 302)
-		return
-	}
-	ses.Values["id"] = id
-	//TODO: update if user is
-	ses.Values["user_name"] = id
-	err = ses.Save(r, w)
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	http.Redirect(w, r, "/", 302)
-	return
-}
-
 /*
 generic template handler
 */
 func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
-	temp, err := ReadFile(file)
+	temp := template.New(name)
+	temp, err := temp.ParseFiles("./templates/header.tmlp", file)
+	if err != nil {
+		w.Write([]byte("Error templating\n"))
+	}
+	err = temp.ExecuteTemplate(w, name, data)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	tmpl, err := template.New(name).Parse(string(temp[:]))
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
+	/*
+		temp, err := ReadFile(file)
+		if err != nil {
+			w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+			return
+		}
+		tmpl, err := template.New(name).Parse(string(temp[:]))
+		if err != nil {
+			w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+			return
+		}
+		err = tmpl.Execute(w, data)
+		if err != nil {
+			w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+			return
+		}
+	*/
 }
 
 /*
@@ -189,6 +172,38 @@ func program(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	sendTemplate(w, folder, "exec", empty)
+}
+
+/*
+post from login
+*/
+func checkLogin(w http.ResponseWriter, r *http.Request) {
+	ses, err := store.Get(r, "user")
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	r.ParseForm()
+	id := r.FormValue("id")
+	name := r.FormValue("name")
+	if name == "" {
+		name = id
+	}
+	exists := CheckDir(path.Join(userDir, id))
+	if !exists {
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+	ses.Values["id"] = id
+	//TODO: update if user is
+	ses.Values["user_name"] = id
+	err = ses.Save(r, w)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	http.Redirect(w, r, "/", 302)
+	return
 }
 
 /*

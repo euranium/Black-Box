@@ -44,30 +44,30 @@ var RouteList = Routes{
 		"/login",
 		checkLogin,
 	},
-	Route{
-		"programs",
-		"GET",
-		"/programs",
-		prog,
-	},
-	Route{
-		"program",
-		"GET",
-		"/programs/{prog}",
-		program,
-	},
-	Route{
-		"testInput",
-		"POST",
-		"/programs/sampleProgs",
-		testInput,
-	},
-	Route{
-		"progInput",
-		"POST",
-		"/programs/{prog}",
-		progInput,
-	},
+	//Route{
+	//"programs",
+	//"GET",
+	//"/programs",
+	//prog,
+	//},
+	//Route{
+	//"program",
+	//"GET",
+	//"/programs/{prog}",
+	//program,
+	//},
+	//Route{
+	//"testInput",
+	//"POST",
+	//"/programs/sampleProgs",
+	//testInput,
+	//},
+	//Route{
+	//"progInput",
+	//"POST",
+	//"/programs/{prog}",
+	//progInput,
+	//},
 	Route{
 		"userFiles",
 		"GET",
@@ -95,7 +95,7 @@ var RouteList = Routes{
 	Route{
 		"userHome",
 		"GET",
-		"/userHome",
+		"/dashboard",
 		userHome,
 	},
 }

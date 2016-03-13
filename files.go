@@ -108,11 +108,10 @@ func RandomString(strlen int) string {
 	// place a '-' every 4 chars
 	var str string
 	for i := 0; i < strlen; i++ {
-		if (i+1)%4 == 0 {
+		if (i+1)%4 == 0 && i != strlen-1 {
 			str += "-"
-		} else {
-			str += string(result[i])
 		}
+		str += string(result[i])
 	}
 	return str
 
