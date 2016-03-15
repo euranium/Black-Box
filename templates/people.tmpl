@@ -1,182 +1,145 @@
+{{ define "content" }}
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-<title>People</title>
 
-<!-- CSS  -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>People</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/test.css" rel="stylesheet">
+    <style>
+    body {
+        padding-top: 70px;
+        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
+
 <body>
-<nav class="light-blue lighten-1" role="navigation">
-	<div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
-		<ul class="right hide-on-med-and-down">
-			<li><a href="/">Home</a></li>
-			<li><a href="/news">News</a></li>
-			<li><a href="/programs">Programs</a></li>
-			<li><a href="/publications">Publications</a></li>
-			<li class="active"><a href="/people">People</a></li>
-			<li><a href="/login">Login</a></li>
-		</ul>
 
-		<ul id="nav-mobile" class="side-nav">
-			<li><a href="/">Home</a></li>
-			<li><a href="/news">News</a></li>
-			<li><a href="/programs">Programs</a></li>
-			<li><a href="/publications">Publications</a></li>
-			<li class="active"><a href="/people">People</a></li>
-			<li><a href="/login">Login</a></li>
-		</ul>
-		<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-	</div>
-</nav>
+		{{template "header"}}
+    <!-- Page Content -->
+    <div class="container">
 
-<div class="section">
-	<div class="container">
-		<h1 class="header orange-text">Meet The Team</h1>
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>People</h1>
+            </div>
+        </div>
+        <hr>
+        <!-- /.row -->
 
-		<div class="row">
-			<div class="col s12">
-				<ul class="tabs tab-demo z-depth-1">
-					<li class="tab col s3"><a class="active" href="#tab1">Current Students</a></li>
-					<li class="tab col s3 disabled"><a href="#tab2">Past Students</a></li>
-					<li class="tab col s3 disabled"><a href="#tab3">Collaborators</a></li>
-					<li class="tab col s3 disabled"><a href="#tab4">Undergrad Students</a></li>	
-					<li class="tab col s3 disabled"><a href="#tab5">Grad Students</a></li>
-				</ul>
-			</div>
-		</div>
-		
-		<div id="tab1">
-			<div class="row">
-				<div class="col s12 m2 center-on-small-only">
-					<div class="image-container">
-						<img style="max-width: 100%;" src="http://i.ytimg.com/vi/nPER_vv2SyU/hqdefault.jpg"></img>
-					</div>
-				</div>
-				<div class="col s12 m10">
-					<h4>Elizabeth Brooks</h4>
-					<p>
-					Elizabeth started working with Filip in Spring 2013. She is co-advised by Ali Scoville, Biology CWU, and is developing an extensible infrastructure for inferring the co-variance of complex biological traits.
-					</p>
-				</div>
-			</div>
+        <div class="row">
+            <div class="col-lg-2">
+                <img src="http://americasbest401k.com/wp-content/uploads/2015/02/person-icon.png" style="width: 100%;"></img>
+            </div>
+            <div class="col-lg-10">
+                <h3>Elizabeth Brooks</h3>
+                  <p>
+                    Elizabeth started working with Filip in Spring 2013. She is co-advised by Ali Scoville, Biology CWU, and is developing an extensible infrastructure for inferring the co-variance of complex biological traits.
+                  </p>
+            </div>
+        </div>
 
-			<div class="row">
-				<div class="col s12 m2 center-on-small-only">
-					<div class="image-container">
-						<img style="max-width: 100%;" src="https://i.ytimg.com/vi/icqDxNab3Do/maxresdefault.jpg"></img>
-					</div>
-				</div>
-				<div class="col s12 m10">
-					<h4>Sean Beseler</h4>
-					<p>
-					Sean has been working with Filip since fall 2015. He's developing the normal and bivariate Gaussian distribution models which are used to generate sample populations in the lab's on-going co-variance work.
-					</p>
-				</div>
-			</div>
+        <div class="row rowMargin">
+            <div class="col-lg-2">
+                <img src="http://americasbest401k.com/wp-content/uploads/2015/02/person-icon.png" style="width: 100%;"></img>
+            </div>
+            <div class="col-lg-10">
+                <h3>Sean Beseler</h3>
+                  <p>
+                    Sean has been working with Filip since fall 2015. He's developing the normal and bivariate Gaussian distribution models which are used to generate sample populations in the lab's on-going co-variance work.
+                  </p>
+            </div>
+        </div>
 
-			<div class="row">
-				<div class="col s12 m2 center-on-small-only">
-					<div class="image-container">
-						<img style="max-width: 100%;" src="https://i.ytimg.com/vi/tntOCGkgt98/maxresdefault.jpg"></img>
-					</div>
-				</div>
-				<div class="col s12 m10">
-					<h4>Tim Wood</h4>
-					<p>
-					Tim worked with Filip (in on-goin work with collaborator Brian Chen from Lehigh University) since the start of 2016. He's developed several python programs for processing and analyzing rigidity and cavity data for more than 80,000 of the X-ray crystallography resolves structures in the Protein Data Bank.</p>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col s12 m2 center-on-small-only">
-					<div class="image-container">
-						<img style="max-width: 100%;" src="http://static4.businessinsider.com/image/5485631e69bedda63303ed51/grumpy-cat-has-earned-her-owner-nearly-100-million-in-just-2-years.jpg"></img>
-					</div>
-				</div>
-				<div class="col s12 m10">
-					<h4>Ramesh Kumar</h4>
-					<p>
-					Ramesh is a graduate student working with Filip (in on-going work with collaborator Nurit Haspel from the University of Massachusetts) on a project to systematically determine which machine learning method(s) are best suited to identify from rigidity and biology data which residues in a biomolecule contribute most to the protein's stability.
-					</p>
-				</div>
-			</div>
+        <div class="row rowMargin">
+            <div class="col-lg-2">
+                <img src="http://americasbest401k.com/wp-content/uploads/2015/02/person-icon.png" style="width: 100%;"></img>
+            </div>
+            <div class="col-lg-10">
+                <h3>Tim Wood</h3>
+                  <p>
+                    Tim has worked with Filip (in on-going work with collaborator Brian Chen from Lehigh University) since the start of 2016. He's developed several python programs for processing and analyzing rigidity and cavity data for more than 80,000 of the X-ray crystallography resolves structures in the Protein Data Bank.
+                 </p>
+            </div>
+        </div>
 
-			<div class="row">
-				<div class="col s12 m2 center-on-small-only">
-					<div class="image-container">
-						<img style="max-width: 100%;" src="http://37.media.tumblr.com/tumblr_lyjla9y17E1qd851po1_500.jpg"></img>
-					</div>
-				</div>
-				<div class="col s12 m10">
-					<h4>Rainier Harvey</h4>
-					<p>
-					Salvia biodiesel beard, jean shorts 3 wolf moon portland lo-fi affogato truffaut. DIY umami vinyl, skateboard direct trade stumptown chia brooklyn listicle +1 aesthetic beard crucifix. Chartreuse bushwick keytar selvage actually kickstarter, you probably haven't heard of them sustainable kogi kinfolk retro 8-bit locavore street art. 
-					</p>
-				</div>
-			</div>
+        <div class="row rowMargin">
+            <div class="col-lg-2">
+                <img src="http://americasbest401k.com/wp-content/uploads/2015/02/person-icon.png" style="width: 100%;"></img>
+            </div>
+            <div class="col-lg-10">
+                <h3>Ramesh Kumar</h3>
+                  <p>
+                    Ramesh is a graduate student working with Filip (in on-going work with collaborator Nurit Haspel from the University of Massachusetts) on a project to systematically determine which machine learning method(s) are best suited to identify from rigidity and biology data which residues in a biomolecule contribute most to the protein's stability.
+                 </p>
+            </div>
+        </div>
 
-			<div class="row">
-				<div class="col s12 m2 center-on-small-only">
-					<div class="image-container">
-						<img style="max-width: 100%;" src="http://wallpapercave.com/wp/YyoomVD.jpg"></img>
-					</div>
-				</div>
-				<div class="col s12 m10">
-					<h4>Jesse Sliter</h4>
-					<p>
-					Chillwave chicharrones wolf venmo pork belly, ugh fap literally. Letterpress gastropub beard lomo flannel. Small batch gentrify truffaut heirloom banjo, poutine chicharrones. Blue bottle meh yr distillery selfies. 3 wolf moon blue bottle williamsburg kinfolk, brunch try-hard biodiesel hoodie whatever health goth. XOXO shoreditch salvia truffaut.
-					</p>
-				</div>
-			</div>
+        <div class="row rowMargin">
+            <div class="col-lg-2">
+                <img src="http://americasbest401k.com/wp-content/uploads/2015/02/person-icon.png" style="width: 100%;"></img>
+            </div>
+            <div class="col-lg-10">
+                <h3>Jesse Sliter</h3>
+                  <p>
+                    Jesse is an undergrad student working with Filip on a project to create a we platform for research studies and tools.
+                 </p>
+            </div>
+        </div>
 
-		</div>
-	</div>
-</div>
+        <div class="row rowMargin">
+            <div class="col-lg-2">
+                <img src="http://americasbest401k.com/wp-content/uploads/2015/02/person-icon.png" style="width: 100%;"></img>
+            </div>
+            <div class="col-lg-10">
+                <h3>Rainier Harvey</h3>
+                  <p>
+                    Rainer is an undergrad student working with Filip on a project to create a we platform for research studies and tools.
+            </div>
+        </div>
 
-<footer class="page-footer orange">
-<div class="container">
-		<div class="row">
-			<div class="col l6 s12">
-				<h5 class="white-text">Company Bio</h5>
-				<p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
+        <div class="row rowMargin">
+            <div class="col-lg-2">
+                <img src="http://americasbest401k.com/wp-content/uploads/2015/02/person-icon.png" style="width: 100%;"></img>
+            </div>
+            <div class="col-lg-10">
+                <h3>Rebecca Hsieh</h3>
+                  <p>
+                    Rebecca is an undergrad student working with Filip on a project to create a we platform for research studies and tools.
+                 </p>
+            </div>
+        </div>
 
+    </div>
+    <!-- /.container -->
 
-			</div>
-			<div class="col l3 s12">
-				<h5 class="white-text">Settings</h5>
-				<ul>
-					<li><a class="white-text" href="#!">Link 1</a></li>
-					<li><a class="white-text" href="#!">Link 2</a></li>
-					<li><a class="white-text" href="#!">Link 3</a></li>
-					<li><a class="white-text" href="#!">Link 4</a></li>
-				</ul>
-			</div>
-			<div class="col l3 s12">
-				<h5 class="white-text">Connect</h5>
-				<ul>
-					<li><a class="white-text" href="#!">Link 1</a></li>
-					<li><a class="white-text" href="#!">Link 2</a></li>
-					<li><a class="white-text" href="#!">Link 3</a></li>
-					<li><a class="white-text" href="#!">Link 4</a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	<div class="footer-copyright">
-		<div class="container">
-			Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
-		</div>
-	</div>
-</footer>
+    <!-- jQuery Version 1.11.1 -->
+    <script src="js/jquery.js"></script>
 
-
-<!--  Scripts-->
-<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
 
 </body>
-</html>
 
+</html>
+{{ end }}

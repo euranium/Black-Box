@@ -1,1 +1,41 @@
-hello
+nav{
+  border-bottom-style: none !important;
+  background: #418EBA !important;
+  color: white !important;
+}
+
+.white{
+  color: white !important;
+}
+
+i{
+  margin-right: 10px;
+}
+
+.item{
+  width: 100%;
+  padding-left: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #9d9d9d;
+}
+
+.item:hover{
+  color: white;
+  cursor: pointer;
+  background: #2C3B41;
+}
+
+.type{
+  width: 100%;
+  margin-top: 10px;
+  padding-left: 15px;
+  color: white;
+  font-size: 20px;
+}
+
+.rowMargin{
+  margin-top: 15px;
+}
