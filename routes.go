@@ -86,4 +86,22 @@ var RouteList = Routes{
 		"/api/template/{key}",
 		APITemplate,
 	},
+	Route{
+		"API",
+		"GET",
+		"/api/results",
+		APIListResults,
+	},
+	Route{
+		"API",
+		"GET",
+		"/api/results/{name}",
+		APIGetResults,
+	},
+	Route{
+		"API",
+		"POST",
+		"/api/program",
+		program,
+	},
 }
