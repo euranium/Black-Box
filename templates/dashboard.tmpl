@@ -63,7 +63,7 @@
           <div class="type">
 						<i class="fa fa-area-chart"></i>Results
 					</div>
-          <span ng-repeat="item in results">
+          <span ng-repeat="item in results track by $index">
             <div class="item" ng-click="loadResult(item)">
               {{"{{"}}item{{"}}"}}
             </div>
