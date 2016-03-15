@@ -9,7 +9,7 @@ import (
 
 var ()
 
-func APIListSoft(w http.ResponseWriter, r *http.Request) {
+func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 	list, err := ListDir(progDir)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
