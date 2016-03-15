@@ -20,6 +20,10 @@
     <link href="css/test.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
+    <script src="js/dashboard.js"></script>
+
 		<!-- Custom CSS -->
     <style>
     body {
@@ -37,7 +41,7 @@
 
 </head>
 
-<body>
+<body ng-app="dashboard" ng-controller="MainCtrl">
 
 	<div class="container-fluid">
 		{{template "header"}}
@@ -50,17 +54,16 @@
 					<div class="type">
 						<i class="fa fa-cogs"></i>Programs
 					</div>
-					<div class="item">
-						test 1
-					</div>
-					<div class="item">
-						test 2
-					</div>
+          <span ng-repeat="item in software">
+  					<div class="item" ng-click="loadSoftware(item)">
+  						{{"{{"}}item{{"}}"}}
+  					</div>
+        </span>
 
           <div class="type">
 						<i class="fa fa-area-chart"></i>Results
 					</div>
-					<div class="item">
+					<div class="item" ng-click="send()">
 						test 1
 					</div>
 					<div class="item">
@@ -73,9 +76,8 @@
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-12">
-                        <h1>Dashboard</h1>
-                        <p>This area will be populated with data from the menu item selected on the left</p>
+                    <div class="col-lg-12" id="dash">
+                      <h1>Dashboard</h1><p>This area will be populated with data from the menu item selected on the left</p>
                     </div>
                 </div>
             </div>
