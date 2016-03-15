@@ -13,7 +13,7 @@ import (
 
 var (
 	empty       Empty
-	userDir     = "users/"
+	UserDir     = "users/"
 	templateDir = "templates/"
 	progDir     = "executables/"
 	tempDelims  = []string{"[[", "]]"}
@@ -48,7 +48,7 @@ func main() {
 check is a user is logged in/valid
 TODO: add actuall auth, link with db
 */
-func isLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error) {
+func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error) {
 	ses, err := store.Get(r, "user")
 	if err != nil {
 		fmt.Println("nil")
@@ -71,7 +71,7 @@ func isLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 	person = &User{}
 	(*person).user_name = name
 	(*person).hash = id
-	if !CheckDir(path.Join(userDir, (*person).hash)) {
+	if !CheckDir(path.Join(UserDir, (*person).hash)) {
 		fmt.Println("not a valid user")
 		http.Redirect(w, r, "/login", 302)
 		return nil, errors.New("Not logged In")
@@ -102,11 +102,11 @@ TODO: remove when test page no longer needed
 */
 func testInput(w http.ResponseWriter, r *http.Request) {
 	// user auth checking
-	person, err := isLoggedIn(w, r)
+	person, err := IsLoggedIn(w, r)
 	if err != nil || person.user_name == "" {
 		return
 	}
-	dir := path.Join(userDir, person.hash, RandomString(12))
+	dir := path.Join(UserDir, person.hash, RandomString(12))
 	fmt.Println("copying to:", dir)
 	err = CopyDir("executables/sampleProgs/", dir)
 	if err != nil {
@@ -173,7 +173,7 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 	if name == "" {
 		name = id
 	}
-	exists := CheckDir(path.Join(userDir, id))
+	exists := CheckDir(path.Join(UserDir, id))
 	if !exists {
 		http.Redirect(w, r, "/login", 302)
 		return
@@ -214,12 +214,12 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func dashboard(w http.ResponseWriter, r *http.Request) {
-	person, err := isLoggedIn(w, r)
+	person, err := IsLoggedIn(w, r)
 	if err != nil || (*person).hash == "" {
 		http.Redirect(w, r, "/programs", 302)
 		return
 	}
-	folder := path.Join(userDir, person.hash)
+	folder := path.Join(UserDir, person.hash)
 	list, err := ListDir(folder)
 	if err != nil {
 		http.Redirect(w, r, "/programs", 302)
