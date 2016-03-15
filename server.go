@@ -16,6 +16,7 @@ var (
 	userDir     = "users/"
 	templateDir = "templates/"
 	progDir     = "executables/"
+	tempDelims  = []string{"[[", "]]"}
 	Tasks       = make(chan *exec.Cmd, 64)
 	store       = sessions.NewCookieStore([]byte("something-secret-or-not"))
 )
@@ -83,6 +84,7 @@ generic template handler
 */
 func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
 	temp, err := template.ParseFiles("templates/header.tmpl", file)
+	temp.Delims(tempDelims[0], tempDelims[1])
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
