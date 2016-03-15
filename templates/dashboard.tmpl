@@ -63,12 +63,11 @@
           <div class="type">
 						<i class="fa fa-area-chart"></i>Results
 					</div>
-					<div class="item" ng-click="send()">
-						test 1
-					</div>
-					<div class="item">
-						test 2
-					</div>
+          <span ng-repeat="item in results">
+            <div class="item" ng-click="loadResult(item)">
+              {{"{{"}}item{{"}}"}}
+            </div>
+        </span>
         </div>
         <!-- /#sidebar-wrapper -->
 

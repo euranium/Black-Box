@@ -8,6 +8,8 @@ app.controller('MainCtrl', [
 function($scope, $http, $compile, $sce){
   $scope.test = 'Hello world!';
   $scope.software = [];
+  $scope.results = []
+  $scope.radio = "";
 
     $http.get('/api/listsoftware').success(function(data){
       angular.copy(data, $scope.software);
@@ -17,14 +19,23 @@ function($scope, $http, $compile, $sce){
 
       $http.get('/api/template/query?name=' + name).success(function(data){
         console.log(data);
-        $('#dash').html($compile(data)($scope))//$sce.trustAsHtml(data);
+        $('#dash').html($compile(data)($scope));//$sce.trustAsHtml(data);
       });
 
+
+    };
+
     $scope.send= function(){
-      console.log("Hello");
+      $scope.results.append($scope.radio);
     }
 
-      //console.log($scope.content);
+    $scope.loadResult = function(name){
+
+      $http.get('/api/template/query?name=' + name).success(function(data){
+        console.log(data);
+        $('#dash').html($compile(data)($scope));//$sce.trustAsHtml(data);
+      });
+
 
     };
 
