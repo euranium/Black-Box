@@ -84,7 +84,7 @@ generic template handler
 */
 func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
 	temp, err := template.ParseFiles("templates/header.tmpl", file)
-	temp.Delims(tempDelims[0], tempDelims[1])
+	temp = temp.Delims(tempDelims[0], tempDelims[1])
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
