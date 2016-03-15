@@ -52,12 +52,13 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 }
 
 func APIListResults(w http.ResponseWriter, r *http.Request) {
-	person, err := IsLoggedIn(w, r)
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	list, err := ListDir(path.Join(UserDir, person.hash))
+	//person, err := IsLoggedIn(w, r)
+	//if err != nil {
+	//w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+	//return
+	//}
+	//list, err := ListDir(path.Join(UserDir, person.hash))
+	list, err := ListDir(path.Join(UserDir, "aaa"))
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
@@ -74,11 +75,11 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 
 // hard coded results page right now
 func APIGetResults(w http.ResponseWriter, r *http.Request) {
-	person, err := IsLoggedIn(w, r)
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
+	//person, err := IsLoggedIn(w, r)
+	//if err != nil {
+	//w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+	//return
+	//}
 	u := r.URL.Query()
 	_, folder := path.Split(r.URL.Path)
 	if folder != "sampleProgs" {
@@ -94,7 +95,8 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(""))
 		return
 	}
-	result, err := ReadFile(path.Join(UserDir, person.hash, folder, q, "*.txt"))
+	//result, err := ReadFile(path.Join(UserDir, person.hash, folder, q, "*.txt"))
+	result, err := ReadFile(path.Join(UserDir, "aaa", folder, q, "*.txt"))
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
