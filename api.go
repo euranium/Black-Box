@@ -32,7 +32,7 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(""))
 		return
 	}
-	p = path.Join(progDir, p, "index.tmpl")
+	p = path.Join(progDir, p, p+".tmpl")
 	if !CheckFile(p) {
 		w.Write([]byte("No File found"))
 		return
@@ -44,4 +44,8 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write([]byte(file))
 	return
+}
+
+// hard coded results page right now
+func APIResults(w http.ResponseWriter, r *http.Request) {
 }
