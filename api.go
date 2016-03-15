@@ -32,7 +32,11 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(""))
 		return
 	}
-	p = path.Join(progDir, p, "index.tmp")
+	p = path.Join(progDir, p, "index.tmpl")
+	if !CheckFile(p) {
+		w.Write([]byte("No File found"))
+		return
+	}
 	file, err := ReadFile(p)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))

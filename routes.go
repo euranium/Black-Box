@@ -104,4 +104,10 @@ var RouteList = Routes{
 		"/api/listsoftware",
 		APIListSoftware,
 	},
+	Route{
+		"API",
+		"POST",
+		"/api/template",
+		APITemplate,
+	},
 }
