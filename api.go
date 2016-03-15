@@ -26,8 +26,12 @@ func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 }
 
 func APITemplate(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	p := r.FormValue("program")
+	u := r.URL.Query()
+	if len(u["name"]) <= 0 {
+		w.Write([]byte(""))
+		return
+	}
+	p := u["name"][0]
 	if p == "" {
 		w.Write([]byte(""))
 		return
