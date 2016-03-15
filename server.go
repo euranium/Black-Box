@@ -101,7 +101,6 @@ TODO: remove when test page no longer needed
 func testInput(w http.ResponseWriter, r *http.Request) {
 	// user auth checking
 	person, err := isLoggedIn(w, r)
-	fmt.Println("checked login")
 	if err != nil || person.user_name == "" {
 		return
 	}
@@ -185,7 +184,7 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	http.Redirect(w, r, "/", 302)
+	http.Redirect(w, r, "/dashboard", 302)
 	return
 }
 

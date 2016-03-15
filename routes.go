@@ -98,4 +98,10 @@ var RouteList = Routes{
 		"/dashboard",
 		dashboard,
 	},
+	Route{
+		"API",
+		"GET",
+		"/api/listsoftware",
+		APIListSoftware,
+	},
 }
