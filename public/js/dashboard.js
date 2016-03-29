@@ -6,7 +6,6 @@ app.controller('MainCtrl', [
 '$compile',
 '$sce',
 function($scope, $http, $compile, $sce){
-  $scope.test = 'Hello world!';
   $scope.software = [];
   $scope.results = []
   $scope.radio = "";
@@ -16,7 +15,6 @@ function($scope, $http, $compile, $sce){
     });
 
     $scope.loadSoftware = function(name){
-
       $http.get('/api/template/query?name=' + name).success(function(data){
         console.log(data);
         $('#dash').html($compile(data)($scope));//$sce.trustAsHtml(data);
