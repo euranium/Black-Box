@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	//"os/exec"
+	"os/exec"
 	"path"
 )
 
@@ -54,10 +54,6 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 
 func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	fmt.Println("form:", r.Form)
-	for k, v := range r.Form {
-		fmt.Println("k:", k, "v:", v)
-	}
 	person, err := IsLoggedIn(w, r)
 	if err != nil || person.user_name == "" {
 		return
@@ -79,21 +75,19 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	}
 	dir := path.Join(UserDir, person.hash, RandomString(12))
 	fmt.Println("copying to:", dir)
-	//err = CopyDir(path.Join("executables", q), dir)
-	//if err != nil {
-	//fmt.Println("error:", err.Error())
-	//w.Write([]byte("Error processing\n"))
-	//}
+	err = CopyDir(path.Join("executables", folder), dir)
+	if err != nil {
+		fmt.Println("error:", err.Error())
+		w.Write([]byte("Error processing\n"))
+	}
 	var args []string
 	if typ == "java" {
-		args = []string{"-classpath", path.Join(dir, folder)}
-		for k, v := range r.Form {
-			if k != "type" && k != "name" {
-				args = append(args, v[0])
-			}
-		}
+		args = []string{"-classpath", dir, folder}
+		input := Sort(r.Form)
+		fmt.Println("input:", input)
+		args = append(args, input...)
 		fmt.Println(args)
-		//Tasks <- exec.Command("java", args...)
+		Tasks <- exec.Command("java", args...)
 		w.Write([]byte("submited form\n"))
 		return
 	} else {
