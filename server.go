@@ -129,7 +129,6 @@ TODO: make generic:
 	- handle errors, pass back to correct url
 */
 func progInput(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
 	w.Write([]byte("submited form\n"))
 }
 

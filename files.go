@@ -118,6 +118,13 @@ func RandomString(strlen int) string {
 }
 
 /*
+check if name is an executable program
+*/
+func IsExec(name string) bool {
+	return CheckDir(path.Join("executables", name))
+}
+
+/*
 get the contents of a file,
 */
 func ReadFile(path string) (file []byte, err error) {

@@ -104,4 +104,10 @@ var RouteList = Routes{
 		"/api/program",
 		program,
 	},
+	Route{
+		"API",
+		"POST",
+		"/api/submit/{key}",
+		APISubmitForm,
+	},
 }
