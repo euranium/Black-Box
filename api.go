@@ -87,8 +87,10 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	var args []string
 	if typ == "java" {
 		args = []string{"-classpath", path.Join(dir, folder)}
-		for k, _ := range r.Form {
-			args = append(args, k)
+		for k, v := range r.Form {
+			if k != "type" && k != "name" {
+				args = append(args, v[0])
+			}
 		}
 		fmt.Println(args)
 		//Tasks <- exec.Command("java", args...)
