@@ -14,6 +14,10 @@ function($scope, $http, $compile, $sce){
       angular.copy(data, $scope.software);
     });
 
+    $http.get('/api/results').success(function(data){
+      angular.copy(data, $scope.results);
+    });
+
     $scope.loadSoftware = function(name){
       $http.get('/api/template/query?name=' + name).success(function(data){
         console.log(data);
