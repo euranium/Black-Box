@@ -54,6 +54,7 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 
 func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
+	fmt.Println("form:", r.Form)
 	for k, v := range r.Form {
 		fmt.Println("k:", k, "v:", v)
 	}
@@ -62,36 +63,30 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// get program name
-	u := r.URL.Query()
-	_, folder := path.Split(r.URL.Path)
-	if folder != "sampleProgs" {
-		w.Write([]byte(""))
+	folder := r.Form["name"][0]
+	if folder == "" {
+		w.Write([]byte("No name"))
 		return
 	}
-	if len(u["name"]) <= 0 {
-		w.Write([]byte("No Query"))
+	if folder == "" || !IsExec(folder) {
+		w.Write([]byte("not exec or no name" + folder))
 		return
 	}
-	q := u["name"][0]
-	if q == "" || !IsExec(q) {
-		w.Write([]byte("not exec or no name" + q))
-		return
-	}
-	if (len(u["type"])) <= 0 {
+	typ := r.Form["type"][0]
+	if typ == "" {
 		w.Write([]byte("No Type"))
 		return
 	}
-	typ := u["type"][0]
 	dir := path.Join(UserDir, person.hash, RandomString(12))
 	fmt.Println("copying to:", dir)
 	//err = CopyDir(path.Join("executables", q), dir)
-	if err != nil {
-		fmt.Println("error:", err.Error())
-		w.Write([]byte("Error processing\n"))
-	}
+	//if err != nil {
+	//fmt.Println("error:", err.Error())
+	//w.Write([]byte("Error processing\n"))
+	//}
 	var args []string
 	if typ == "java" {
-		args = []string{"-classpath", path.Join(dir, q)}
+		args = []string{"-classpath", path.Join(dir, folder)}
 		for k, _ := range r.Form {
 			args = append(args, k)
 		}
