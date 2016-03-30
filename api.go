@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	//"os/exec"
+	"os/exec"
 	"path"
 )
 
@@ -75,19 +75,19 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	}
 	dir := path.Join(UserDir, person.hash, RandomString(12))
 	fmt.Println("copying to:", dir)
-	//err = CopyDir(path.Join("executables", q), dir)
-	//if err != nil {
-	//fmt.Println("error:", err.Error())
-	//w.Write([]byte("Error processing\n"))
-	//}
+	err = CopyDir(path.Join("executables", folder), dir)
+	if err != nil {
+		fmt.Println("error:", err.Error())
+		w.Write([]byte("Error processing\n"))
+	}
 	var args []string
 	if typ == "java" {
-		args = []string{"-classpath", path.Join(dir, folder)}
+		args = []string{"-classpath", dir, folder}
 		input := Sort(r.Form)
 		fmt.Println("input:", input)
 		args = append(args, input...)
 		fmt.Println(args)
-		//Tasks <- exec.Command("java", args...)
+		Tasks <- exec.Command("java", args...)
 		w.Write([]byte("submited form\n"))
 		return
 	} else {

@@ -23,15 +23,16 @@ func XmlToString(data interface{}) (string, error) {
 	return string(str[:]), err
 }
 
-func Sort(data map[string][]string) (sorted []string) {
+func Sort(data map[string][]string) []string {
+	sorted := make([]string, len(data))
 	for k, v := range data {
 		fmt.Println("k:", k, "v:", v)
 		i, err := strconv.Atoi(k)
 		if err != nil {
 			fmt.Println("error:", err.Error())
-			return nil
+		} else {
+			sorted[i] = v[0]
 		}
-		sorted[i] = v[0]
 	}
 	return sorted
 }
