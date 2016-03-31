@@ -8,9 +8,9 @@ import (
 	"io/ioutil"
 	"log"
 	"math/rand"
-	"mime"
 	"os"
 	"path"
+	"path/filepath"
 	"time"
 )
 
@@ -223,8 +223,16 @@ func ReadFileType(folder, tp string) string {
 		fmt.Println(err.Error())
 		return ""
 	}
-	for _, f := range files {
-		tps := mime.ExtensionsByType(f)
-		fmt.Println(tps)
+	str := ""
+	for _, f := range file {
+		if filepath.Ext(f.Name()) == tp {
+			byts, err := ReadFile(path.Join(folder, f.Name()))
+			if err != nil {
+				fmt.Println(err.Error())
+			} else {
+				str += string(byts)
+			}
+		}
 	}
+	return str
 }

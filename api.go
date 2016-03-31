@@ -91,10 +91,10 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		Tasks <- exec.Command("mv", "meanTraitOneValues_GeneralModel_1.txt", dir)
 		Tasks <- exec.Command("mv", "meanTraitTwoValues_GeneralModel_1.txt", dir)
 		Tasks <- exec.Command("mv", "speciesInputs_GeneralModel_1.txt", dir)
-		w.Write([]byte("submited form\n"))
+		http.Redirect(w, r, "/dashboard", 302)
 		return
 	} else {
-		w.Write([]byte("Only handling java right now"))
+		http.Redirect(w, r, "/dashboard", 302)
 	}
 }
 
@@ -135,10 +135,7 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//result, err := ReadFile(path.Join(UserDir, person.hash, folder, q, "*.txt"))
-	result, err := ReadFile(path.Join(UserDir, "aaa", folder, q, "*.txt"))
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
+	result := ReadFileType(path.Join(UserDir, "aaa", q), ".txt")
+	fmt.Println(result)
 	w.Write([]byte(result))
 }
