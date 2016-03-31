@@ -136,6 +136,5 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	}
 	//result, err := ReadFile(path.Join(UserDir, person.hash, folder, q, "*.txt"))
 	result := ReadFileType(path.Join(UserDir, "aaa", q), ".txt")
-	fmt.Println(result)
 	w.Write([]byte(result))
 }
