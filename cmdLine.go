@@ -1,10 +1,11 @@
 package main
 
 import (
-	"bytes"
+	//"bytes"
 	"fmt"
-	"log"
-	"strings"
+	//"log"
+	//"strings"
+	//"io"
 )
 
 /*
@@ -14,19 +15,16 @@ example:
 Tasks <- exec.Command("java", path.Join(progDir, "javaProg30Sec"), "rand")
 Only runs one exec at a time right now
 */
-func RunCmd() (err error) {
+func RunCmd() {
 	for {
 		select {
 		case cmd := <-Tasks:
-			fmt.Println("execing prog")
-			cmd.Stdin = strings.NewReader("input")
-			var out bytes.Buffer
-			cmd.Stdout = &out
-			err = cmd.Run()
+			out, err := cmd.CombinedOutput()
 			if err != nil {
-				log.Print(err)
+				fmt.Printf("error: %s, msg: %s", err.Error(), out)
+			} else {
+				fmt.Printf("finished running: %s\n", out)
 			}
-			fmt.Println("finished running")
 		}
 	}
 }

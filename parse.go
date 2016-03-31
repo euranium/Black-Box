@@ -30,9 +30,15 @@ func Sort(data map[string][]string) []string {
 		i, err := strconv.Atoi(k)
 		if err != nil {
 			fmt.Println("error:", err.Error())
-		} else {
+		} else if v[0] != "" {
 			sorted[i] = v[0]
 		}
 	}
-	return sorted
+	var srt []string
+	for _, v := range sorted {
+		if v != "" {
+			srt = append(srt, v)
+		}
+	}
+	return srt
 }

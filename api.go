@@ -88,6 +88,9 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		args = append(args, input...)
 		fmt.Println(args)
 		Tasks <- exec.Command("java", args...)
+		Tasks <- exec.Command("mv", "meanTraitOneValues_GeneralModel_1.txt", dir)
+		Tasks <- exec.Command("mv", "meanTraitTwoValues_GeneralModel_1.txt", dir)
+		Tasks <- exec.Command("mv", "speciesInputs_GeneralModel_1.txt", dir)
 		w.Write([]byte("submited form\n"))
 		return
 	} else {
@@ -118,23 +121,24 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 }
 
 // hard coded results page right now
+// expecting /query?name=folder
 func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	//person, err := IsLoggedIn(w, r)
 	//if err != nil {
 	//w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 	//return
 	//}
-	u := r.URL.Query()
+	r.ParseForm()
 	_, folder := path.Split(r.URL.Path)
 	if folder != "sampleProgs" {
 		w.Write([]byte(""))
 		return
 	}
-	if len(u["name"]) <= 0 {
+	if len(r.Form["name"]) <= 0 {
 		w.Write([]byte("No Query"))
 		return
 	}
-	q := u["name"][0]
+	q := r.Form["name"][0]
 	if q == "" || q != "sampleProg" {
 		w.Write([]byte(""))
 		return
