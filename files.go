@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"math/rand"
+	"mime"
 	"os"
 	"path"
 	"time"
@@ -210,4 +211,20 @@ func WatchForFileCreation(fileName string) (err error) {
 	<-done
 
 	return
+}
+
+func IsResult(user, folder string) bool {
+	return CheckDir(path.Join("users", user, folder))
+}
+
+func ReadFileType(folder, tp string) string {
+	file, err := ioutil.ReadDir(folder)
+	if err != nil {
+		fmt.Println(err.Error())
+		return ""
+	}
+	for _, f := range files {
+		tps := mime.ExtensionsByType(f)
+		fmt.Println(tps)
+	}
 }

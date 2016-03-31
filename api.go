@@ -84,10 +84,10 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	if typ == "java" {
 		args = []string{"-classpath", dir, folder}
 		input := Sort(r.Form)
-		fmt.Println("input:", input)
 		args = append(args, input...)
 		fmt.Println(args)
 		Tasks <- exec.Command("java", args...)
+		// TODO: change this
 		Tasks <- exec.Command("mv", "meanTraitOneValues_GeneralModel_1.txt", dir)
 		Tasks <- exec.Command("mv", "meanTraitTwoValues_GeneralModel_1.txt", dir)
 		Tasks <- exec.Command("mv", "speciesInputs_GeneralModel_1.txt", dir)
@@ -129,17 +129,8 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	//return
 	//}
 	r.ParseForm()
-	_, folder := path.Split(r.URL.Path)
-	if folder != "sampleProgs" {
-		w.Write([]byte(""))
-		return
-	}
-	if len(r.Form["name"]) <= 0 {
-		w.Write([]byte("No Query"))
-		return
-	}
 	q := r.Form["name"][0]
-	if q == "" || q != "sampleProg" {
+	if q == "" || !IsResult("aaa", q) {
 		w.Write([]byte(""))
 		return
 	}
