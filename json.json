@@ -1,0 +1,23 @@
+"api/results/query?name=name"
+{
+	name: "progname",
+	results:
+		[{
+			type: "enum",
+			name: "name",
+			data: "bytes"
+		}]
+}
+
+"api/results"
+[{
+	name: "name",
+	status: "complete/pending",
+	type: "enum"
+}]
+
+"api/submit/query?name=name"
+{
+	name: "progname",
+	input: ["input"]
+}
