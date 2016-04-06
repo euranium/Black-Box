@@ -14,6 +14,8 @@ function($scope, $http, $compile, $sce){
       angular.copy(data, $scope.software);
     });
 
+    console.log($scope.software);
+
     $http.get('/api/results').success(function(data){
       angular.copy(data, $scope.results);
     });
@@ -27,8 +29,22 @@ function($scope, $http, $compile, $sce){
 
     };
 
-    $scope.send= function(){
-      $scope.results.push($scope.radio);
+    $scope.send = function(name){
+      console.log(name);
+      var allInputs = $( ":input" );
+      var args = [];
+
+      for(var i = 0; i < allInputs.length; i++){
+        console.log(allInputs[i].value);
+        args.push(allInputs[i].value);
+      }
+
+      $http.post('api/submit/query?name=' + name + "&type=java&sorted=true").success(function(data){
+          console.log("it worked");
+      });
+
+      //action="api/submit/query?name=ModEvo&type=java&sorted=true" method="post"
+
     }
 
     $scope.loadResult = function(name){
