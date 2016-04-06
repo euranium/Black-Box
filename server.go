@@ -211,7 +211,13 @@ func prog(w http.ResponseWriter, r *http.Request) {
 TODO: pretty up template
 */
 func home(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "home.tmpl"), "content", empty)
+	file, err := ReadFile(path.Join(templateDir, "home.html"))
+	if err != nil {
+		w.Write([]byte("error"))
+		return
+	}
+	w.Write(file)
+	//sendTemplate(w, path.Join(templateDir, "home.tmpl"), "content", empty)
 	return
 }
 
@@ -221,14 +227,27 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/programs", 302)
 		return
 	}
-	folder := path.Join(UserDir, person.hash)
-	list, err := ListDir(folder)
+	/*
+			folder := path.Join(UserDir, person.hash)
+			list, err := ListDir(folder)
+			if err != nil {
+				http.Redirect(w, r, "/programs", 302)
+				return
+			}
+			folders := List{list}
+			file, err := ReadFile(path.Join(templateDir, "home.html"))
+			if err != nil {
+				w.Write([]byte("error"))
+				return
+			}
+		sendTemplate(w, path.Join(templateDir, "dashboard.tmpl"), "content", folders)
+	*/
+	file, err := ReadFile(path.Join(templateDir, "dashboard.html"))
 	if err != nil {
-		http.Redirect(w, r, "/programs", 302)
+		w.Write([]byte("error"))
 		return
 	}
-	folders := List{list}
-	sendTemplate(w, path.Join(templateDir, "dashboard.tmpl"), "content", folders)
+	w.Write(file)
 }
 
 /*
@@ -236,7 +255,13 @@ login page
 TODO: pretty up template, integrate db, actually do
 */
 func login(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "content", empty)
+	file, err := ReadFile(path.Join(templateDir, "login.html"))
+	if err != nil {
+		w.Write([]byte("error"))
+		return
+	}
+	w.Write(file)
+	//sendTemplate(w, path.Join(templateDir, "login.tmpl"), "content", empty)
 	return
 }
 
@@ -247,16 +272,33 @@ func files(w http.ResponseWriter, r *http.Request) {
 }
 
 func news(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "login.tmpl"), "content", empty)
+	file, err := ReadFile(path.Join(templateDir, "login.html"))
+	if err != nil {
+		w.Write([]byte("error"))
+		return
+	}
+	w.Write(file)
 	return
 }
 
 func publications(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "publications.tmpl"), "content", empty)
+	file, err := ReadFile(path.Join(templateDir, "publications.html"))
+	if err != nil {
+		w.Write([]byte("error"))
+		return
+	}
+	w.Write(file)
+	//sendTemplate(w, path.Join(templateDir, "publications.tmpl"), "content", empty)
 	return
 }
 
 func people(w http.ResponseWriter, r *http.Request) {
-	sendTemplate(w, path.Join(templateDir, "people.tmpl"), "content", empty)
+	file, err := ReadFile(path.Join(templateDir, "people.html"))
+	if err != nil {
+		w.Write([]byte("error"))
+		return
+	}
+	w.Write(file)
+	//sendTemplate(w, path.Join(templateDir, "people.tmpl"), "content", empty)
 	return
 }
