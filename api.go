@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os/exec"
+	//"os/exec"
 	"path"
 )
 
@@ -59,13 +59,13 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// get program name
-	folder := r.Form["name"][0]
-	if folder == "" {
+	name := r.Form["name"][0]
+	if name == "" {
 		w.Write([]byte("No name"))
 		return
 	}
-	if folder == "" || !IsExec(folder) {
-		w.Write([]byte("not exec or no name" + folder))
+	if name == "" || !IsExec(name) {
+		w.Write([]byte("not exec or no name" + name))
 		return
 	}
 	typ := r.Form["type"][0]
@@ -75,22 +75,27 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	}
 	dir := path.Join(UserDir, person.hash, RandomString(12))
 	fmt.Println("copying to:", dir)
-	err = CopyDir(path.Join("executables", folder), dir)
+	err = CopyDir(path.Join("executables", name), dir)
 	if err != nil {
 		fmt.Println("error:", err.Error())
 		w.Write([]byte("Error processing\n"))
 	}
 	var args []string
 	if typ == "java" {
-		args = []string{"-classpath", dir, folder}
 		input := Sort(r.Form)
+		// set arguments and path
+		args = append(args, "java")
+		args = append(args, name)
 		args = append(args, input...)
+		args = append(args, dir)
 		fmt.Println(args)
-		Tasks <- exec.Command("java", args...)
+		Tasks <- (args)
+		//Tasks <- exec.Command("java", args...)
+		fmt.Println("done")
 		// TODO: change this
-		Tasks <- exec.Command("mv", "meanTraitOneValues_GeneralModel_1.txt", dir)
-		Tasks <- exec.Command("mv", "meanTraitTwoValues_GeneralModel_1.txt", dir)
-		Tasks <- exec.Command("mv", "speciesInputs_GeneralModel_1.txt", dir)
+		//Tasks <- exec.Command("mv", "meanTraitOneValues_GeneralModel_1.txt", dir)
+		//Tasks <- exec.Command("mv", "meanTraitTwoValues_GeneralModel_1.txt", dir)
+		//Tasks <- exec.Command("mv", "speciesInputs_GeneralModel_1.txt", dir)
 		http.Redirect(w, r, "/dashboard", 302)
 		return
 	} else {

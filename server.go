@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/sessions"
 	"html/template"
 	"net/http"
-	"os/exec"
+	//"os/exec"
 	"path"
 )
 
@@ -17,8 +17,9 @@ var (
 	templateDir = "templates/"
 	progDir     = "executables/"
 	tempDelims  = []string{"[[", "]]"}
-	Tasks       = make(chan *exec.Cmd, 64)
+	Tasks       = make(chan []string, 64)
 	store       = sessions.NewCookieStore([]byte("something-secret-or-not"))
+	//Tasks       = make(chan *exec.Cmd, 64)
 )
 
 var routes = Routes{}
@@ -71,6 +72,7 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 	person = &User{}
 	(*person).user_name = name
 	(*person).hash = id
+	fmt.Println("person path:", (*person).hash)
 	if !CheckDir(path.Join(UserDir, (*person).hash)) {
 		fmt.Println("not a valid user")
 		http.Redirect(w, r, "/login", 302)
@@ -115,9 +117,10 @@ func testInput(w http.ResponseWriter, r *http.Request) {
 	}
 	r.ParseForm()
 	frm := r.Form["xml"]
-	args := []string{"-classpath", dir, "sampleProgV1", path.Join(dir, frm[0])}
+	args := []string{"java", "-classpath", dir, "sampleProgV1", path.Join(dir, frm[0])}
 	fmt.Println(args)
-	Tasks <- exec.Command("java", args...)
+	Tasks <- args
+	//Tasks <- exec.Command("java", args...)
 	w.Write([]byte("submited form\n"))
 }
 
