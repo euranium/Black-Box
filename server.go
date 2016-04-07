@@ -213,6 +213,7 @@ TODO: pretty up template
 func home(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "home.html"))
 	if err != nil {
+		fmt.Println("error:", err.Error())
 		w.Write([]byte("error"))
 		return
 	}
