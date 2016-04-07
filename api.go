@@ -65,21 +65,23 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	if err != nil || person.user_name == "" {
 		return
 	}
+	fmt.Println("form:", r.Form)
+
 	// get and varify program name
 	if len(r.Form["name"]) <= 0 {
 		w.Write([]byte("No Query"))
 		return
 	}
 	name := r.Form["name"][0]
-	if name == "" {
-		w.Write([]byte("No name"))
-		return
-	}
 	if name == "" || !IsExec(name) {
 		w.Write([]byte("not exec or no name" + name))
 		return
 	}
+
 	// get run time type
+	if len(r.Form["type"]) <= 0 {
+		w.Write([]byte("No type"))
+	}
 	typ := r.Form["type"][0]
 	if typ == "" {
 		w.Write([]byte("No Type"))

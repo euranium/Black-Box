@@ -1,23 +1,22 @@
-"api/results/query?name=name"
-{
-	name: "progname",
+Request: "api/results/query?name=name"
+return: {
+	name: "progName",
 	results:
 		[{
-			type: "enum",
-			name: "name",
+			name: "fileName",
 			data: "bytes"
 		}]
 }
 
-"api/results"
-[{
-	name: "name",
+Request: "api/results"
+Return: [{
+	name: "folderName",
 	status: "complete/pending",
-	type: "enum"
+	type: "progName"
 }]
 
-"api/submit/query?name=name"
+Post: "api/submit/query?name=name"
 {
-	name: "progname",
+	name: "progName",
 	input: ["input"]
 }

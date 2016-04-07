@@ -26,5 +26,30 @@ type User struct {
 }
 
 type List struct {
-	Files []string
+	files []string
+}
+
+/*
+structs for data hand offs
+to be converted to and from JSON
+*/
+type Result struct {
+	name   string
+	status string
+	prog   string
+}
+
+type File struct {
+	name string
+	data string
+}
+
+type Program struct {
+	name    string
+	results []File
+}
+
+type Submit struct {
+	name  string
+	input []string
 }

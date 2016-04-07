@@ -5,9 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gorilla/sessions"
-	"html/template"
 	"net/http"
-	//"os/exec"
 	"path"
 )
 
@@ -19,10 +17,7 @@ var (
 	tempDelims  = []string{"[[", "]]"}
 	Tasks       = make(chan []string, 64)
 	store       = sessions.NewCookieStore([]byte("something-secret-or-not"))
-	//Tasks       = make(chan *exec.Cmd, 64)
 )
-
-var routes = Routes{}
 
 func main() {
 	r := NewRouter()
@@ -30,9 +25,10 @@ func main() {
 		Path: "/",
 	}
 
+	// start routine to handle program execution
 	go RunCmd()
 
-	// serve static files for stuff like css, js , imgs
+	// serve static files for stuff like css, js , imgs from public folder
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	http.Handle("/", r)
 
@@ -52,7 +48,6 @@ TODO: add actuall auth, link with db
 func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error) {
 	ses, err := store.Get(r, "user")
 	if err != nil {
-		fmt.Println("nil")
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
@@ -72,7 +67,6 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 	person = &User{}
 	(*person).user_name = name
 	(*person).hash = id
-	fmt.Println("person path:", (*person).hash)
 	if !CheckDir(path.Join(UserDir, (*person).hash)) {
 		fmt.Println("not a valid user")
 		http.Redirect(w, r, "/login", 302)
@@ -82,88 +76,10 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 }
 
 /*
-generic template handler
-*/
-func sendTemplate(w http.ResponseWriter, file, name string, data interface{}) {
-	temp, err := template.ParseFiles("templates/header.tmpl", file)
-	temp = temp.Delims(tempDelims[0], tempDelims[1])
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	err = temp.ExecuteTemplate(w, name, data)
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error executing: %s\n", err.Error())))
-		return
-	}
-}
-
-/*
-sample handler
-TODO: remove when test page no longer needed
-*/
-func testInput(w http.ResponseWriter, r *http.Request) {
-	// user auth checking
-	person, err := IsLoggedIn(w, r)
-	if err != nil || person.user_name == "" {
-		return
-	}
-	dir := path.Join(UserDir, person.hash, RandomString(12))
-	fmt.Println("copying to:", dir)
-	err = CopyDir("executables/sampleProgs/", dir)
-	if err != nil {
-		fmt.Println("error:", err.Error())
-		w.Write([]byte("Error processing\n"))
-	}
-	r.ParseForm()
-	frm := r.Form["xml"]
-	args := []string{"java", "-classpath", dir, "sampleProgV1", path.Join(dir, frm[0])}
-	fmt.Println(args)
-	Tasks <- args
-	//Tasks <- exec.Command("java", args...)
-	w.Write([]byte("submited form\n"))
-}
-
-/*
-handle post data
-TODO: make generic:
-	- handle any input from pages
-	- parse input and parse xml imput requirements
-	- handle errors, pass back to correct url
-*/
-func progInput(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("submited form\n"))
-}
-
-/*
-handle web interface to getting input for programs
-TODO: better URL grabbing management:
-	- parse to make sure no injection
-	- integrate db for checking programs, faster and more secure
-*/
-func program(w http.ResponseWriter, r *http.Request) {
-	pth := r.URL.Path[10:]
-	if pth == "" {
-		http.Redirect(w, r, "/programs", 302)
-		return
-	}
-	folder := path.Join(progDir, pth)
-	if !CheckDir(folder) {
-		http.Redirect(w, r, "/programs", 302)
-		return
-	}
-	folder = path.Join(folder, "index.tmpl")
-	if !CheckFile(folder) {
-		http.Redirect(w, r, "/programs", 302)
-		return
-	}
-	sendTemplate(w, folder, "exec", empty)
-}
-
-/*
 post from login
+@TODO: update for db
 */
-func checkLogin(w http.ResponseWriter, r *http.Request) {
+func Login(w http.ResponseWriter, r *http.Request) {
 	ses, err := store.Get(r, "user")
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
@@ -181,7 +97,6 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ses.Values["id"] = id
-	//TODO: update if user is
 	ses.Values["user_name"] = id
 	err = ses.Save(r, w)
 	if err != nil {
@@ -193,22 +108,7 @@ func checkLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-list programs that can be run
-TODO: pretty up template
-*/
-func prog(w http.ResponseWriter, r *http.Request) {
-	// get a list of all programs in a dir
-	list, err := ListDir(progDir)
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	progs := List{list}
-	sendTemplate(w, path.Join(templateDir, "programs.tmpl"), "content", progs)
-}
-
-/* home site
-TODO: pretty up template
+home page
 */
 func home(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "home.html"))
@@ -218,31 +118,18 @@ func home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(file)
-	//sendTemplate(w, path.Join(templateDir, "home.tmpl"), "content", empty)
 	return
 }
 
+/*
+dashboard page
+*/
 func dashboard(w http.ResponseWriter, r *http.Request) {
 	person, err := IsLoggedIn(w, r)
 	if err != nil || (*person).hash == "" {
 		http.Redirect(w, r, "/programs", 302)
 		return
 	}
-	/*
-			folder := path.Join(UserDir, person.hash)
-			list, err := ListDir(folder)
-			if err != nil {
-				http.Redirect(w, r, "/programs", 302)
-				return
-			}
-			folders := List{list}
-			file, err := ReadFile(path.Join(templateDir, "home.html"))
-			if err != nil {
-				w.Write([]byte("error"))
-				return
-			}
-		sendTemplate(w, path.Join(templateDir, "dashboard.tmpl"), "content", folders)
-	*/
 	file, err := ReadFile(path.Join(templateDir, "dashboard.html"))
 	if err != nil {
 		w.Write([]byte("error"))
@@ -253,7 +140,6 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 
 /*
 login page
-TODO: pretty up template, integrate db, actually do
 */
 func login(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "login.html"))
@@ -262,13 +148,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(file)
-	//sendTemplate(w, path.Join(templateDir, "login.tmpl"), "content", empty)
-	return
-}
-
-// all the user files
-func files(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("files\n"))
 	return
 }
 
@@ -289,7 +168,6 @@ func publications(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(file)
-	//sendTemplate(w, path.Join(templateDir, "publications.tmpl"), "content", empty)
 	return
 }
 
@@ -300,6 +178,5 @@ func people(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(file)
-	//sendTemplate(w, path.Join(templateDir, "people.tmpl"), "content", empty)
 	return
 }
