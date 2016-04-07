@@ -1,11 +1,14 @@
+-- user name, password hash, folder name, date updated
 Create Table If Not Exists Users (
-	name Text Unique,
+	name Text,
+	hash Text,
 	folder Text Unique,
-	timer Integer
+	timer Numeric
 );
 
+-- folder name, main program name, type of program (eg java, executable)
 Create Table If Not Exists Programs (
 	folder String,
-	username String,
-	datecreated Integer
+	name String Unique,
+	progType String
 );
