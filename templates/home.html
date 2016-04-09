@@ -17,6 +17,8 @@
     <!-- Custom CSS -->
     <link href="css/test.css" rel="stylesheet">
 
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
 
     <style>
     body {
@@ -34,10 +36,11 @@
 
 </head>
 
-<body>
+<body ng-app="">
 
     <!-- Page Content -->
     <div class="container">
+      <div ng-include="'/html/header.html'"></div>
 
         <div class="row">
             <div class="col-lg-12 text-center">
