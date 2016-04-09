@@ -39,32 +39,35 @@ function($scope, $http, $compile, $sce){
         args.push(allInputs[i].value);
       }
 
+      args = args.filter(Boolean);
+
       obj = {};
       obj.name = name;
       obj.input = args;
 
+      console.log(JSON.stringify(obj));
 
-      $http.post('api/submit/' + JSON.stringify(obj)).success(function(data){
-          console.log("it worked");
-      });
+      $http({
+          method  : 'POST',
+          url     : 'api/submit',
+          data    : JSON.stringify(obj), 
+          headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+         })
+          .success(function(data) {
+            console.log("it worked");
+          });
 
-      //action="api/submit/query?name=ModEvo&type=java&sorted=true" method="post"
+
+      // $http.post('api/submit' + JSON.stringify(obj)).success(function(data){
+      //     console.log("it worked");
+      // });
 
     }
 
     $scope.loadResult = function(name){
-
-      // $http.get('/api/template/query?name=' + name).success(function(data){
-      //   console.log(data);
-      //   $('#dash').html(name);//$sce.trustAsHtml(data);
-      // });
-
       $http.get('/api/results/query?name=' + name).success(function(data){
-          $('#dash').html(data);//$sce.trustAsHtml(data);
+          $('#dash').html(data);
       });
-
-
-
     };
 
 
