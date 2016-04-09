@@ -15,10 +15,16 @@ var (
 
 /*
 to have program run,
-Tasks <- exec.Command("args0", "args1", ...)
+Tasks <- []string{"program", "programName", "args0", ... argsN, "path/to/program"}
+Tasks <- []string{"abs/path/2/prog", "args0", ... argsN, "path/to/program"}
 example:
-Tasks <- exec.Command("java", path.Join(progDir, "javaProg30Sec"), "rand")
+Tasks <- []string{"java", path.Join(progDir, "javaProg30Sec"), "rand", "users/aaa/as4B-12da"}
 Only runs one exec at a time right now
+
+Runs by execting a python program to change directory to the program.
+The program is then run with the provided arguments minus the last path
+
+@TODO: add a wait group (sync.WaitGroup) to allow for n number of programs
 */
 func RunCmd() {
 	for {
@@ -32,26 +38,6 @@ func RunCmd() {
 			} else {
 				fmt.Printf("finished running: %s\n", out)
 			}
-			/*
-				dir := cmd.Args[len(cmd.Args)-1]
-				empty := make([]string, 0)
-				// remove last elememt
-				fmt.Println("splicing till:", cmd.Args[:len(cmd.Args)-2])
-				cmd.Args = append(cmd.Args[:len(cmd.Args)-2], empty...)
-				fmt.Println("args:", cmd.Args)
-				err := os.Chdir(dir)
-				if err != nil {
-					fmt.Println("error changing dir:", err.Error())
-					return
-				}
-				out, err := cmd.CombinedOutput()
-				if err != nil {
-					fmt.Printf("error: %s, msg: %s", err.Error(), out)
-				} else {
-					fmt.Printf("finished running: %s\n", out)
-				}
-				os.Chdir(currentDir)
-			*/
 		}
 	}
 }

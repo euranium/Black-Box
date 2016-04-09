@@ -7,8 +7,7 @@ import (
 type Routes []Route
 
 /*
-generate a new router from RouteList
-to edit or for more information, go to routes.go
+generate a new router from RouteList bellow
 */
 func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
@@ -34,21 +33,9 @@ var RouteList = Routes{
 	},
 	Route{
 		"login",
-		"GET",
-		"/login",
-		login,
-	},
-	Route{
-		"login",
 		"POST",
 		"/login",
-		checkLogin,
-	},
-	Route{
-		"userFiles",
-		"GET",
-		"/user/{user}/files",
-		files,
+		Login,
 	},
 	Route{
 		"news",
@@ -97,12 +84,6 @@ var RouteList = Routes{
 		"GET",
 		"/api/results/{name}",
 		APIGetResults,
-	},
-	Route{
-		"API",
-		"POST",
-		"/api/program",
-		program,
 	},
 	Route{
 		"API",
