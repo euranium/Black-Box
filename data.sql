@@ -3,7 +3,7 @@ Create Table If Not Exists Users (
 	name 	Text,
 	hash 	Text,
 	folder 	Text Unique,
-	timer 	Real
+	time 	Real
 );
 
 -- store of each program which can be run:
@@ -23,5 +23,5 @@ Create Table If Not Exists Stored (
 	progName 	Text,
 	pending 	Numeric,
 	output 		Text,
-	timer 		Real
+	time 		Real
 );

@@ -88,7 +88,7 @@ var RouteList = Routes{
 	Route{
 		"API",
 		"POST",
-		"/api/submit/{key}",
+		"/api/submit",
 		APISubmitForm,
 	},
 }

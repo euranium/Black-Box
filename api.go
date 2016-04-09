@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
+	//"os"
 	"path"
-	"path/filepath"
+	//"path/filepath"
 )
 
 var ()
@@ -67,56 +67,39 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("form:", r.Form)
 
-	// get and varify program name
-	if len(r.Form["name"]) <= 0 {
-		w.Write([]byte("No Query"))
-		return
-	}
-	name := r.Form["name"][0]
-	if name == "" || !IsExec(name) {
-		w.Write([]byte("not exec or no name" + name))
-		return
-	}
-
-	// get run time type
-	if len(r.Form["type"]) <= 0 {
-		w.Write([]byte("No type"))
-	}
-	typ := r.Form["type"][0]
-	if typ == "" {
-		w.Write([]byte("No Type"))
-		return
-	}
 	dir := path.Join(UserDir, person.hash, RandomString(12))
 	fmt.Println("copying to:", dir)
-	err = CopyDir(path.Join("executables", name), dir)
-	if err != nil {
-		fmt.Println("error:", err.Error())
-		w.Write([]byte("Error processing\n"))
-	}
-	var args []string
-	input := Sort(r.Form)
-	if typ != "exec" {
-		// set program name
-		args = append(args, typ)
-		args = append(args, name)
-	} else {
-		// set program exec path using absolute path to program
-		abs, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	return
+	/*
+		err = CopyDir(path.Join("executables", name), dir)
 		if err != nil {
 			fmt.Println("error:", err.Error())
 			w.Write([]byte("Error processing\n"))
 		}
-		args = append(args, filepath.Join(abs, dir, name))
-	}
-	// append program name, input and directory location
-	args = append(args, input...)
-	args = append(args, dir)
-	fmt.Println(args)
-	// send it off to be executed
-	Tasks <- (args)
-	http.Redirect(w, r, "/dashboard", 302)
-	return
+		var args []string
+		input := Sort(r.Form)
+		if typ != "exec" {
+			// set program name
+			args = append(args, typ)
+			args = append(args, name)
+		} else {
+			// set program exec path using absolute path to program
+			abs, err := filepath.Abs(filepath.Dir(os.Args[0]))
+			if err != nil {
+				fmt.Println("error:", err.Error())
+				w.Write([]byte("Error processing\n"))
+			}
+			args = append(args, filepath.Join(abs, dir, name))
+		}
+		// append program name, input and directory location
+		args = append(args, input...)
+		args = append(args, dir)
+		fmt.Println(args)
+		// send it off to be executed
+		Tasks <- (args)
+		http.Redirect(w, r, "/dashboard", 302)
+		return
+	*/
 }
 
 /*
