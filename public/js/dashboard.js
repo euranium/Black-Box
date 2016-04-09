@@ -30,7 +30,7 @@ function($scope, $http, $compile, $sce){
     };
 
     $scope.send = function(name){
-      console.log(name);
+      console.log("sending for prog: " + name);
       var allInputs = $( ":input" );
       var args = [];
 
@@ -39,7 +39,12 @@ function($scope, $http, $compile, $sce){
         args.push(allInputs[i].value);
       }
 
-      $http.post('api/submit/query?name=' + name + "&type=java&sorted=true").success(function(data){
+      obj = {};
+      obj.name = name;
+      obj.input = args;
+
+
+      $http.post('api/submit/' + JSON.stringify(obj)).success(function(data){
           console.log("it worked");
       });
 
