@@ -3,8 +3,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/kisielk/sqlstruct"
+	_ "github.com/kisielk/sqlstruct"
 	"github.com/mattn/go-sqlite3"
+	_ "reflect"
 )
 
 /*
@@ -12,8 +13,9 @@ file referance to the db being access
 global reference to sql prepared statements to user
 */
 var (
-	db      *sql.DB
-	GetUser = "select * from Users where name=?"
+	db          *sql.DB
+	GetUser     = "Select Name, Folder, Hash, Time  from Users where name=?"
+	GetPrograms = "Select Folder, Name, ProgType, Files from Programs"
 )
 
 /*
@@ -51,29 +53,24 @@ perform a read (get data) from the db,
 sample is an empty struct of the data expected
 @returns: an array of the data retrieved
 */
-func DBread(prep string, args []interface{}) (results []Table, err error) {
+func DBread(prep string, args []interface{}) (results []map[string]string, err error) {
 	fmt.Println("prep:", prep, "args:", args)
 	stmt, err := db.Prepare(prep)
 	if err != nil {
-		fmt.Println("error: prepare", err.Error())
 		return
 	}
 	rows, err := stmt.Query(args...)
 	if err != nil {
-		fmt.Println("error: stmt", err.Error())
 		return
 	}
 	defer rows.Close()
-	table := new(Table)
+	var vals map[string]string
 	for rows.Next() {
-		fmt.Println("sample before:", table)
-		err = sqlstruct.Scan(table, rows)
+		vals, err = parseValues(rows)
 		if err != nil {
-			fmt.Println("error: struct", err.Error())
 			return
 		}
-		fmt.Println("sample after:", table)
-		results = append(results, *table)
+		results = append(results, vals)
 	}
 	return
 }
@@ -90,5 +87,29 @@ func DBwrite(pref string, args []string) (err error) {
 	}
 	// dont need to capture result right now
 	_, err = stmt.Exec(args)
+	return
+}
+
+func parseValues(rows *sql.Rows) (vals map[string]string, err error) {
+	vals = make(map[string]string)
+	cols, err := rows.Columns()
+	if err != nil {
+		return
+	}
+	l := len(cols)
+	v := make([]string, l)
+	var values []interface{}
+	for i := 0; i < len(cols); i++ {
+		values = append(values, &v[i])
+	}
+	err = rows.Scan(values...)
+	if err != nil {
+		return
+	}
+	for i := 0; i < l; i++ {
+		key := cols[i]
+		val := v[i]
+		vals[key] = val
+	}
 	return
 }

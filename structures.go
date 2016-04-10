@@ -6,7 +6,12 @@ drop any structures that will be used here
 */
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
+	"reflect"
+	"strconv"
+	"strings"
 )
 
 // empty struct when no data is needing to be passed
@@ -31,46 +36,98 @@ type List struct {
 
 /*
 sql data table structs, edit w/ data.sql
+Table is the parent w/ every different type of field
 */
 
-type Get interface {
-	GetStruct() Table
-}
 type Table struct {
-	name     string  `sql:"name"`
-	folder   string  `sql:"folder"`
-	hash     string  `sql:"hash"`
-	time     float64 `sql:"time"`
-	progType string  `sql:"progType"`
-	progType string  `sql:"progName"`
-	files    string  `sql:"files"`
+	Name     string   `sql:"Name"`
+	Folder   string   `sql:"Folder"`
+	Hash     string   `sql:"Hash"`
+	Time     float64  `sql:"Time"`
+	ProgType string   `sql:"ProgType"`
+	ProgName string   `sql:"ProgName"`
+	Files    []string `sql:"Files"`
 }
 
-func (t Table) GetStruct() *Table {
-	return new(Table)
+/*
+dynamically take a map and map it to a structure using reflect
+This should be inherited by all sql data structs
+*/
+func (t Table) Fill(vals map[string]string) error {
+	// get type of structure
+	stVal := reflect.ValueOf(&t).Elem()
+	fmt.Println("stVal:", stVal)
+	// iterate over all values in map
+	for key, val := range vals {
+		field := stVal.FieldByName(key)
+		// select which datatype case matches for each suppored type
+		// and convert from string
+		switch field.Type().String() {
+		case "int":
+			v, err := strconv.ParseInt(val, 10, 64)
+			if err != nil {
+				return err
+			}
+			field.SetInt(v)
+		case "float32":
+			fallthrough
+		case "float64":
+			v, err := strconv.ParseFloat(val, 64)
+			if err != nil {
+				return err
+			}
+			field.SetFloat(v)
+		case "string":
+			str := field.Interface()
+			fmt.Println("str:", str)
+			field.SetString(val)
+		case "array":
+			fallthrough
+		case "slice":
+			// seperate values into array
+			f := strings.Split(val, ",")
+			len := len(f)
+			// make a field slice
+			val := reflect.MakeSlice(field.Type(), len, len*2)
+			// append all values into it
+			for k := 0; k < len; k++ {
+				var v reflect.Value
+				v.SetString(f[k])
+				val = reflect.Append(val, v)
+			}
+			// set slice as field value
+			field.Set(val)
+		default:
+			return errors.New(fmt.Sprintf("type not handled: %v", field.Type().String()))
+		}
+	}
+	fmt.Println("finished:", t)
+	return nil
 }
 
 type UserTable struct {
 	Table
-	name   string  `sql:"name"`
-	folder string  `sql:"folder"`
-	hash   string  `sql:"hash"`
-	time   float64 `sql:"time"`
+	Name   string
+	Folder string
+	Hash   string
+	Time   float64
 }
 
 type ProgramsTable struct {
-	folder   string
-	name     string
-	progType string
-	files    string
+	Table
+	Folder   string
+	Name     string
+	ProgType string
+	Files    []string
 }
 
 type StoredTable struct {
-	userName string
-	folder   string
-	progName string
-	output   string
-	time     float64
+	Table
+	Name     string
+	Folder   string
+	ProgName string
+	Files    []string
+	Time     float64
 }
 
 /*

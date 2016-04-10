@@ -3,10 +3,10 @@ user name, folder name, password hash,
 time user last access in unix seconds
 */
 Create Table If Not Exists Users (
-	name 	Text Unique,
-	folder 	Text Unique,
-	hash 	Text,
-	time 	Real
+	Name 	Text Unique,
+	Folder 	Text Unique,
+	Hash 	Text,
+	Time 	Real
 );
 
 /*
@@ -15,10 +15,10 @@ folder name, main program name, type of program (eg java),
 files in folder in
 */
 Create Table If Not Exists Programs (
-	folder 		Text,
-	progName 	String Unique,
-	progType 	Text,
-	files 		Text
+	Folder 		Text,
+	ProgName 	String Unique,
+	ProgType 	Text,
+	Files 		Text
 );
 
 /*
@@ -28,9 +28,9 @@ last access in unix seconds
 output will be added when program is done, otherwise empty string
 */
 Create Table If Not Exists Stored (
-	name 		Text,
-	folder 		Text Unique,
-	progName 	Text,
-	files 		Text,
-	time 		Real
+	Name 		Text,
+	Folder 		Text Unique,
+	ProgName 	Text,
+	Files 		Text,
+	Time 		Real
 );

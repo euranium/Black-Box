@@ -15,6 +15,12 @@ import (
 )
 
 /*
+Make sure all programs in the fs are in the db
+*/
+func FilesInit() (err error) {
+}
+
+/*
 copy all files from a directory to a new dir
 creates a hard link if possible, else just copy
 file contents

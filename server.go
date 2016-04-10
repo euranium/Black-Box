@@ -42,7 +42,8 @@ func main() {
 	http.Handle("/", r)
 
 	// pass opt flag -port=# to specify an operating port
-	flgs := flag.String("port", "8080", "a string")
+	//flgs := flag.String("port", "8080", "a string")
+	flgs := flag.String("port", "3000", "a string")
 	flag.Parse()
 	fmt.Println("running on port:", *flgs)
 	port := ":" + *flgs
@@ -124,6 +125,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// query db for user
+	var u UserTable
 	var args []interface{}
 	args = append(args, name)
 	results, err := DBread(GetUser, args)
@@ -133,14 +135,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/dashboard", 302)
 		return
 	}
-	fmt.Println("name:", results[0].name)
-	/*
-		exists := CheckDir(path.Join(UserDir, id))
-		if !exists {
-			http.Redirect(w, r, "/login", 302)
-			return
-		}
-	*/
+	fmt.Println("results:", results[0])
+	err = u.Fill(results[0])
+	fmt.Println("table:", u)
 	ses.Values["id"] = id
 	ses.Values["user_name"] = id
 	err = ses.Save(r, w)

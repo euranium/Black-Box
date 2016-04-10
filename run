@@ -1,9 +1,14 @@
 #!/bin/sh
-# build the go project, check if succesfull
+# set up the db, build the go project, check if succesfull
 # if success, mv executable to an .o file for .gitinore
 # then run
 # make dir users for user folder, not tracked by git
 # make dir aaa for testing stuff in
+
+if [ ! -e "data.db" ]; then
+	sqlite3 data.db < data.sql
+fi
+
 if [ ! -d "users/aaa" ]; then
 	mkdir -p "users/aaa"
 fi
