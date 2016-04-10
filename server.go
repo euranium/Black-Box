@@ -6,16 +6,25 @@ import (
 	"fmt"
 	"github.com/gorilla/sessions"
 	"net/http"
+	"os"
+	"os/signal"
 	"path"
 )
 
+/*
+global variables for directory information,
+Tasks channel for program execution (more info in cmdLine.go),
+Signal channel for ^C signal interupt handling
+store for cookie and session handling
+*/
 var (
 	empty       Empty
+	waitOn      = 1
 	UserDir     = "users/"
 	templateDir = "templates/"
 	progDir     = "executables/"
-	tempDelims  = []string{"[[", "]]"}
 	Tasks       = make(chan []string, 64)
+	Signal      = make(chan os.Signal, 1)
 	store       = sessions.NewCookieStore([]byte("something-secret-or-not"))
 )
 
@@ -38,7 +47,30 @@ func main() {
 	fmt.Println("running on port:", *flgs)
 	port := ":" + *flgs
 
+	// signal handling
+	signal.Notify(Signal, os.Interrupt)
+	// db initilization
+	DBInit()
+
+	// start server
 	http.ListenAndServe(port, r)
+}
+
+/*
+Program to handle waiting on any number of processes, feels kind of janky
+currently waiting on program execution
+@TODO: maybe later, create a way to handle multiple exiting w/ a channel
+*/
+func Close(sig os.Signal) {
+	waitOn--
+	// if nothing else to wait on, exit
+	if waitOn == 0 {
+		os.Exit(0)
+	}
+	fmt.Println("not closing, waiting for process")
+	// put signal back for next process to close
+	Signal <- sig
+	return
 }
 
 /*
@@ -77,7 +109,6 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 
 /*
 post from login
-@TODO: update for db
 */
 func Login(w http.ResponseWriter, r *http.Request) {
 	ses, err := store.Get(r, "user")
@@ -91,11 +122,25 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if name == "" {
 		name = id
 	}
-	exists := CheckDir(path.Join(UserDir, id))
-	if !exists {
-		http.Redirect(w, r, "/login", 302)
+
+	// query db for user
+	var args []interface{}
+	args = append(args, name)
+	results, err := DBread(GetUser, args)
+	// if err or no matching results
+	if err != nil || len(results) <= 0 {
+		fmt.Println("err:", err.Error())
+		http.Redirect(w, r, "/dashboard", 302)
 		return
 	}
+	fmt.Println("name:", results[0].name)
+	/*
+		exists := CheckDir(path.Join(UserDir, id))
+		if !exists {
+			http.Redirect(w, r, "/login", 302)
+			return
+		}
+	*/
 	ses.Values["id"] = id
 	ses.Values["user_name"] = id
 	err = ses.Save(r, w)
@@ -141,7 +186,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 /*
 login page
 */
-func login(w http.ResponseWriter, r *http.Request) {
+func loginPage(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "login.html"))
 	if err != nil {
 		w.Write([]byte("error"))

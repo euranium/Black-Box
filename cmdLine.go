@@ -9,11 +9,14 @@ import (
 	//"strings"
 )
 
-var (
-	currentDir = "~/server"
-)
+var ()
 
 /*
+routine to execute and run programs. Execs a python program to change directory to
+the program and then executes the program. When a ^C is sent to this program, the
+exec'd program should also recieve and shut down. Probably no need to handle the
+case, unless wanting to wait on program then exit.
+
 to have program run,
 Tasks <- []string{"program", "programName", "args0", ... argsN, "path/to/program"}
 Tasks <- []string{"abs/path/2/prog", "args0", ... argsN, "path/to/program"}

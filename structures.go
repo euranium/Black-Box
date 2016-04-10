@@ -30,6 +30,50 @@ type List struct {
 }
 
 /*
+sql data table structs, edit w/ data.sql
+*/
+
+type Get interface {
+	GetStruct() Table
+}
+type Table struct {
+	name     string  `sql:"name"`
+	folder   string  `sql:"folder"`
+	hash     string  `sql:"hash"`
+	time     float64 `sql:"time"`
+	progType string  `sql:"progType"`
+	progType string  `sql:"progName"`
+	files    string  `sql:"files"`
+}
+
+func (t Table) GetStruct() *Table {
+	return new(Table)
+}
+
+type UserTable struct {
+	Table
+	name   string  `sql:"name"`
+	folder string  `sql:"folder"`
+	hash   string  `sql:"hash"`
+	time   float64 `sql:"time"`
+}
+
+type ProgramsTable struct {
+	folder   string
+	name     string
+	progType string
+	files    string
+}
+
+type StoredTable struct {
+	userName string
+	folder   string
+	progName string
+	output   string
+	time     float64
+}
+
+/*
 structs for data hand offs
 to be converted to and from JSON
 */

@@ -1,27 +1,36 @@
--- user name, password hash, folder name, datetime updated in unix time
+/*
+user name, folder name, password hash,
+time user last access in unix seconds
+*/
 Create Table If Not Exists Users (
-	name 	Text,
-	hash 	Text,
+	name 	Text Unique,
 	folder 	Text Unique,
+	hash 	Text,
 	time 	Real
 );
 
--- store of each program which can be run:
--- folder name, main program name, type of program (eg java, executable)
+/*
+store of each program which can be run:
+folder name, main program name, type of program (eg java),
+files in folder in
+*/
 Create Table If Not Exists Programs (
 	folder 		Text,
-	name 		String Unique,
-	progType 	Text
+	progName 	String Unique,
+	progType 	Text,
+	files 		Text
 );
 
--- store of each program run: user associated w/, folder name,
--- program associated w/, still running or not,
--- expected output in struct string, last access datetime
+/*
+store of each program run: user associated w/, folder name,
+program associated w/, files outputed in struct string,
+last access in unix seconds
+output will be added when program is done, otherwise empty string
+*/
 Create Table If Not Exists Stored (
-	userName 	Text,
+	name 		Text,
 	folder 		Text Unique,
 	progName 	Text,
-	pending 	Numeric,
-	output 		Text,
+	files 		Text,
 	time 		Real
 );
