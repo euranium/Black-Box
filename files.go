@@ -18,6 +18,11 @@ import (
 Make sure all programs in the fs are in the db
 */
 func FilesInit() (err error) {
+	_, err = ListDir(progDir)
+	if err != nil {
+		return
+	}
+	return
 }
 
 /*

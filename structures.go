@@ -38,24 +38,30 @@ type List struct {
 sql data table structs, edit w/ data.sql
 Table is the parent w/ every different type of field
 */
+func Fill(t interface{}, vals map[string]string) error {
+	return nil
+}
 
 type Table struct {
-	Name     string   `sql:"Name"`
-	Folder   string   `sql:"Folder"`
-	Hash     string   `sql:"Hash"`
-	Time     float64  `sql:"Time"`
-	ProgType string   `sql:"ProgType"`
-	ProgName string   `sql:"ProgName"`
-	Files    []string `sql:"Files"`
+	/*
+		Name     string   `sql:"Name"    `
+		Folder   string   `sql:"Folder"  `
+		Hash     string   `sql:"Hash"    `
+		Time     float64  `sql:"Time"    `
+		ProgType string   `sql:"ProgType"`
+		ProgName string   `sql:"ProgName"`
+		Files    []string `sql:"Files"   `
+	*/
 }
 
 /*
 dynamically take a map and map it to a structure using reflect
 This should be inherited by all sql data structs
 */
-func (t Table) Fill(vals map[string]string) error {
+func (t *Table) Fill(vals map[string]string) error {
 	// get type of structure
-	stVal := reflect.ValueOf(&t).Elem()
+	stVal := reflect.ValueOf(t).Elem()
+	fmt.Println("value of:", reflect.ValueOf(t))
 	fmt.Println("stVal:", stVal)
 	// iterate over all values in map
 	for key, val := range vals {
@@ -78,12 +84,11 @@ func (t Table) Fill(vals map[string]string) error {
 			}
 			field.SetFloat(v)
 		case "string":
-			str := field.Interface()
-			fmt.Println("str:", str)
 			field.SetString(val)
 		case "array":
 			fallthrough
 		case "slice":
+			fmt.Println("slice")
 			// seperate values into array
 			f := strings.Split(val, ",")
 			len := len(f)
@@ -106,11 +111,10 @@ func (t Table) Fill(vals map[string]string) error {
 }
 
 type UserTable struct {
-	Table
-	Name   string
-	Folder string
-	Hash   string
-	Time   float64
+	Name   string  `db:"name"  `
+	Folder string  `db:"folder"`
+	Hash   string  `db:"hash"  `
+	Time   float64 `db:time"   `
 }
 
 type ProgramsTable struct {

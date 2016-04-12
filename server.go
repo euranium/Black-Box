@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/sessions"
 	"net/http"
 	"os"
-	"os/signal"
+	//"os/signal"
 	"path"
 )
 
@@ -42,16 +42,17 @@ func main() {
 	http.Handle("/", r)
 
 	// pass opt flag -port=# to specify an operating port
-	//flgs := flag.String("port", "8080", "a string")
-	flgs := flag.String("port", "3000", "a string")
+	flgs := flag.String("port", "8080", "a string")
+	//flgs := flag.String("port", "3000", "a string")
 	flag.Parse()
 	fmt.Println("running on port:", *flgs)
 	port := ":" + *flgs
 
 	// signal handling
-	signal.Notify(Signal, os.Interrupt)
+	//signal.Notify(Signal, os.Interrupt)
 	// db initilization
 	DBInit()
+	FilesInit()
 
 	// start server
 	http.ListenAndServe(port, r)
@@ -125,19 +126,32 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// query db for user
-	var u UserTable
+	var u []UserTable
+	container := make([]interface{}, len(u))
+	container[0] = u
 	var args []interface{}
 	args = append(args, name)
-	results, err := DBread(GetUser, args)
+	err = DBread(GetUser, args, &container)
 	// if err or no matching results
-	if err != nil || len(results) <= 0 {
-		fmt.Println("err:", err.Error())
-		http.Redirect(w, r, "/dashboard", 302)
+	if err != nil {
+		fmt.Println("query:", err.Error())
+		http.Redirect(w, r, "/login", 302)
 		return
 	}
-	fmt.Println("results:", results[0])
-	err = u.Fill(results[0])
-	fmt.Println("table:", u)
+	if len(u) <= 0 {
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+	fmt.Println("results:", u[0])
+	//Fill(u, results[0])
+	/*
+		err = u.Fill(results[0])
+		if err != nil {
+			fmt.Println("fill:", err.Error())
+		} else {
+			fmt.Println("struct:", u)
+		}
+	*/
 	ses.Values["id"] = id
 	ses.Values["user_name"] = id
 	err = ses.Save(r, w)
