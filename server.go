@@ -76,6 +76,28 @@ func Close(sig os.Signal) {
 }
 
 /*
+get and fill a user struct from the db,
+if no user is returned, return an error
+*/
+func GetUser(id string) (person *User, err error) {
+	var u []User
+	var container Container
+	container = append(container, &u)
+	var args []interface{}
+	args = append(args, id)
+	err = DBread(QueryUser, args, container)
+	// if err or no matching results
+	if err != nil {
+		return
+	}
+	if len(u) <= 0 {
+		return nil, errors.New("No User")
+	}
+	person = &u[0]
+	return
+}
+
+/*
 check is a user is logged in/valid
 TODO: add actuall auth, link with db
 */
@@ -85,26 +107,20 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	if ses.Values["user_name"] == nil || ses.Values["id"] == nil {
+	if ses.Values["id"] == nil {
 		http.Redirect(w, r, "/login", 302)
 		return nil, errors.New("Session Error")
 	}
-	name := ses.Values["user_name"].(string)
 	id := ses.Values["id"].(string)
 	if id == "" {
 		http.Redirect(w, r, "/login", 302)
 		return nil, errors.New("Session Error")
 	}
-	if name == "" {
-		name = id
-	}
-	person = &User{}
-	(*person).user_name = name
-	(*person).hash = id
-	if !CheckDir(path.Join(UserDir, (*person).hash)) {
-		fmt.Println("not a valid user")
+	person, err = GetUser(id)
+	if err != nil {
+		fmt.Println("error:", err.Error())
 		http.Redirect(w, r, "/login", 302)
-		return nil, errors.New("Not logged In")
+		return nil, err
 	}
 	return
 }
@@ -120,40 +136,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	r.ParseForm()
 	id := r.FormValue("id")
-	name := r.FormValue("name")
-	if name == "" {
-		name = id
+	if id == "" {
+		http.Redirect(w, r, "/login", 302)
 	}
 
 	// query db for user
-	var u []UserTable
-	container := make([]interface{}, len(u))
-	container[0] = u
-	var args []interface{}
-	args = append(args, name)
-	err = DBread(GetUser, args, &container)
-	// if err or no matching results
+	// make array size 1 w/ an empty element
+	_, err = GetUser(id)
 	if err != nil {
-		fmt.Println("query:", err.Error())
 		http.Redirect(w, r, "/login", 302)
-		return
 	}
-	if len(u) <= 0 {
-		http.Redirect(w, r, "/login", 302)
-		return
-	}
-	fmt.Println("results:", u[0])
-	//Fill(u, results[0])
-	/*
-		err = u.Fill(results[0])
-		if err != nil {
-			fmt.Println("fill:", err.Error())
-		} else {
-			fmt.Println("struct:", u)
-		}
-	*/
 	ses.Values["id"] = id
-	ses.Values["user_name"] = id
 	err = ses.Save(r, w)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
@@ -181,8 +174,8 @@ func home(w http.ResponseWriter, r *http.Request) {
 dashboard page
 */
 func dashboard(w http.ResponseWriter, r *http.Request) {
-	person, err := IsLoggedIn(w, r)
-	if err != nil || (*person).hash == "" {
+	_, err := IsLoggedIn(w, r)
+	if err != nil {
 		http.Redirect(w, r, "/programs", 302)
 		return
 	}

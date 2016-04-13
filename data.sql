@@ -15,8 +15,8 @@ folder name, main program name, type of program (eg java),
 files in folder in
 */
 Create Table If Not Exists Programs (
-	Folder 		Text,
-	ProgName 	String Unique,
+	Folder 		Text Unique,
+	Name 		Text,
 	ProgType 	Text,
 	Files 		Text
 );
@@ -28,9 +28,14 @@ last access in unix seconds
 output will be added when program is done, otherwise empty string
 */
 Create Table If Not Exists Stored (
-	Name 		Text,
 	Folder 		Text Unique,
+	Name 		Text,
 	ProgName 	Text,
 	Files 		Text,
 	Time 		Real
 );
+
+/*
+for initilization purposes
+*/
+Insert into Users (Name, Folder, Hash, Time) Values ("aaa", "aaa", "aaa", 1460501217);

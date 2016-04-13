@@ -14,30 +14,19 @@ file referance to the db being access
 global reference to sql prepared statements to user
 */
 var (
-	db          *sqlx.DB
-	GetUser     = "Select * from Users where name=$1"
-	GetPrograms = "Select Folder, Name, ProgType, Files from Programs"
+	db            *sqlx.DB
+	QueryUser     = "Select * from Users where name=$1"
+	QueryPrograms = "Select Folder, Name, ProgType, Files from Programs"
+	InsertProgram = `Insert Into Programs (Folder,Name,ProgType,Files)
+	Values (:Folder,:Name,:ProgType,:Files)`
 )
 
 /*
 initialize sql database connection
-func DBInit() {
-	sql.Register(dbDriver, &sqlite3.SQLiteDriver{})
-	db, err = sql.Open(dbDriver, "./data.db")
-	if err != nil {
-		fmt.Println("error w/ db open:", err.Error())
-	}
-
-	// ping bc I need to do something w/ db var to compile
-	err = db.Ping()
-	if err != nil {
-		fmt.Println("error w/ db ping:", err.Error())
-	}
-	go Handler()
-}
 */
 func DBInit() {
-	db, err := sqlx.Connect("sqlite3", "./data.db")
+	var err error
+	db, err = sqlx.Connect("sqlite3", "./data.db")
 	if err != nil {
 		fmt.Println("error w/ db open:", err.Error())
 		log.Fatalln(err)
@@ -67,7 +56,7 @@ perform a read (get data) from the db,
 @args: prep is a prepared statement, args is the arguments for said stmt,
 sample is an empty struct of the data expected
 @returns: an array of the data retrieved
-func DBread(prep string, args []interface{}) (results []map[string]string, err error) {
+func DBquery(prep string, args []interface{}, container Container) (results Container, err error) {
 	fmt.Println("prep:", prep, "args:", args)
 	stmt, err := db.Prepare(prep)
 	if err != nil {
@@ -78,20 +67,30 @@ func DBread(prep string, args []interface{}) (results []map[string]string, err e
 		return
 	}
 	defer rows.Close()
+
+	//results := container[0]
+	empty := container[0]
+	// make struct which will be filled w/ values
+	toFill := empty
 	var vals map[string]string
 	for rows.Next() {
 		vals, err = parseValues(rows)
 		if err != nil {
 			return
 		}
-		results = append(results, vals)
+		var c Container
+		container = append(container, &toFill)
+		Fill(vals, c)
+		//results = append(results, vals)
+		results = append(results, toFill)
 	}
 	return
 }
 */
-func DBread(prep string, args []interface{}, container *[]interface{}) (err error) {
+
+func DBread(prep string, args []interface{}, container Container) (err error) {
 	result := container[0]
-	err = db.Select(&result, prep, args...)
+	err = db.Select(result, prep, args...)
 	return
 }
 
@@ -99,14 +98,8 @@ func DBread(prep string, args []interface{}, container *[]interface{}) (err erro
 insert values into a the db given a prepared statement and arguments
 will return the error thown
 */
-func DBwrite(pref string, args []string) (err error) {
-	stmt, err := db.Prepare(pref)
-	if err != nil {
-		fmt.Println("error: prepare", err.Error())
-		return
-	}
-	// dont need to capture result right now
-	_, err = stmt.Exec(args)
+func DBwrite(pref string, values map[string]interface{}) (err error) {
+	_, err = db.NamedExec(pref, values)
 	return
 }
 

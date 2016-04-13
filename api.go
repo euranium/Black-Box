@@ -62,12 +62,12 @@ parse data submited to run a project and execute said project
 func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	person, err := IsLoggedIn(w, r)
-	if err != nil || person.user_name == "" {
+	if err != nil || person == nil {
 		return
 	}
 	fmt.Println("form:", r.Form)
 
-	dir := path.Join(UserDir, person.hash, RandomString(12))
+	dir := path.Join(UserDir, person.Folder, RandomString(12))
 	fmt.Println("copying to:", dir)
 	return
 	/*
@@ -111,7 +111,7 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	list, err := ListDir(path.Join(UserDir, person.hash))
+	list, err := ListDir(path.Join(UserDir, person.Folder))
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
@@ -129,17 +129,12 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 // hard coded results page right now
 // expecting /query?name=folder
 func APIGetResults(w http.ResponseWriter, r *http.Request) {
-	person, err := IsLoggedIn(w, r)
+	_, err := IsLoggedIn(w, r)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
 	r.ParseForm()
-	q := r.Form["name"][0]
-	if q == "" || !IsResult(person.hash, q) {
-		w.Write([]byte(""))
-		return
-	}
-	result := ReadFileType(path.Join(UserDir, "aaa", q), ".txt")
-	w.Write([]byte(result))
+	_ = r.Form["name"][0]
+	w.Write([]byte("still working on this"))
 }

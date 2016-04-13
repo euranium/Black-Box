@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"gopkg.in/fsnotify.v1"
@@ -11,6 +13,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -18,9 +21,69 @@ import (
 Make sure all programs in the fs are in the db
 */
 func FilesInit() (err error) {
-	_, err = ListDir(progDir)
+	folders, err := ListDir(progDir)
 	if err != nil {
 		return
+	}
+	var p []Programs
+	var container Container
+	container = append(container, &p)
+	var args []interface{}
+	err = DBread(QueryPrograms, args, container)
+	if err != nil {
+		fmt.Println("err query:", err.Error())
+		return
+	}
+	for _, f := range folders {
+		found := false
+		for _, prog := range p {
+			if prog.Folder == f {
+				found = true
+				break
+			}
+		}
+		if found == false {
+			fmt.Println("not found:", f)
+			AddProgram(f)
+		}
+	}
+	return
+}
+
+func AddProgram(folder string) (err error) {
+	file := filepath.Join(progDir, folder, "config.json")
+	config, err := ReadFile(file)
+	if err != nil {
+		return
+	}
+	fmt.Println("config:", string(config))
+	var prog Programs
+	prog.Folder = folder
+	files, err := ListDir(filepath.Join(progDir, folder))
+	if err != nil {
+		return
+	}
+	prog.Files = strings.Join(files, ",")
+	fmt.Println("programs:", prog)
+
+	dec := json.NewDecoder(bytes.NewReader(config))
+	err = dec.Decode(&prog)
+	if err != nil {
+		fmt.Println("error decode:", err.Error())
+		return
+	}
+	if prog.ProgType == "" {
+		return errors.New("Incorrect config formation")
+	}
+	values := map[string]interface{}{
+		"Folder":   prog.Folder,
+		"Name":     prog.Name,
+		"ProgType": prog.ProgType,
+		"Files":    prog.Files,
+	}
+	err = DBwrite(InsertProgram, values)
+	if err != nil {
+		fmt.Println("insert err:", err.Error())
 	}
 	return
 }

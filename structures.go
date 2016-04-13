@@ -25,22 +25,10 @@ type Route struct {
 	HandleFunc http.HandlerFunc
 }
 
-type User struct {
-	user_name string
-	hash      string
-}
-
-type List struct {
-	files []string
-}
-
 /*
 sql data table structs, edit w/ data.sql
 Table is the parent w/ every different type of field
 */
-func Fill(t interface{}, vals map[string]string) error {
-	return nil
-}
 
 type Table struct {
 	/*
@@ -54,14 +42,19 @@ type Table struct {
 	*/
 }
 
+type Container []interface{}
+
 /*
 dynamically take a map and map it to a structure using reflect
-This should be inherited by all sql data structs
+This should be inherited by all sql data structs, but because of
+explicit data typing does not inherit correctly. So not being used.
+Instead, using sqlx.
 */
-func (t *Table) Fill(vals map[string]string) error {
+func Fill(vals map[string]string, container Container) error {
 	// get type of structure
-	stVal := reflect.ValueOf(t).Elem()
-	fmt.Println("value of:", reflect.ValueOf(t))
+	this := container[0]
+	stVal := reflect.ValueOf(this).Elem()
+	fmt.Println("value of:", reflect.ValueOf(this))
 	fmt.Println("stVal:", stVal)
 	// iterate over all values in map
 	for key, val := range vals {
@@ -106,27 +99,25 @@ func (t *Table) Fill(vals map[string]string) error {
 			return errors.New(fmt.Sprintf("type not handled: %v", field.Type().String()))
 		}
 	}
-	fmt.Println("finished:", t)
+	fmt.Println("finished:", this)
 	return nil
 }
 
-type UserTable struct {
-	Name   string  `db:"name"  `
-	Folder string  `db:"folder"`
-	Hash   string  `db:"hash"  `
-	Time   float64 `db:time"   `
+type User struct {
+	Name   string  `db:"Name"  `
+	Folder string  `db:"Folder"`
+	Hash   string  `db:"Hash"  `
+	Time   float64 `db:"Time"   `
 }
 
-type ProgramsTable struct {
-	Table
-	Folder   string
-	Name     string
-	ProgType string
-	Files    []string
+type Programs struct {
+	Folder   string `db:"Folder"  `
+	Name     string `db:"Name"    `
+	ProgType string `db:"ProgType"`
+	Files    string `db:"Files"   `
 }
 
-type StoredTable struct {
-	Table
+type Stored struct {
 	Name     string
 	Folder   string
 	ProgName string
