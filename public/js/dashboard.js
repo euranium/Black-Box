@@ -42,15 +42,13 @@ function($scope, $http, $compile, $sce){
       args = args.filter(Boolean);
 
       obj = {};
-      obj.name = name;
-      obj.input = args;
-
-      console.log(JSON.stringify(obj));
+      obj.Name = name;
+      obj.Input = args;
 
       $http({
           method  : 'POST',
           url     : 'api/submit',
-          data    : JSON.stringify(obj), 
+          data    : JSON.stringify(obj),
           headers : {'Content-Type': 'application/x-www-form-urlencoded'}
          })
           .success(function(data) {
