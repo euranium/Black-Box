@@ -130,22 +130,22 @@ structs for data hand offs
 to be converted to and from JSON
 */
 type Result struct {
-	name   string
-	status string
-	prog   string
+	Name   string
+	Status string
+	Prog   string
 }
 
 type File struct {
-	name string
-	data string
+	Name string
+	Data string
 }
 
 type Program struct {
-	name    string
-	results []File
+	Name    string
+	Results []File
 }
 
 type Submit struct {
-	name  string
-	input []string
+	Name  string
+	Input []string
 }

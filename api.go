@@ -6,6 +6,7 @@ import (
 	"net/http"
 	//"os"
 	"path"
+	"strings"
 	//"path/filepath"
 )
 
@@ -15,19 +16,22 @@ var ()
 list all the software on the server available to execute
 */
 func APIListSoftware(w http.ResponseWriter, r *http.Request) {
-	list, err := ListDir(progDir)
+	var p []Programs
+	var container Container
+	container = append(container, &p)
+	var args []interface{}
+	err := DBread(QueryPrograms, args, container)
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		fmt.Println("err query:", err.Error())
 		return
 	}
-	b, err := json.Marshal(list)
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
+	var progs []string
+	for _, pr := range p {
+		progs = append(progs, pr.Folder)
 	}
-	fmt.Println(string(b[:]))
-	w.Write(b)
-	return
+	b, err := json.Marshal(progs)
+	fmt.Println(string(b))
+	w.Write([]byte(b))
 }
 
 /*
@@ -66,40 +70,23 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("form:", r.Form)
+	var str string
+	for k, _ := range r.Form {
+		str = k
+	}
+
+	var input Submit
+	dec := json.NewDecoder(strings.NewReader(str))
+	err = dec.Decode(&input)
+	if err != nil {
+		fmt.Println("error decode:", err.Error())
+		return
+	}
+	fmt.Println("decoded:", input)
 
 	dir := path.Join(UserDir, person.Folder, RandomString(12))
 	fmt.Println("copying to:", dir)
 	return
-	/*
-		err = CopyDir(path.Join("executables", name), dir)
-		if err != nil {
-			fmt.Println("error:", err.Error())
-			w.Write([]byte("Error processing\n"))
-		}
-		var args []string
-		input := Sort(r.Form)
-		if typ != "exec" {
-			// set program name
-			args = append(args, typ)
-			args = append(args, name)
-		} else {
-			// set program exec path using absolute path to program
-			abs, err := filepath.Abs(filepath.Dir(os.Args[0]))
-			if err != nil {
-				fmt.Println("error:", err.Error())
-				w.Write([]byte("Error processing\n"))
-			}
-			args = append(args, filepath.Join(abs, dir, name))
-		}
-		// append program name, input and directory location
-		args = append(args, input...)
-		args = append(args, dir)
-		fmt.Println(args)
-		// send it off to be executed
-		Tasks <- (args)
-		http.Redirect(w, r, "/dashboard", 302)
-		return
-	*/
 }
 
 /*
