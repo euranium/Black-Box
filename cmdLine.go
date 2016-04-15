@@ -1,12 +1,10 @@
 package main
 
 import (
-	//"bytes"
 	"fmt"
-	//"os"
 	"os/exec"
+	"path/filepath"
 	//"log"
-	//"strings"
 )
 
 var ()
@@ -38,9 +36,18 @@ func RunCmd() {
 			out, err := cmd.CombinedOutput()
 			if err != nil {
 				fmt.Printf("error: %s, msg: %s", err.Error(), out)
+				LogRun(args[len(args)-1], out)
 			} else {
 				fmt.Printf("finished running: %s\n", out)
+				LogRun(args[len(args)-1], []byte(""))
 			}
 		}
 	}
+}
+
+/*
+log a program run into the db
+*/
+func LogRun(pathTo string, errMsg []byte) {
+	_ = filepath.Base(pathTo)
 }

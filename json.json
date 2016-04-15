@@ -15,8 +15,11 @@ Return: [{
 	type: "progName"
 }]
 
-Post: "api/submit/query?name=name"
+Post: "api/submit"
 {
-	name: "progName",
-	input: ["input"]
+	Name: "progName",
+	Input: [{
+		"Name": "fileName",
+		"File": "input"
+	]}
 }

@@ -291,22 +291,64 @@ func IsResult(user, folder string) bool {
 	return CheckDir(path.Join("users", user, folder))
 }
 
-func ReadFileType(folder, tp string) string {
+func ReadFileType(folder, tp string) []File {
+	var files []File
 	file, err := ioutil.ReadDir(folder)
 	if err != nil {
 		fmt.Println(err.Error())
-		return ""
+		return nil
 	}
-	str := ""
 	for _, f := range file {
 		if filepath.Ext(f.Name()) == tp {
 			byts, err := ReadFile(path.Join(folder, f.Name()))
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
-				str += string(byts)
+				files = append(files, File{f.Name(), string(byts)})
 			}
 		}
 	}
-	return str
+	return files
+}
+
+func ReadFiles(folder string, fls []string) []File {
+	var files []File
+	var members map[string]bool
+	for _, v := range fls {
+		members[v] = true
+	}
+	file, err := ioutil.ReadDir(folder)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+	for _, f := range file {
+		if members[f.Name()] {
+			byts, err := ReadFile(path.Join(folder, f.Name()))
+			if err != nil {
+				fmt.Println(err.Error())
+			} else {
+				files = append(files, File{f.Name(), string(byts)})
+			}
+		}
+	}
+	return files
+}
+
+func DifFiles(folder string, oldFiles []string) (newFiles []string) {
+	var members map[string]bool
+	for _, v := range oldFiles {
+		members[v] = true
+	}
+	file, err := ioutil.ReadDir(folder)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+	for _, f := range file {
+		if !members[f.Name()] {
+			newFiles = append(newFiles, f.Name())
+		}
+	}
+	return
 }

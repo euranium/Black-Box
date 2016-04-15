@@ -118,11 +118,11 @@ type Programs struct {
 }
 
 type Stored struct {
-	Name     string
-	Folder   string
-	ProgName string
-	Files    []string
-	Time     float64
+	UserName string  `db:"UserName"`
+	Folder   string  `db:"Folder"  `
+	ProgName string  `db:"ProgName"`
+	Files    string  `db:"Files"   `
+	Time     float64 `db:"Time"    `
 }
 
 /*
@@ -130,9 +130,8 @@ structs for data hand offs
 to be converted to and from JSON
 */
 type Result struct {
-	Name   string
-	Status string
-	Prog   string
+	Name  string
+	Input []File
 }
 
 type File struct {

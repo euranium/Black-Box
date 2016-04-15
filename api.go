@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	//"os"
 	"path"
+	"path/filepath"
 	"strings"
-	//"path/filepath"
+	"time"
 )
 
 var ()
@@ -84,8 +84,19 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("decoded:", input)
 
-	dir := path.Join(UserDir, person.Folder, RandomString(12))
+	t := time.Now().Format("2006-Jan-02_15:04:05")
+	dir := path.Join(UserDir, person.Folder, t+"_"+RandomString(12))
 	fmt.Println("copying to:", dir)
+	err = CopyDir(filepath.Join(progDir, input.Name), dir)
+	if err != nil {
+		fmt.Println("error copy:", err.Error())
+		return
+	}
+	var command []string
+	command = append(command, "java", input.Name)
+	command = append(command, input.Input...)
+	command = append(command, dir)
+	Tasks <- command
 	return
 }
 
@@ -116,12 +127,22 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 // hard coded results page right now
 // expecting /query?name=folder
 func APIGetResults(w http.ResponseWriter, r *http.Request) {
-	_, err := IsLoggedIn(w, r)
+	user, err := IsLoggedIn(w, r)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
 	r.ParseForm()
-	_ = r.Form["name"][0]
-	w.Write([]byte("still working on this"))
+	name := r.Form["name"][0]
+	fmt.Println("name:", name)
+	results := ReadFileType(filepath.Join(UserDir, user.Folder, name), ".txt")
+	if results == nil {
+		w.Write([]byte("error"))
+	}
+	b, err := json.Marshal(Result{name, results})
+	if err != nil {
+		w.Write([]byte(err.Error()))
+	}
+	fmt.Println(string(b))
+	w.Write(b)
 }

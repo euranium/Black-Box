@@ -29,7 +29,7 @@ output will be added when program is done, otherwise empty string
 */
 Create Table If Not Exists Stored (
 	Folder 		Text Unique,
-	Name 		Text,
+	UserName 	Text,
 	ProgName 	Text,
 	Files 		Text,
 	Time 		Real
