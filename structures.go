@@ -118,11 +118,11 @@ type Programs struct {
 }
 
 type Stored struct {
-	UserName string  `db:"UserName"`
-	Folder   string  `db:"Folder"  `
-	ProgName string  `db:"ProgName"`
-	Files    string  `db:"Files"   `
-	Time     float64 `db:"Time"    `
+	UserName string `db:"UserName"`
+	Folder   string `db:"Folder"  `
+	ProgName string `db:"ProgName"`
+	Files    string `db:"Files"   `
+	Time     int64  `db:"Time"    `
 }
 
 /*

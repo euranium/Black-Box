@@ -19,10 +19,11 @@ var (
 	QueryPrograms = "Select Folder, Name, ProgType, Files from Programs"
 	QueryProgram  = `Select Folder, Name, ProgType, Files from Programs
 	where Name=$1`
-	InsertProgram = `Insert Into Programs (Folder,Name,ProgType,Files)
+	InsertProgram = `Insert Into Programs (Folder,ProgName,ProgType,Files)
 	Values (:Folder,:Name,:ProgType,:Files)`
 	InsertRun = `Insert Into Stored (UserName,Folder,ProgName,Files,Time)
 	Values (:UserName,:Folder,:ProgName,:Files,:Time)`
+	UpdateRun = `Update Stored Set Files=$1 Where Folder=$2`
 )
 
 /*
