@@ -97,6 +97,8 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	command = append(command, input.Input...)
 	command = append(command, dir)
 	Tasks <- command
+	//stored := Stored{person.Name, dir, input.Name, "", }
+	//DBwrite(InsertRun)
 	return
 }
 

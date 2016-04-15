@@ -17,8 +17,12 @@ var (
 	db            *sqlx.DB
 	QueryUser     = "Select * from Users where name=$1"
 	QueryPrograms = "Select Folder, Name, ProgType, Files from Programs"
+	QueryProgram  = `Select Folder, Name, ProgType, Files from Programs
+	where Name=$1`
 	InsertProgram = `Insert Into Programs (Folder,Name,ProgType,Files)
 	Values (:Folder,:Name,:ProgType,:Files)`
+	InsertRun = `Insert Into Stored (UserName,Folder,ProgName,Files,Time)
+	Values (:UserName,:Folder,:ProgName,:Files,:Time)`
 )
 
 /*
@@ -42,6 +46,44 @@ func DBInit() {
 	return
 }
 
+func DBread(prep string, args []interface{}, container Container) (err error) {
+	result := container[0]
+	err = db.Select(result, prep, args...)
+	return
+}
+
+/*
+insert values into a the db given a prepared statement and arguments
+will return the error thown
+*/
+func DBwrite(pref string, values map[string]interface{}) (err error) {
+	_, err = db.NamedExec(pref, values)
+	return
+}
+
+func parseValues(rows *sql.Rows) (vals map[string]string, err error) {
+	vals = make(map[string]string)
+	cols, err := rows.Columns()
+	if err != nil {
+		return
+	}
+	l := len(cols)
+	v := make([]string, l)
+	var values []interface{}
+	for i := 0; i < len(cols); i++ {
+		values = append(values, &v[i])
+	}
+	err = rows.Scan(values...)
+	if err != nil {
+		return
+	}
+	for i := 0; i < l; i++ {
+		key := cols[i]
+		val := v[i]
+		vals[key] = val
+	}
+	return
+}
 func Handler() {
 	select {
 	case sig := <-Signal:
@@ -87,42 +129,3 @@ func DBquery(prep string, args []interface{}, container Container) (results Cont
 	return
 }
 */
-
-func DBread(prep string, args []interface{}, container Container) (err error) {
-	result := container[0]
-	err = db.Select(result, prep, args...)
-	return
-}
-
-/*
-insert values into a the db given a prepared statement and arguments
-will return the error thown
-*/
-func DBwrite(pref string, values map[string]interface{}) (err error) {
-	_, err = db.NamedExec(pref, values)
-	return
-}
-
-func parseValues(rows *sql.Rows) (vals map[string]string, err error) {
-	vals = make(map[string]string)
-	cols, err := rows.Columns()
-	if err != nil {
-		return
-	}
-	l := len(cols)
-	v := make([]string, l)
-	var values []interface{}
-	for i := 0; i < len(cols); i++ {
-		values = append(values, &v[i])
-	}
-	err = rows.Scan(values...)
-	if err != nil {
-		return
-	}
-	for i := 0; i < l; i++ {
-		key := cols[i]
-		val := v[i]
-		vals[key] = val
-	}
-	return
-}
