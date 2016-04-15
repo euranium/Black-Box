@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/kisielk/sqlstruct"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 )
@@ -16,8 +15,8 @@ global reference to sql prepared statements to user
 var (
 	db            *sqlx.DB
 	QueryUser     = "Select * from Users where name=$1"
-	QueryPrograms = "Select Folder, Name, ProgType, Files from Programs"
-	QueryProgram  = `Select Folder, Name, ProgType, Files from Programs
+	QueryPrograms = "Select Folder, ProgName, ProgType, Files from Programs"
+	QueryProgram  = `Select Folder, ProgName, ProgType, Files from Programs
 	where Name=$1`
 	InsertProgram = `Insert Into Programs (Folder,ProgName,ProgType,Files)
 	Values (:Folder,:Name,:ProgType,:Files)`
