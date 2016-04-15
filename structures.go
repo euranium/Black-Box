@@ -130,8 +130,8 @@ structs for data hand offs
 to be converted to and from JSON
 */
 type Result struct {
-	Name  string
-	Input []File
+	Name    string
+	Results []File
 }
 
 type File struct {

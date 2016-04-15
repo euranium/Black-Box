@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os/exec"
-	"path/filepath"
+	//"path/filepath"
 	//"log"
 )
 
@@ -49,5 +49,7 @@ func RunCmd() {
 log a program run into the db
 */
 func LogRun(pathTo string, errMsg []byte) {
-	_ = filepath.Base(pathTo)
+	//var p []Programs
+	//container := Container{&p}
+	//folder := filepath.Base(pathTo)
 }
