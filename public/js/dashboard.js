@@ -55,16 +55,17 @@ function($scope, $http, $compile, $sce){
             console.log("it worked");
           });
 
-
-      // $http.post('api/submit' + JSON.stringify(obj)).success(function(data){
-      //     console.log("it worked");
-      // });
-
     }
 
     $scope.loadResult = function(name){
+      var result;
       $http.get('/api/results/query?name=' + name).success(function(data){
-          $('#dash').html(data);
+          var result = data.Name;
+          var items = data.Input;
+          for(var i = 0; i < items.length; i++){
+            result = result + items[i].Data;
+          }
+          $('#dash').html(result);
       });
     };
 
