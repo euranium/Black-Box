@@ -60,10 +60,11 @@ function($scope, $http, $compile, $sce){
     $scope.loadResult = function(name){
       var result;
       $http.get('/api/results/query?name=' + name).success(function(data){
-          var result = data.Name;
-          var items = data.Input;
+          var result = data.Name + "\n" + "\n";
+          var items = data.Results;
           for(var i = 0; i < items.length; i++){
-            result = result + items[i].Data;
+
+            result = result + items[i].Name + "\n" + items[i].Data + "\n";
           }
           $('#dash').html(result);
       });
