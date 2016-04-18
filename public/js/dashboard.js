@@ -69,8 +69,8 @@ function($scope, $http, $compile, $sce){
             var lines = splitByLine(items[i].Data);
 
             for(var j = 0; j < lines.length; j++){
-              console.log(lines[i]);
-              temp = temp + "<div class=\"list-group-item\" onClick=\"test()\">" + lines[i] + "</div>"
+              console.log(lines[j]);
+              temp = temp + "<div class=\"list-group-item\">" + lines[j] + "</div>"
             }
 
             temp = temp + "</div>"
@@ -89,5 +89,5 @@ function test(){
 }
 
 function splitByLine(data){
-  return data.split("\n");
+  return data.split("\n").filter(Boolean);
 }
