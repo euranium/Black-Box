@@ -107,7 +107,7 @@ type User struct {
 	Name   string  `db:"Name"  `
 	Folder string  `db:"Folder"`
 	Hash   string  `db:"Hash"  `
-	Time   float64 `db:"Time"   `
+	Time   float64 `db:"Time"  `
 }
 
 type Programs struct {
