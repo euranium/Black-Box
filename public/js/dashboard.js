@@ -60,11 +60,21 @@ function($scope, $http, $compile, $sce){
     $scope.loadResult = function(name){
       var result;
       $http.get('/api/results/query?name=' + name).success(function(data){
-          var result = data.Name + "\n" + "\n";
+          var result = "<h2>" + data.Name + "</h2>\n";
           var items = data.Results;
           for(var i = 0; i < items.length; i++){
+            var temp = "<div class=\"list-group\">";
+            temp = temp + "<div class=\"list-group-item disabled\" style=\"cursor:default;\"> <h4>" + items[i].Name + "</h4> </div>"
 
-            result = result + items[i].Name + "\n" + items[i].Data + "\n";
+            var lines = splitByLine(items[i].Data);
+
+            for(var j = 0; j < lines.length; j++){
+              console.log(lines[i]);
+              temp = temp + "<div class=\"list-group-item\" onClick=\"test()\">" + lines[i] + "</div>"
+            }
+
+            temp = temp + "</div>"
+            result = result + temp;
           }
           $('#dash').html(result);
       });
@@ -73,3 +83,11 @@ function($scope, $http, $compile, $sce){
 
 
 }]);
+
+function test(){
+  alert("test");
+}
+
+function splitByLine(data){
+  return data.split("\n");
+}
