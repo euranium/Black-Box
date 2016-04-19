@@ -337,7 +337,6 @@ new in the folder
 func DifFiles(folder string, oldFiles []string) (newFiles []string) {
 	members := make(map[string]bool)
 	for _, v := range oldFiles {
-		fmt.Println("val:", v)
 		members[v] = true
 	}
 	file, err := ioutil.ReadDir(folder)

@@ -169,7 +169,7 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	var args []interface{}
 	args = append(args, name)
 	args = append(args, user.Name)
-	fmt.Println(args)
+	//fmt.Println(args)
 	err = DBReadRow(QueryRun, args, &result)
 	//fmt.Println("name:", name)
 	if err != nil {
@@ -182,7 +182,7 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Write([]byte(err.Error()))
 	}
-	fmt.Println(string(b))
+	//fmt.Println(string(b))
 	w.Write(b)
 	return
 }

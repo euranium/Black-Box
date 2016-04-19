@@ -71,12 +71,10 @@ func LogRun(pathTo, name string, errMsg []byte) {
 	// check what new files appeared
 	files := strings.Split(p.Files, ",")
 	files = DifFiles(pathTo, files)
-	fmt.Println("new files:", files)
+	// update row w/ new files
 	args[0] = strings.Join(files, ",")
 	args = append(args, string(errMsg))
 	args = append(args, filepath.Base(pathTo))
-	fmt.Println("args:", args)
-	// update row w/ new files
 	err = DBWrite(UpdateRun, args)
 	if err != nil {
 		fmt.Println(err.Error())
