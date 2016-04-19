@@ -137,12 +137,12 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	fmt.Println("results:", s)
+	//fmt.Println("results:", s)
 	var list []string
 	for _, v := range s {
 		list = append(list, v.Folder)
 	}
-	fmt.Println(list)
+	//fmt.Println(list)
 	b, err := json.Marshal(list)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
