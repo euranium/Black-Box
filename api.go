@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/fatih/structs"
 	"net/http"
 	"path"
 	"path/filepath"
@@ -17,10 +18,7 @@ list all the software on the server available to execute
 */
 func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 	var p []Programs
-	var container Container
-	container = append(container, &p)
-	var args []interface{}
-	err := DBread(QueryPrograms, args, container)
+	err := DBRead(QueryPrograms, EmptyInter, &p)
 	if err != nil {
 		fmt.Println("err query:", err.Error())
 		return
@@ -30,7 +28,7 @@ func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 		progs = append(progs, pr.Folder)
 	}
 	b, err := json.Marshal(progs)
-	fmt.Println(string(b))
+	//fmt.Println(string(b))
 	w.Write([]byte(b))
 }
 
@@ -45,9 +43,16 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	name := r.Form["name"][0]
-	if name == "" || !IsExec(name) {
-		w.Write([]byte("not exec or no name" + name))
+	var p Programs
+	var args []interface{}
+	args = append(args, name)
+	err := DBReadRow(QueryPrograms, args, &p)
+	if err != nil {
+		fmt.Println("err query:", err.Error())
 		return
+	}
+	if p.Files == "" {
+		w.Write([]byte("Error: no file found"))
 	}
 	name = path.Join(progDir, name, name+".html")
 	file, err := ReadFile(name)
@@ -69,12 +74,15 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	if err != nil || person == nil {
 		return
 	}
-	fmt.Println("form:", r.Form)
-	var str string
+	// form is a map["form json"] => "", need key to parse
+	str := ""
 	for k, _ := range r.Form {
-		str = k
+		if str == "" {
+			str = k
+		}
 	}
 
+	// parse json bytes to struct
 	var input Submit
 	dec := json.NewDecoder(strings.NewReader(str))
 	err = dec.Decode(&input)
@@ -82,11 +90,13 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("error decode:", err.Error())
 		return
 	}
-	fmt.Println("decoded:", input)
+	//fmt.Println("decoded:", input)
 
+	// create a new folder, w/ format date-time_random
 	t := time.Now().Format("2006-Jan-02_15:04:05")
-	dir := path.Join(UserDir, person.Folder, t+"_"+RandomString(12))
-	fmt.Println("copying to:", dir)
+	base := t + "_" + RandomString(12)
+	dir := path.Join(UserDir, person.Folder, base)
+	//fmt.Println("copying to:", dir)
 	err = CopyDir(filepath.Join(progDir, input.Name), dir)
 	if err != nil {
 		fmt.Println("error copy:", err.Error())
@@ -96,13 +106,21 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	command = append(command, "java", input.Name)
 	command = append(command, input.Input...)
 	command = append(command, dir)
-	//DBwrite(InsertRun, ToMap(Stored{person.Name, dir, input.Name, "", time.Now().Unix()}))
+	// save run to db
+	err = DBWriteMap(InsertRun, structs.Map(Stored{
+		person.Name, base, input.Name, "", float64(time.Now().Unix()),
+	}))
+	if err != nil {
+		fmt.Println("error insert:", err.Error())
+		return
+	}
 	Tasks <- command
 	return
 }
 
 /*
-list all of the previous programs associated with the user
+list all of the previous program results associated with the user
+no params necessary
 */
 func APIListResults(w http.ResponseWriter, r *http.Request) {
 	person, err := IsLoggedIn(w, r)
@@ -110,23 +128,35 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	list, err := ListDir(path.Join(UserDir, person.Folder))
+	var s []Stored
+	var args []interface{}
+	args = append(args, person.Name)
+	err = DBRead(QueryRuns, args, &s)
 	if err != nil {
+		fmt.Println("error:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
+	fmt.Println("results:", s)
+	var list []string
+	for _, v := range s {
+		list = append(list, v.Folder)
+	}
+	fmt.Println(list)
 	b, err := json.Marshal(list)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	fmt.Println(string(b[:]))
+	//fmt.Println(string(b[:]))
 	w.Write(b)
 	return
 }
 
-// hard coded results page right now
-// expecting /query?name=folder
+/*
+given a request with query?name=name, query the db for the folder,
+copy the file contents into a struct, and send back in json object
+*/
 func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	user, err := IsLoggedIn(w, r)
 	if err != nil {
@@ -135,15 +165,49 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	}
 	r.ParseForm()
 	name := r.Form["name"][0]
-	fmt.Println("name:", name)
-	results := ReadFileType(filepath.Join(UserDir, user.Folder, name), ".txt")
-	if results == nil {
-		w.Write([]byte("error"))
+	var result Stored
+	var args []interface{}
+	args = append(args, name)
+	args = append(args, user.Name)
+	fmt.Println(args)
+	err = DBReadRow(QueryRun, args, &result)
+	//fmt.Println("name:", name)
+	if err != nil {
+		fmt.Println("error:", err.Error())
+		w.Write([]byte(err.Error()))
+		return
 	}
-	b, err := json.Marshal(Result{name, results})
+	files := ReadFiles(filepath.Join(UserDir, user.Folder, name), strings.Split(result.Files, ","))
+	b, err := json.Marshal(Result{name, files})
 	if err != nil {
 		w.Write([]byte(err.Error()))
 	}
 	fmt.Println(string(b))
 	w.Write(b)
+	return
+}
+
+/*
+upload zip of folder
+*/
+func APIDownload(w http.ResponseWriter, r *http.Request) {
+	user, err := IsLoggedIn(w, r)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	r.ParseForm()
+	name := r.Form["name"][0]
+	var result Stored
+	var args []interface{}
+	args = append(args, name)
+	args = append(args, user.Name)
+	fmt.Println(args)
+	err = DBReadRow(QueryRun, args, &result)
+	//fmt.Println("name:", name)
+	if err != nil {
+		fmt.Println("error:", err.Error())
+		w.Write([]byte(err.Error()))
+		return
+	}
 }

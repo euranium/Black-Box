@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/fatih/structs"
 	"gopkg.in/fsnotify.v1"
 	"io"
 	"io/ioutil"
@@ -26,10 +27,7 @@ func FilesInit() (err error) {
 		return
 	}
 	var p []Programs
-	var container Container
-	container = append(container, &p)
-	var args []interface{}
-	err = DBread(QueryPrograms, args, container)
+	err = DBRead(QueryPrograms, EmptyInter, &p)
 	if err != nil {
 		fmt.Println("err query:", err.Error())
 		return
@@ -56,7 +54,7 @@ func AddProgram(folder string) (err error) {
 	if err != nil {
 		return
 	}
-	fmt.Println("config:", string(config))
+	//fmt.Println("config:", string(config))
 	var prog Programs
 	prog.Folder = folder
 	files, err := ListDir(filepath.Join(progDir, folder))
@@ -64,7 +62,7 @@ func AddProgram(folder string) (err error) {
 		return
 	}
 	prog.Files = strings.Join(files, ",")
-	fmt.Println("programs:", prog)
+	//fmt.Println("programs:", prog)
 
 	dec := json.NewDecoder(bytes.NewReader(config))
 	err = dec.Decode(&prog)
@@ -75,13 +73,7 @@ func AddProgram(folder string) (err error) {
 	if prog.ProgType == "" {
 		return errors.New("Incorrect config formation")
 	}
-	values := map[string]interface{}{
-		"Folder":   prog.Folder,
-		"Name":     prog.Name,
-		"ProgType": prog.ProgType,
-		"Files":    prog.Files,
-	}
-	err = DBwrite(InsertProgram, values)
+	err = DBWriteMap(InsertProgram, structs.Map(prog))
 	if err != nil {
 		fmt.Println("insert err:", err.Error())
 	}
@@ -311,9 +303,12 @@ func ReadFileType(folder, tp string) []File {
 	return files
 }
 
+/*
+read all files specified
+*/
 func ReadFiles(folder string, fls []string) []File {
 	var files []File
-	var members map[string]bool
+	members := make(map[string]bool)
 	for _, v := range fls {
 		members[v] = true
 	}
@@ -335,9 +330,14 @@ func ReadFiles(folder string, fls []string) []File {
 	return files
 }
 
+/*
+given a folder location and a list of files, return what files are
+new in the folder
+*/
 func DifFiles(folder string, oldFiles []string) (newFiles []string) {
-	var members map[string]bool
+	members := make(map[string]bool)
 	for _, v := range oldFiles {
+		fmt.Println("val:", v)
 		members[v] = true
 	}
 	file, err := ioutil.ReadDir(folder)

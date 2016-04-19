@@ -31,6 +31,7 @@ Create Table If Not Exists Stored (
 	Folder 		Text Unique,
 	UserName 	Text,
 	ProgName 	Text,
+	Message 	Text,
 	Files 		Text,
 	Time 		Real
 );

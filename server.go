@@ -80,20 +80,18 @@ get and fill a user struct from the db,
 if no user is returned, return an error
 */
 func GetUser(id string) (person *User, err error) {
-	var u []User
-	var container Container
-	container = append(container, &u)
+	person = &User{}
 	var args []interface{}
 	args = append(args, id)
-	err = DBread(QueryUser, args, container)
+	err = DBReadRow(QueryUser, args, person)
 	// if err or no matching results
 	if err != nil {
+		fmt.Println("error geting user:", err.Error())
 		return
 	}
-	if len(u) <= 0 {
+	if person.Folder == "" {
 		return nil, errors.New("No User")
 	}
-	person = &u[0]
 	return
 }
 

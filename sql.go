@@ -1,7 +1,7 @@
 package main
 
 import (
-	"database/sql"
+	//"database/sql"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
@@ -13,20 +13,35 @@ file referance to the db being access
 global reference to sql prepared statements to user
 */
 var (
-	db            *sqlx.DB
-	QueryUser     = "Select * from Users where name=$1"
-	QueryPrograms = "Select Folder, ProgName, ProgType, Files from Programs"
-	QueryProgram  = `Select Folder, ProgName, ProgType, Files from Programs
+	db *sqlx.DB
+	// get one user
+	QueryUser = "Select * from Users where name=$1"
+	// get all programs
+	QueryPrograms = "Select Folder, Name, ProgType, Files from Programs"
+	// get info on one program
+	QueryProgram = `Select Folder, Name, ProgType, Files from Programs
 	where Name=$1`
+	// add a program
 	InsertProgram = `Insert Into Programs (Folder,Name,ProgType,Files)
 	Values (:Folder,:Name,:ProgType,:Files)`
+	// add a program run
 	InsertRun = `Insert Into Stored (UserName,Folder,ProgName,Files,Time)
 	Values (:UserName,:Folder,:ProgName,:Files,:Time)`
-	UpdateRun = `Update Stored Set Files=$1 Where Folder=$2`
+	// update a program run w/ generated files, error message
+	UpdateRun = `Update Stored Set Files=$1, Message=$2 Where Folder=$3`
+	// get results given a folder and username
+	QueryRun = `Select Folder, UserName, ProgName, Files, Time from Stored
+	Where Folder=$1 and UserName=$2`
+	// get all results associated w/ a user
+	QueryRuns = `Select Folder, UserName, ProgName, Files, Time from Stored
+	Where UserName=$1`
+	// get all completed results
+	QueryCompleted = `Select Folder, UserName, ProgName, Files, Time from Stored
+	Where UserName=$1 and Files != " "`
 )
 
 /*
-initialize sql database connection
+initialize and test sql database connection
 */
 func DBInit() {
 	var err error
@@ -42,25 +57,38 @@ func DBInit() {
 		log.Fatalln(err)
 		return
 	}
-	//go Handler()
 	return
 }
 
-func DBread(prep string, args []interface{}, container Container) (err error) {
-	result := container[0]
-	err = db.Select(result, prep, args...)
+/*
+get information out of the db, parse the data into a structure
+read returns an array of restus, readrow returns a single entry
+*/
+func DBRead(prep string, args []interface{}, container interface{}) (err error) {
+	err = db.Select(container, prep, args...)
+	return
+}
+func DBReadRow(prep string, args []interface{}, container interface{}) (err error) {
+	err = db.QueryRowx(prep, args...).StructScan(container)
 	return
 }
 
 /*
 insert values into a the db given a prepared statement and arguments
 will return the error thown
+first is given array of arguments in an interface, second is in a map format
 */
-func DBwrite(pref string, values map[string]interface{}) (err error) {
+func DBWrite(pref string, args []interface{}) (err error) {
+	_, err = db.Exec(pref, args...)
+	return
+}
+
+func DBWriteMap(pref string, values map[string]interface{}) (err error) {
 	_, err = db.NamedExec(pref, values)
 	return
 }
 
+/*
 func parseValues(rows *sql.Rows) (vals map[string]string, err error) {
 	vals = make(map[string]string)
 	cols, err := rows.Columns()
@@ -84,16 +112,7 @@ func parseValues(rows *sql.Rows) (vals map[string]string, err error) {
 	}
 	return
 }
-func Handler() {
-	select {
-	case sig := <-Signal:
-		db.Close()
-		Close(sig)
-		return
-	}
-}
 
-/*
 perform a read (get data) from the db,
 @args: prep is a prepared statement, args is the arguments for said stmt,
 sample is an empty struct of the data expected
