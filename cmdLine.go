@@ -66,7 +66,6 @@ func LogRun(pathTo, name string, errMsg []byte) {
 		fmt.Println("no results finding", name)
 		return
 	}
-	fmt.Println("got:", p)
 
 	// check what new files appeared
 	files := strings.Split(p.Files, ",")
@@ -79,6 +78,5 @@ func LogRun(pathTo, name string, errMsg []byte) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	fmt.Println("update success")
 	return
 }
