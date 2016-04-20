@@ -19,10 +19,6 @@
     <link href="css/test.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
-    <script src="js/dashboard.js"></script>
-
 		<!-- Custom CSS -->
     <style>
     body {
@@ -66,8 +62,8 @@
             no results yet :(
           </div>
           <span ng-repeat="item in results">
-            <div class="item" ng-click="loadResult(item)">
-              {{item}}
+            <div class="item" ng-click="loadResult(item.Name)">
+              {{item.Name}}
             </div>
         </span>
         </div>
@@ -93,6 +89,13 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+
+    <!-- Angular js stuff -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
+
+    <!-- Main controller script -->
+    <script src="js/dashboard.js"></script>
 
     <!-- Menu Toggle Script -->
     <script>

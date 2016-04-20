@@ -10,6 +10,14 @@ function($scope, $http, $compile, $sce){
   $scope.results = []
   $scope.radio = "";
 
+  $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+  $scope.series = ['Series A', 'Series B'];
+  $scope.stuff = [[65, 59, 80, 81, 56, 55, 40],[28, 48, 40, 19, 86, 27, 90]];
+
+  $scope.onClick = function (points, evt) {
+    console.log(points, evt);
+  };
+
     $http.get('/api/listsoftware').success(function(data){
       angular.copy(data, $scope.software);
     });
@@ -53,14 +61,22 @@ function($scope, $http, $compile, $sce){
          })
           .success(function(data) {
             console.log("it worked");
-          });
-
+          });$scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+  $scope.series = ['Series A', 'Series B'];
+  $scope.data = [
+    [65, 59, 80, 81, 56, 55, 40],
+    [28, 48, 40, 19, 86, 27, 90]
+  ];
+  $scope.onClick = function (points, evt) {
+    console.log(points, evt);
+  };
     }
 
     $scope.loadResult = function(name){
       var result;
       $http.get('/api/results/query?name=' + name).success(function(data){
           var result = "<h2>" + data.Name + "</h2>\n";
+          result = result + chartify(data);
           var items = data.Results;
           for(var i = 0; i < items.length; i++){
             var temp = "<div class=\"list-group\">";
@@ -73,10 +89,12 @@ function($scope, $http, $compile, $sce){
               temp = temp + "<div class=\"list-group-item\">" + lines[j] + "</div>"
             }
 
+
+
             temp = temp + "</div>"
             result = result + temp;
           }
-          $('#dash').html(result);
+            $('#dash').html($compile(result)($scope));//$('#dash').html(result);
       });
     };
 
@@ -84,10 +102,10 @@ function($scope, $http, $compile, $sce){
 
 }]);
 
-function test(){
-  alert("test");
-}
-
 function splitByLine(data){
   return data.split("\n").filter(Boolean);
+}
+
+function chartify(data){
+  return "<canvas id=\"line\" class=\"chart chart-line\" chart-data=\"stuff\" chart-labels=\"labels\" chart-legend=\"true\" chart-series=\"series\"chart-click=\"onClick\" ></canvas>";
 }
