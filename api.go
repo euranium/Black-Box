@@ -138,9 +138,7 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//fmt.Println("results:", s)
-	//var list []string
 	var results []Results
-	//var list Results
 	for _, v := range s {
 		var r Results
 		r.Name = v.Folder
@@ -154,13 +152,12 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 		//list = append(list, v.Folder)
 	}
 	//fmt.Println(list)
-	//b, err := json.Marshal(list)
 	b, err := json.Marshal(results)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	fmt.Println(string(b[:]))
+	//fmt.Println(string(b[:]))
 	w.Write(b)
 	return
 }
