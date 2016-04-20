@@ -138,17 +138,29 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//fmt.Println("results:", s)
-	var list []string
+	//var list []string
+	var results []Results
+	//var list Results
 	for _, v := range s {
-		list = append(list, v.Folder)
+		var r Results
+		r.Name = v.Folder
+		if v.Files == "" {
+			r.Status = "pending"
+		} else {
+			r.Status = "complete"
+		}
+		r.Type = v.ProgName
+		results = append(results, r)
+		//list = append(list, v.Folder)
 	}
 	//fmt.Println(list)
-	b, err := json.Marshal(list)
+	//b, err := json.Marshal(list)
+	b, err := json.Marshal(results)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	//fmt.Println(string(b[:]))
+	fmt.Println(string(b[:]))
 	w.Write(b)
 	return
 }

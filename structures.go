@@ -136,6 +136,12 @@ type Result struct {
 	Results []File
 }
 
+type Results struct {
+	Name   string
+	Status string
+	Type   string
+}
+
 type File struct {
 	Name string
 	Data string
