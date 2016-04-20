@@ -156,3 +156,7 @@ type Submit struct {
 	Name  string
 	Input []string
 }
+
+type ErrorVal struct {
+	Error string
+}

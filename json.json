@@ -23,3 +23,8 @@ Post: "api/submit"
 		"File": "input"
 	]}
 }
+
+Request error
+Return : {
+	Error: "string"
+}
