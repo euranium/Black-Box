@@ -64,11 +64,16 @@ function($scope, $http, $compile, $sce){
     $scope.loadResult = function(name){
       var result;
       $http.get('/api/results/query?name=' + name).success(function(data){
+
+          //Set title bar
           var result = "<h2>" + data.Name + "</h2>\n";
-          $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-          $scope.series = ['Series A', 'Series B'];
-          $scope.stuff = [[65, 59, 80, 81, 56, 55, 40],[28, 48, 40, 19, 86, 27, 90]];
-          result = result + chartify(data);
+
+          //build chart object
+          chartInfo = chartify("modevo", data);
+
+          //append chart html to result string
+          result = result + chartInfo.html;
+
           var items = data.Results;
           for(var i = 0; i < items.length; i++){
             var temp = "<div class=\"list-group\">";
@@ -86,7 +91,12 @@ function($scope, $http, $compile, $sce){
             temp = temp + "</div>"
             result = result + temp;
           }
-            $('#dash').html($compile(result)($scope));//$('#dash').html(result);
+
+          $scope.labels = chartInfo.labels;
+          $scope.series = chartInfo.series;
+          $scope.stuff = chartInfo.info;
+
+          $('#dash').html($compile(result)($scope));//$('#dash').html(result);
       });
     };
 
@@ -98,6 +108,41 @@ function splitByLine(data){
   return data.split("\n").filter(Boolean);
 }
 
-function chartify(data){
-  return "<canvas id=\"line\" class=\"chart chart-line\" chart-data=\"stuff\" chart-labels=\"labels\" chart-legend=\"true\" chart-series=\"series\"chart-click=\"onClick\" ></canvas> \n\n";
+function chartify(prog, data){
+  result = {};
+  result.labels = [];
+  result.series = []
+  result.info = [];
+
+
+  if(prog == "modevo"){
+
+    //Add file names to series
+    result.series.push(data.Results[0].Name);
+    result.series.push(data.Results[1].Name);
+
+    //loop over first file to get lables and first info set
+    var lines = splitByLine(data.Results[0].Data);
+    var s1 = []
+    for(var i = 1; i < lines.length; i++){
+      var parts = lines[i].split(" ");
+      result.labels.push(parts[0]);
+      s1.push(parts[1]);
+    }
+
+    //loop over second file to get second info set
+    var lines = splitByLine(data.Results[1].Data);
+    var s2 = []
+    for(var i = 1; i < lines.length; i++){
+      var parts = lines[i].split(" ");
+      s2.push(parts[1]);
+    }
+
+    result.info.push(s1);
+    result.info.push(s2);
+
+  }
+
+  result.html =  "<canvas id=\"line\" class=\"chart chart-line\" chart-data=\"stuff\" chart-labels=\"labels\" chart-legend=\"true\" chart-series=\"series\"chart-click=\"onClick\" ></canvas> \n\n";
+  return result;
 }
