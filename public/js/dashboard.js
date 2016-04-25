@@ -98,8 +98,10 @@ function($scope, $http, $compile, $sce){
           $scope.series = chartInfo.series;
           $scope.stuff = chartInfo.info;
           $scope.opt = {
-            bezierCurve: false
-          }
+            bezierCurve: false,
+            showXLabels: 25,
+            responsive: true
+          };
 
           $('#dash').html($compile(result)($scope));
       });
