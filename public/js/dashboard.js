@@ -76,27 +76,32 @@ function($scope, $http, $compile, $sce){
 
           var items = data.Results;
           for(var i = 0; i < items.length; i++){
-            var temp = "<div class=\"list-group\">";
-            temp = temp + "<div class=\"list-group-item disabled\" style=\"cursor:default;\"> <h4>" + items[i].Name + "</h4> </div>"
+            var temp = "<div class='list-group'>";
+            temp = temp + "<div class='list-group-item disabled' style='cursor:default;' data-toggle='collapse' data-target='#" + i + "'> <h4>" + items[i].Name + "</h4> </div>"
 
             var lines = splitByLine(items[i].Data);
 
+            temp = temp + "<div class='collapse' id='" + i + "'>";
             for(var j = 0; j < lines.length; j++){
               console.log(lines[j]);
-              temp = temp + "<div class=\"list-group-item\">" + lines[j] + "</div>"
+              temp = temp + "<div class='list-group-item'>" + lines[j] + "</div>"
             }
 
 
 
-            temp = temp + "</div>"
+
+            temp = temp + "</div></div>"
             result = result + temp;
           }
 
           $scope.labels = chartInfo.labels;
           $scope.series = chartInfo.series;
           $scope.stuff = chartInfo.info;
+          $scope.opt = {
+            bezierCurve: false
+          }
 
-          $('#dash').html($compile(result)($scope));//$('#dash').html(result);
+          $('#dash').html($compile(result)($scope));
       });
     };
 
@@ -143,6 +148,6 @@ function chartify(prog, data){
 
   }
 
-  result.html =  "<canvas id=\"line\" class=\"chart chart-line\" chart-data=\"stuff\" chart-labels=\"labels\" chart-legend=\"true\" chart-series=\"series\"chart-click=\"onClick\" ></canvas> \n\n";
+  result.html =  "<canvas id='line' class='chart chart-line' chart-data='stuff' chart-labels='labels' chart-legend='true' chart-series='series' chart-click='onClick' chart-options='opt'></canvas> \n\n";
   return result;
 }
