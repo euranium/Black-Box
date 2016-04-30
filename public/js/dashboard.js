@@ -45,6 +45,7 @@ function($scope, $http, $compile, $sce){
       }
 
       args = args.filter(Boolean);
+      alert(args.length);
 
       obj = {};
       obj.Name = name;
