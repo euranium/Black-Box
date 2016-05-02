@@ -36,7 +36,7 @@ function($scope, $http, $compile, $sce){
 
     $scope.send = function(name){
       console.log("sending for prog: " + name);
-      var allInputs = $( ":input" );
+      var allInputs = $(".sending");
       var args = [];
 
       for(var i = 0; i < allInputs.length; i++){
@@ -44,7 +44,9 @@ function($scope, $http, $compile, $sce){
         args.push(allInputs[i].value);
       }
 
+      alert(args);
       args = args.filter(Boolean);
+      alert(args.length);
 
       obj = {};
       obj.Name = name;
