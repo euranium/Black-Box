@@ -44,6 +44,12 @@ var RouteList = Routes{
 		loginPage,
 	},
 	Route{
+		"login",
+		"GET",
+		"/logout",
+		logout,
+	},
+	Route{
 		"news",
 		"GET",
 		"/news",
