@@ -16,14 +16,25 @@
         </div>
 
         <div id="chart3" class="tab-pane">
-          <img class="center" src="img/plot3.png"></img>
+          <div class="col-xs-8">
+            <img class="center" src="img/plot3.png"></img>
+          </div>
+
+          <div class="col-xs-4">
+            <div class="col-xs-4 form-group">
+              <label for="meanone">Mean Trait One</label>
+              <input name="24" type="number" step="0.001" class="form-control" id="chartOption" value="-3">
+            </div>
+
+          </div>
         </div>
+
       </div>
     </div>
 
     <div class="col-xs-12 form-group">
       <label for="sel1">Select list:</label>
-      <select class="form-control" id="sel1">
+      <select class="form-control" id="sel1" name ="23">
         <option name="chartType" data-target="#chart1">1</option>
         <option data-target="#chart2">2</option>
         <option data-target="#chart3">3</option>
@@ -153,6 +164,13 @@
 <script>
   //script is needed to fix bootstrap bug where radio buttons don't click correctly
   $('option').click(function() {
+    var input = $("#chartOption");
     $(this).tab('show');
+    if(this.value == 3){
+      //input.addClass("sending");
+    }
+    else{
+      //input.removeClass("sending");
+    }
   });
 </script>
