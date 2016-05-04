@@ -139,17 +139,6 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 	return
 }
 
-func logout(w http.ResponseWriter, r *http.Request) {
-	ses, err := store.Get(r, "user")
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	ses.Values["id"] = ""
-	http.Redirect(w, r, "/", 302)
-	return
-}
-
 /*
 post from login
 */
