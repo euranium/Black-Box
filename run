@@ -9,7 +9,10 @@ clear
 clean=1
 tst=1
 port="-port=8080"
-while getopts ":ctp:" o; do
+echo options -ctp 8080
+echo c to clean, t to just test, i and p with port number
+echo p and port number must go last
+while getopts ":ctip:" o; do
     case $o in
         c)
 			clean=0
@@ -17,6 +20,11 @@ while getopts ":ctp:" o; do
         t)
 			tst=0
             ;;
+		i) 
+			go get
+			go install github.com/jmoiron/sqlx
+			go install github.com/mattn/go-sqlite3
+			;;
 		p)
 			port="-port=$OPTARG"
 			;;

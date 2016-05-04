@@ -95,6 +95,22 @@ func GetUser(id string) (person *User, err error) {
 	return
 }
 
+func logout(w http.ResponseWriter, r *http.Request) {
+	ses, err := store.Get(r, "user")
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	ses.Values["id"] = nil
+	err = ses.Save(r, w)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	http.Redirect(w, r, "/", 302)
+	return
+}
+
 /*
 check is a user is logged in/valid
 TODO: add actuall auth, link with db
