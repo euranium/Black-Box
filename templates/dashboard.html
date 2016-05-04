@@ -52,7 +52,7 @@
 					<div class="type">
 						<i class="fa fa-cogs"></i>Models
 					</div>
-          <span ng-repeat="item in software">
+          <span ng-repeat="item in software track by $index">
   					<div class="item" ng-click="loadSoftware(item)">
               {{item}}
   					</div>
@@ -64,7 +64,7 @@
           <div class="item" ng-show="results == null">
             no results yet :(
           </div>
-          <span ng-repeat="item in results">
+          <span ng-repeat="item in results track by $index">
             <div class="item" ng-click="loadResult(item.Name)">
               {{item.Name}}
             </div>
@@ -102,6 +102,8 @@
     <script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
 
     <!-- Main controller script -->
+    <script src="js/chartify.js"></script>
+    <script src="js/htmlify.js"></script>
     <script src="js/dashboard.js"></script>
 
     <!-- Menu Toggle Script -->
