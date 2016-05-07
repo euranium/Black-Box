@@ -83,8 +83,6 @@ app.controller('MainCtrl', [
 
         var result = htmlify(data, prog);
 
-
-
         $scope.labels = result.charts[0].labels;
         $scope.series = result.charts[0].series;
         $scope.stuff = result.charts[0].info;
@@ -93,7 +91,6 @@ app.controller('MainCtrl', [
           showXLabels: 25,
           responsive: true
         };
-
         $('#dash').html($compile(result.html)($scope));
       });
     };

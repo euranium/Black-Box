@@ -18,7 +18,7 @@ function chartify(data, prog) {
 //Creates a chart object for modEvo------------------------------------*/
 function modEvoChart(data){
   result = {};
-  result.labels = [];
+  result.labels = []; //lables are the axis
   result.series = []
   result.info = [];
 
