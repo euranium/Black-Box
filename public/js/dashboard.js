@@ -39,7 +39,8 @@ app.controller('MainCtrl', [
   '$http',
   '$compile',
   '$sce',
-  function($scope, $http, $compile, $sce) {
+  '$interval',
+  function($scope, $http, $compile, $sce, $interval) {
 
     ////////////////////////////////////////////////////////////////////////////
     //Initialization
@@ -102,6 +103,13 @@ app.controller('MainCtrl', [
         .success(function(data) {
           console.log("Data sent");
         });
+
+      var refresh = $interval(function(){
+        $http.get('/api/results').success(function(data) {
+          angular.copy(data, $scope.results);
+        });
+      }, 500, 6);
+
     }
 
     //Gets called when a result tab is clicked---------------*/
