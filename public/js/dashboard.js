@@ -17,8 +17,7 @@ app.directive('result', function() {
     return {
         restrict: 'E',
         scope: {
-          obj: '=',
-          index: '@'
+          obj: '='
         },
         templateUrl: '/html/result.html'
     };
@@ -28,7 +27,8 @@ app.directive('file', function() {
     return {
         restrict: 'E',
         scope: {
-          obj: '='
+          obj: '=',
+          index: '='
         },
         templateUrl: '/html/file.html'
     };

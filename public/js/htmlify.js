@@ -34,9 +34,11 @@ function modEvoHtml(data, prog){
 
 
   //loop over every file returned to build files array
+  //index is used to apply unique id's to elements in the directive
   var items = data.Results;
   for (var i = 0; i < items.length; i++) {
     var temp = {}//"<div class='list-group'>";
+    temp.index = i;
     temp.name = items[i].Name;
     temp.data = splitByLine(items[i].Data);
     rt.files.push(temp);
