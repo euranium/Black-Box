@@ -6,6 +6,34 @@ Dynamically populates the dashboard page
 
 var app = angular.module('dashboard', ['ngSanitize', 'chart.js']);
 
+//Wrapper directive to wrap graph and file results
+/*obj is of form
+  {
+    files: [{}],
+    graphs: [{}]
+  }
+*/
+app.directive('result', function() {
+    return {
+        restrict: 'E',
+        scope: {
+          obj: '=',
+          index: '@'
+        },
+        templateUrl: '/html/result.html'
+    };
+});
+
+app.directive('file', function() {
+    return {
+        restrict: 'E',
+        scope: {
+          obj: '='
+        },
+        templateUrl: '/html/file.html'
+    };
+});
+
 app.controller('MainCtrl', [
   '$scope',
   '$http',
@@ -17,7 +45,9 @@ app.controller('MainCtrl', [
     //Initialization
     ////////////////////////////////////////////////////////////////////////////
     $scope.software = [];
-    $scope.results = []
+    $scope.results = [];
+    $scope.result = {};
+
     //hard coded for now, parse from url in future
     var prog = "modEvo"
 
@@ -80,18 +110,8 @@ app.controller('MainCtrl', [
     //Name is the string seen on the dashboard menu with date*/
     $scope.loadResult = function(name) {
       $http.get('/api/results/query?name=' + name).success(function(data) {
-
-        var result = htmlify(data, prog);
-
-        $scope.labels = result.charts[0].labels;
-        $scope.series = result.charts[0].series;
-        $scope.stuff = result.charts[0].info;
-        $scope.opt = {
-          bezierCurve: false,
-          showXLabels: 25,
-          responsive: true
-        };
-        $('#dash').html($compile(result.html)($scope));
+        $scope.result = htmlify(data, "modEvo");
+        $('#dash').html($compile("<result obj='result'></result>")($scope));
       });
     };
 

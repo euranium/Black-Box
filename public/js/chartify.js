@@ -15,12 +15,21 @@ function chartify(data, prog) {
 
 }
 
+
 //Creates a chart object for modEvo------------------------------------*/
 function modEvoChart(data){
+  console.log(data);
   result = {};
+  result.name = data.Name;
   result.labels = []; //lables are the axis
   result.series = []
   result.info = [];
+  result.opt = {
+    bezierCurve: false,
+    showXLabels: 25,
+    responsive: true
+  };
+
 
   //Add file names to series
   result.series.push(data.Results[0].Name);
@@ -46,6 +55,5 @@ function modEvoChart(data){
   result.info.push(s1);
   result.info.push(s2);
 
-  result.html = "<canvas id='line' class='chart chart-line' chart-data='stuff' chart-labels='labels' chart-legend='true' chart-series='series' chart-click='onClick' chart-options='opt'></canvas> \n\n";
   return result;
 }
