@@ -4,6 +4,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/fatih/structs"
 	"github.com/gorilla/sessions"
 	"net/http"
 	"os"
@@ -110,9 +111,14 @@ func GetUser(id string) (person *User, err error) {
 	return
 }
 
+/*
+check if a user is logged in and verify them, else set them as a temp user
+*/
 func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error) {
 	// get username and session key
 	// set as temp user is no valid strings found
+	person = &User{}
+	person.Temp = true
 	ses, err := store.Get(r, "user")
 	if err != nil {
 		fmt.Println("error getting session:", err.Error())
@@ -120,12 +126,12 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 		return
 	}
 	if ses.Values["id"] == nil || ses.Values["session"] == nil {
-		return SetTempUser(w, r)
+		return
 	}
 	id := ses.Values["id"].(string)
 	session := ses.Values["session"].(string)
 	if strings.Trim(session, " ") == "" || strings.Trim(id, " ") == "" {
-		return SetTempUser(w, r)
+		return
 	}
 
 	// redirect a person to login and clear session info if person not found
@@ -153,55 +159,53 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 }
 
 /*
-check is a user is logged in/valid
-if not, set them as a temporary user
-func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error) {
-	ses, err := store.Get(r, "user")
-	if err != nil {
-		fmt.Println("error getting session:", err.Error())
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
-	// check if id val is set, if not set temp user
-	if ses.Values["id"] == nil {
-		return SetTempUser(w, r)
-	}
-	// there should be no white space
-	id := strings.Trim(ses.Values["id"].(string), " ")
-	if id == "" {
-		return SetTempUser(w, r)
-	}
-	person, err = GetUser(id)
-	if err != nil {
-		fmt.Println("error:", err.Error())
-		http.Redirect(w, r, "/login", 302)
-		return nil, err
-	}
-	return
-}
-*/
-
-/*
-Temp User creation
+check if person has a folder already
 */
 func SetTempUser(w http.ResponseWriter, r *http.Request) (person *User, err error) {
+	person = &User{}
 	ses, err := store.Get(r, "user")
 	if err != nil {
 		fmt.Println("error getting session:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	// generate a random name, make sure it is not currently in use
-	person = &User{}
-	person.Name = RandomString(64)
 	person.Temp = true
-	person.Folder = ""
+	if ses.Values["id"] == nil {
+		return
+	}
+	id := ses.Values["id"].(string)
+	if strings.Trim(id, " ") == "" {
+		return
+	}
+	person.Name = id
+	person.Folder = id
+	return
+}
+
+func SaveTemp(w http.ResponseWriter, r *http.Request, person *User) (err error) {
+	ses, err := store.Get(r, "user")
+	if err != nil {
+		fmt.Println("error getting session:", err.Error())
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	CreateUserFolder(person)
 	person.Time = time.Now().Unix()
+	person.SessionKey = RandomString(64)
+	person.Temp = true
+	person.Hash = "none"
+	fmt.Println("temp user:", structs.Map(person))
+	err = DBWriteMap(InsertUser, structs.Map(person))
+	if err != nil {
+		fmt.Println("error:", err.Error())
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
 	ses.Values["id"] = person.Name
+	ses.Values["session"] = person.SessionKey
 	err = ses.Save(r, w)
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return nil, err
+		fmt.Println("error:", err.Error())
 	}
 	return
 }
@@ -305,6 +309,18 @@ func home(w http.ResponseWriter, r *http.Request) {
 dashboard page
 */
 func dashboard(w http.ResponseWriter, r *http.Request) {
+	ses, err := store.Get(r, "user")
+	if err != nil {
+		fmt.Println("error getting session:", err.Error())
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	if ses.Values["id"] == nil {
+		fmt.Println("no id val")
+	} else {
+		id := ses.Values["id"].(string)
+		fmt.Println("id:", id)
+	}
 	file, err := ReadFile(path.Join(templateDir, "dashboard.html"))
 	if err != nil {
 		w.Write([]byte("error"))

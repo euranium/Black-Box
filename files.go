@@ -339,11 +339,17 @@ func DifFiles(folder string, oldFiles []string) (newFiles []string) {
 	return
 }
 
-func CreateUser(person *User) {
-	// make sure person has a unique folder name
-	person.Folder = person.Name
-	for !CheckDir(path.Join(UserDir, person.Folder)) {
-		person.Folder = RandomString(64)
+/*
+create user folder
+*/
+func CreateUserFolder(person *User) {
+	// if person has no name, means a temp user so create a random unique name
+	if person.Name == "" || person.Folder == "" {
+		person.Folder = RandomString(12)
+		for CheckDir(path.Join(UserDir, person.Folder)) {
+			person.Folder = RandomString(12)
+		}
+		person.Name = person.Folder
 	}
 	os.Mkdir(path.Join(UserDir, person.Folder), 0755)
 	return

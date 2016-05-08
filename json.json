@@ -25,6 +25,10 @@
 		"File": "input"
 	]}
 },
+"Response":
+{
+	"Name": "generated name"
+},
 
 "Post": "api/login",
 {

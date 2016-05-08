@@ -15,8 +15,8 @@ global reference to sql prepared statements to user
 var (
 	db *sqlx.DB
 	// add user
-	InsertUser = `Insert Into Users (Name,Folder,Hash,Time,Temp) Values
-	(:Name,:Folder,:Hash,:Time,:Temp)`
+	InsertUser = `Insert Into Users (Name,Folder,SessionKey,Hash,Time,Temp) Values
+	(:Name,:Folder,:SessionKey,:Hash,:Time,:Temp)`
 	// get one user
 	QueryUser = "Select * from Users where name=$1"
 	// get all programs

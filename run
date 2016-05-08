@@ -40,7 +40,7 @@ shift "$((OPTIND-1))"
 if [ $clean -eq 0 ]; then
 	echo $(tput setaf 1)clearing dabase and files$(tput sgr0)
 	rm "data.db"
-	rm -rf "users/aaa"
+	rm -rf "users"
 fi
 
 if [ ! -e "data.db" ]; then

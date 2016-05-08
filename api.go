@@ -14,7 +14,7 @@ import (
 var ()
 
 /*
-list all the software on the server available to execute
+list all the software on the server available to execute, no restrictions
 */
 func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 	var p []Programs
@@ -39,7 +39,7 @@ func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-send a template for a form associated with a project
+send a template for a form associated with a project, no restrictions
 */
 func APITemplate(w http.ResponseWriter, r *http.Request) {
 	// get folder name
@@ -73,16 +73,17 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-parse data submited to run a project and execute said project
+parse data submited to run a project and execute said project, no restrictions
 */
 func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	person, err := IsLoggedIn(w, r)
-	if err != nil || person == nil {
+	if err != nil {
 		SendError(w, "Error Processing User")
 		return
 	}
-	// form is a map["form json"] => "", need key to parse
+	fmt.Println("person is:", person)
+	// form is a map["form json"] => "", for some reason, need key to parse
 	str := ""
 	for k, _ := range r.Form {
 		if str == "" {
@@ -98,21 +99,23 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		SendError(w, "Error Processing Information")
 		return
 	}
+
 	//fmt.Println("decoded:", input)
+	// check if the user has a directory, if not create one
+	if person.Folder == "" && person.Temp {
+		fmt.Println("creating Temp user")
+		err = SaveTemp(w, r, person)
+		if err != nil {
+			fmt.Println("err:", err.Error())
+			SendError(w, "Error Setting Up Program")
+			return
+		}
+	}
 
 	// create a new folder
 	//t := time.Now().Format("2006-Jan-02_15:04:05")
 	base := RandomString(12)
 	dir := path.Join(UserDir, person.Folder, base)
-
-	// check if the user has a directory, if not create one
-	if person.Folder == "" && person.Temp {
-		CreateUser(person)
-		if err != nil {
-			SendError(w, "Error Setting Up Program")
-			return
-		}
-	}
 	err = CopyDir(filepath.Join(progDir, input.Name), dir)
 	if err != nil {
 		SendError(w, "Error Setting Up Program")
@@ -133,7 +136,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	Tasks <- command
-	w.Write([]byte("{}"))
+	w.Write([]byte(fmt.Sprintf(`{}`)))
 	return
 }
 
