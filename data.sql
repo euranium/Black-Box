@@ -1,12 +1,14 @@
 /*
-user name, folder name, password hash,
+user name, folder name, session id, password hash, temp user or logged,
 time user last access in unix seconds
 */
 Create Table If Not Exists Users (
-	Name 	Text Unique,
-	Folder 	Text Unique,
-	Hash 	Text,
-	Time 	Real
+	Name 		Text Unique,
+	Folder 		Text Unique,
+	SessionKey 	Text Unique,
+	Hash 		Text,
+	Time 		Numeric,
+	Temp 		Numeric
 );
 
 /*
@@ -24,7 +26,7 @@ Create Table If Not Exists Programs (
 /*
 store of each program run: user associated w/, folder name,
 program associated w/, files outputed in struct string,
-last access in unix seconds
+weather the program has been viewed, last access in unix seconds
 output will be added when program is done, otherwise empty string
 */
 Create Table If Not Exists Stored (
@@ -33,10 +35,13 @@ Create Table If Not Exists Stored (
 	ProgName 	Text,
 	Message 	Text,
 	Files 		Text,
-	Time 		Real
+	Viewed 		Numeric Default 0,
+	Time 		Numeric,
+	Temp 		Numeric
 );
 
 /*
 for initilization purposes
 */
-Insert into Users (Name, Folder, Hash, Time) Values ("aaa", "aaa", "aaa", 1460501217);
+Insert into Users (Name, Folder, SessionKey, Hash, Time, Temp) 
+Values ("aaa", "aaa", " ", "aaa", 1460501217, 0);

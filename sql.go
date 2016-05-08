@@ -14,6 +14,9 @@ global reference to sql prepared statements to user
 */
 var (
 	db *sqlx.DB
+	// add user
+	InsertUser = `Insert Into Users (Name,Folder,Hash,Time,Temp) Values
+	(:Name,:Folder,:Hash,:Time,:Temp)`
 	// get one user
 	QueryUser = "Select * from Users where name=$1"
 	// get all programs
@@ -21,23 +24,29 @@ var (
 	// get info on one program
 	QueryProgram = `Select Folder, Name, ProgType, Files from Programs
 	where Name=$1`
-	// add a program
-	InsertProgram = `Insert Into Programs (Folder,Name,ProgType,Files)
-	Values (:Folder,:Name,:ProgType,:Files)`
-	// add a program run
-	InsertRun = `Insert Into Stored (UserName,Folder,ProgName,Files,Time)
-	Values (:UserName,:Folder,:ProgName,:Files,:Time)`
-	// update a program run w/ generated files, error message
-	UpdateRun = `Update Stored Set Files=$1, Message=$2 Where Folder=$3`
 	// get results given a folder and username
-	QueryRun = `Select Folder, UserName, ProgName, Files, Time from Stored
-	Where Folder=$1 and UserName=$2`
+	QueryRun = `Select Folder, UserName, ProgName, Files, Viewed, Time, Temp from Stored
+	Where Folder=$1`
 	// get all results associated w/ a user
-	QueryRuns = `Select Folder, UserName, ProgName, Files, Time from Stored
+	QueryRuns = `Select Folder, ProgName, Files, Viewed, Time, Temp from Stored
 	Where UserName=$1`
 	// get all completed results
 	QueryCompleted = `Select Folder, UserName, ProgName, Files, Time from Stored
 	Where UserName=$1 and Files != " "`
+	// add a program
+	InsertProgram = `Insert Into Programs (Folder,Name,ProgType,Files)
+	Values (:Folder,:Name,:ProgType,:Files)`
+	// add a program run
+	InsertRun = `Insert Into Stored (UserName,Folder,ProgName,Files,Time,Temp)
+	Values (:UserName,:Folder,:ProgName,:Files,:Time,:Temp)`
+	// update a program run w/ generated files, error message
+	UpdateRun = `Update Stored Set Files=$1, Message=$2 Where Folder=$3`
+	// set viewed of program to true
+	UpdateViewed = `Update Stored Set Viewed=1 Where Folder=$1`
+	// update last time user has checked in
+	UpdateUserTime = `Update Users Set Time=$1 Where Name=$2`
+	// update what user session value is, normally for logging out
+	UpdateUserSession = `Update users Set SessionKey=$1, Time=$2 Where Name=$3`
 )
 
 /*

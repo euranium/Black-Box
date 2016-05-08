@@ -47,7 +47,7 @@ var RouteList = Routes{
 		"login",
 		"GET",
 		"/logout",
-		logout,
+		Logout,
 	},
 	Route{
 		"news",

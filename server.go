@@ -7,15 +7,16 @@ import (
 	"github.com/gorilla/sessions"
 	"net/http"
 	"os"
-	//"os/signal"
 	"path"
+	"strings"
+	"time"
 )
 
 /*
 global variables for directory information,
 Tasks channel for program execution (more info in cmdLine.go),
-Signal channel for ^C signal interupt handling
 store for cookie and session handling
+TODO: setup some form of secret cookie handling
 */
 var (
 	empty       Empty
@@ -26,10 +27,12 @@ var (
 	Tasks       = make(chan []string, 64)
 	Signal      = make(chan os.Signal, 1)
 	store       = sessions.NewCookieStore([]byte("something-secret-or-not"))
+	//store       *sessions.CookieStore
 )
 
 func main() {
 	r := NewRouter()
+	//store = sessions.NewCookieStore([]byte(RandomString(64)))
 	store.Options = &sessions.Options{
 		Path: "/",
 	}
@@ -37,7 +40,7 @@ func main() {
 	// start routine to handle program execution
 	go RunCmd()
 
-	// serve static files for stuff like css, js , imgs from public folder
+	// serve static files for stuff like css, js, imgs from public folder
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	http.Handle("/", r)
 
@@ -75,6 +78,18 @@ func Close(sig os.Signal) {
 	return
 }
 
+func CheckIn(person *User) (err error) {
+	var args []interface{}
+	args = append(args, time.Now().Unix())
+	args = append(args, person.Name)
+	err = DBWrite(UpdateUserTime, args)
+	return
+}
+
+func SendError(w http.ResponseWriter, err string) {
+	w.Write([]byte(fmt.Sprintf(`{"Error": "%s"}`, err)))
+}
+
 /*
 get and fill a user struct from the db,
 if no user is returned, return an error
@@ -87,7 +102,7 @@ func GetUser(id string) (person *User, err error) {
 	// if err or no matching results
 	if err != nil {
 		fmt.Println("error geting user:", err.Error())
-		return
+		return nil, err
 	}
 	if person.Folder == "" {
 		return nil, errors.New("No User")
@@ -95,40 +110,66 @@ func GetUser(id string) (person *User, err error) {
 	return
 }
 
-func logout(w http.ResponseWriter, r *http.Request) {
+func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error) {
+	// get username and session key
+	// set as temp user is no valid strings found
 	ses, err := store.Get(r, "user")
 	if err != nil {
+		fmt.Println("error getting session:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	ses.Values["id"] = nil
-	err = ses.Save(r, w)
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+	if ses.Values["id"] == nil || ses.Values["session"] == nil {
+		return SetTempUser(w, r)
+	}
+	id := ses.Values["id"].(string)
+	session := ses.Values["session"].(string)
+	if strings.Trim(session, " ") == "" || strings.Trim(id, " ") == "" {
+		return SetTempUser(w, r)
+	}
+
+	// redirect a person to login and clear session info if person not found
+	// or if session has expired (> 14 days sense last contact)
+	person, err = GetUser(id)
+	if err != nil || person == nil || person.Name == "" {
+		ses.Values["id"] = nil
+		ses.Values["session"] = nil
+		_ = ses.Save(r, w)
+		http.Redirect(w, r, "/login", 302)
 		return
 	}
-	http.Redirect(w, r, "/", 302)
+	if person.SessionKey != session || time.Now().Unix()-person.Time > 1209600 {
+		ses.Values["id"] = nil
+		ses.Values["session"] = nil
+		err = ses.Save(r, w)
+		if err != nil {
+			fmt.Println("error:", err.Error())
+		}
+		http.Redirect(w, r, "/login", 302)
+		return
+	}
+	CheckIn(person)
 	return
 }
 
 /*
 check is a user is logged in/valid
-TODO: add actuall auth, link with db
-*/
+if not, set them as a temporary user
 func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error) {
 	ses, err := store.Get(r, "user")
 	if err != nil {
+		fmt.Println("error getting session:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
+	// check if id val is set, if not set temp user
 	if ses.Values["id"] == nil {
-		http.Redirect(w, r, "/login", 302)
-		return nil, errors.New("Session Error")
+		return SetTempUser(w, r)
 	}
-	id := ses.Values["id"].(string)
+	// there should be no white space
+	id := strings.Trim(ses.Values["id"].(string), " ")
 	if id == "" {
-		http.Redirect(w, r, "/login", 302)
-		return nil, errors.New("Session Error")
+		return SetTempUser(w, r)
 	}
 	person, err = GetUser(id)
 	if err != nil {
@@ -138,13 +179,72 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 	}
 	return
 }
+*/
 
 /*
-post from login
+Temp User creation
+*/
+func SetTempUser(w http.ResponseWriter, r *http.Request) (person *User, err error) {
+	ses, err := store.Get(r, "user")
+	if err != nil {
+		fmt.Println("error getting session:", err.Error())
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+	// generate a random name, make sure it is not currently in use
+	person = &User{}
+	person.Name = RandomString(64)
+	person.Temp = true
+	person.Folder = ""
+	person.Time = time.Now().Unix()
+	ses.Values["id"] = person.Name
+	err = ses.Save(r, w)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return nil, err
+	}
+	return
+}
+
+/*
+log user out by updating db and deleting session info
+*/
+func Logout(w http.ResponseWriter, r *http.Request) {
+	// get current person logged in to update db
+	ses, err := store.Get(r, "user")
+	if err != nil {
+		fmt.Println("error getting session:", err.Error())
+		SendError(w, err.Error())
+		return
+	}
+	person, err := IsLoggedIn(w, r)
+	ses.Values["id"] = nil
+	ses.Values["session"] = nil
+	defer ses.Save(r, w)
+	if err != nil || person == nil || person.Name == "" {
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+
+	// wipe out session key from db
+	var args []interface{}
+	args = append(args, "")
+	args = append(args, time.Now().Unix())
+	args = append(args, person.Name)
+	DBWrite(UpdateUserSession, args)
+	http.Redirect(w, r, "/", 302)
+	return
+}
+
+/*
+log someone in from info from post request
+check if user exists in db, assign them a random session string and save
+user's checkin to db
 */
 func Login(w http.ResponseWriter, r *http.Request) {
 	ses, err := store.Get(r, "user")
 	if err != nil {
+		fmt.Println("error getting session:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
@@ -156,11 +256,28 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// query db for user
 	// make array size 1 w/ an empty element
-	_, err = GetUser(id)
-	if err != nil {
+	person, err := GetUser(id)
+	if err != nil || person == nil || person.Name == "" {
+		fmt.Println("person:", person)
 		http.Redirect(w, r, "/login", 302)
+		return
 	}
+
+	// save session into db
+	session := RandomString(64)
+	var args []interface{}
+	args = append(args, session)
+	args = append(args, time.Now().Unix())
+	args = append(args, person.Name)
+	err = DBWrite(UpdateUserSession, args)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		return
+	}
+
+	// save session client side
 	ses.Values["id"] = id
+	ses.Values["session"] = session
 	err = ses.Save(r, w)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
@@ -188,11 +305,6 @@ func home(w http.ResponseWriter, r *http.Request) {
 dashboard page
 */
 func dashboard(w http.ResponseWriter, r *http.Request) {
-	_, err := IsLoggedIn(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/programs", 302)
-		return
-	}
 	file, err := ReadFile(path.Join(templateDir, "dashboard.html"))
 	if err != nil {
 		w.Write([]byte("error"))

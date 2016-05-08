@@ -1,30 +1,40 @@
-Request: "api/results/query?name=name"
-return: {
-	name: "progName",
-	results:
+"Request": "api/results/query?name=name",
+"Return Sucess": {
+	"Name": "progName",
+	"Results":
 		[{
-			name: "fileName",
-			data: "bytes"
+			"Name": "fileName",
+			"Data": "bytes"
 		}]
-}
+},
 
-Request: "api/results"
-Return: [{
-	name: "folderName",
-	status: "complete/pending",
-	type: "progName"
-}]
+"Request": "api/results",
+"Return Sucess": [{
+	"Name": "folderName",
+	"Status": "complete/pending",
+	"Type": "progName",
+	"Viewed": "boolean",
+	"Time": "int"
+}],
 
-Post: "api/submit"
+"Post": "api/submit",
 {
-	Name: "progName",
-	Input: [{
+	"Name": "progName",
+	"Input": [{
 		"Name": "fileName",
 		"File": "input"
 	]}
-}
+},
 
-Request error
-Return : {
-	Error: "string"
-}
+"Post": "api/login",
+{
+	"Name": "UserName",
+	"Password": "Password"
+},
+"Request": "api/logout",
+
+"Error, will respond to request or post error with this",
+"Return" :
+{
+	"Error": "string"
+},
