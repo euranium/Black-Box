@@ -82,7 +82,6 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		SendError(w, "Error Processing User")
 		return
 	}
-	fmt.Println("person is:", person)
 	// form is a map["form json"] => "", for some reason, need key to parse
 	str := ""
 	for k, _ := range r.Form {
@@ -103,10 +102,9 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("decoded:", input)
 	// check if the user has a directory, if not create one
 	if person.Folder == "" && person.Temp {
-		fmt.Println("creating Temp user")
 		err = SaveTemp(w, r, person)
 		if err != nil {
-			fmt.Println("err:", err.Error())
+			fmt.Println("err in temp creatin:", err.Error())
 			SendError(w, "Error Setting Up Program")
 			return
 		}
@@ -136,7 +134,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	Tasks <- command
-	w.Write([]byte(fmt.Sprintf(`{}`)))
+	w.Write([]byte(fmt.Sprintf(`{"Name":"%s"}`, base)))
 	return
 }
 
