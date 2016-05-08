@@ -26,6 +26,7 @@ app.directive('result', function() {
 app.directive('file', function() {
     return {
         restrict: 'E',
+        replace: true,
         scope: {
           obj: '=',
           index: '='
@@ -49,9 +50,10 @@ app.controller('MainCtrl', [
     $scope.software = [];
     $scope.results = [];
     $scope.result = {};
+    $scope.prog = "modEvo"; //hard coded for now, parse from url in future
 
-    //hard coded for now, parse from url in future
-    var prog = "modEvo"
+
+
 
     //Call backend to get list of all software----------------*/
     $http.get('/api/listsoftware').success(function(data) {
@@ -74,7 +76,8 @@ app.controller('MainCtrl', [
 
     //Loads the submission template for the given software-----*/
     //compiles the returned data to the dom--------------------*/
-    $scope.loadSoftware = function(name) {
+    $scope.loadSoftware = function(name, event) {
+      fixSelection($(event.target));
       $http.get('/api/template/query?name=' + name).success(function(data) {
         $('#dash').html($compile(data)($scope)); //$sce.trustAsHtml(data);
       });
@@ -103,13 +106,15 @@ app.controller('MainCtrl', [
         })
         .success(function(data) {
           console.log("Data sent");
+          var refresh = $interval(function(){
+            $http.get('/api/results').success(function(data) {
+              angular.copy(data, $scope.results);
+            });
+          }, 500, 6);
+        })
+        .error(function(data){
+          console.log("error!");
         });
-
-      var refresh = $interval(function(){
-        $http.get('/api/results').success(function(data) {
-          angular.copy(data, $scope.results);
-        });
-      }, 500, 6);
 
     }
 
@@ -117,14 +122,22 @@ app.controller('MainCtrl', [
     //Calls the back end api, which returns the files--------*/
     //Parse the files, and compile them to the dom-----------*/
     //Name is the string seen on the dashboard menu with date*/
-    $scope.loadResult = function(name) {
+    $scope.loadResult = function(name, event) {
+      fixSelection($(event.target));
       $http.get('/api/results/query?name=' + name).success(function(data) {
         $scope.result = htmlify(data, "modEvo");
         $('#dash').html($compile("<result obj='result'></result>")($scope));
       });
     };
-
-
-
   }
 ]);
+
+function fixSelection(element){
+  $(".selected").each(function(i, obj){
+    if($(obj).hasClass("selected")){
+      $(obj).removeClass("selected");
+    }
+  })
+
+  element.addClass("selected");
+}
