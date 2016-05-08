@@ -162,7 +162,6 @@ func copyFileContents(src, dst string) (err error) {
 	}
 	err = out.Sync()
 	return
-
 }
 
 func RandomString(strlen int) string {
@@ -231,18 +230,6 @@ func ListDir(directory string) (list []string, err error) {
 	for _, n := range dir {
 		list = append(list, n.Name())
 	}
-	return
-}
-
-func CreateUser(user string) (err error) {
-	return
-}
-
-func AddFile(user, fileName string) (err error) {
-	return
-}
-
-func DeleteFile(user, fileName string) (err error) {
 	return
 }
 
@@ -349,5 +336,23 @@ func DifFiles(folder string, oldFiles []string) (newFiles []string) {
 			newFiles = append(newFiles, f.Name())
 		}
 	}
+	return
+}
+
+func CreateUser(person *User) {
+	// make sure person has a unique folder name
+	person.Folder = person.Name
+	for !CheckDir(path.Join(UserDir, person.Folder)) {
+		person.Folder = RandomString(64)
+	}
+	os.Mkdir(path.Join(UserDir, person.Folder), 0755)
+	return
+}
+
+func AddFile(user, fileName string) (err error) {
+	return
+}
+
+func DeleteFile(user, fileName string) (err error) {
 	return
 }

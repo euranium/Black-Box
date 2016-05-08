@@ -21,6 +21,7 @@ func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 	err := DBRead(QueryPrograms, EmptyInter, &p)
 	if err != nil {
 		fmt.Println("err query:", err.Error())
+		SendError(w, "Error Processing Request")
 		return
 	}
 	var progs []string
@@ -28,6 +29,11 @@ func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 		progs = append(progs, pr.Folder)
 	}
 	b, err := json.Marshal(progs)
+	if err != nil {
+		fmt.Println("err marshal:", err.Error())
+		SendError(w, "Error Formating Data")
+		return
+	}
 	//fmt.Println(string(b))
 	w.Write([]byte(b))
 }
@@ -49,15 +55,16 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 	err := DBReadRow(QueryPrograms, args, &p)
 	if err != nil {
 		fmt.Println("err query:", err.Error())
+		SendError(w, "Error Processing Data")
 		return
 	}
 	if p.Files == "" {
-		w.Write([]byte("Error: no file found"))
+		SendError(w, "Error No Files Found")
 	}
 	name = path.Join(progDir, name, name+".html")
 	file, err := ReadFile(name)
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		SendError(w, "Error Getting Files")
 		return
 	}
 	// TODO: format data
@@ -72,6 +79,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	person, err := IsLoggedIn(w, r)
 	if err != nil || person == nil {
+		SendError(w, "Error Processing User")
 		return
 	}
 	// form is a map["form json"] => "", need key to parse
@@ -87,18 +95,27 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(strings.NewReader(str))
 	err = dec.Decode(&input)
 	if err != nil {
-		fmt.Println("error decode:", err.Error())
+		SendError(w, "Error Processing Information")
 		return
 	}
 	//fmt.Println("decoded:", input)
 
-	// create a new folder, w/ format date-time_random
-	t := time.Now().Format("2006-Jan-02_15:04:05")
-	base := t + "_" + RandomString(12)
+	// create a new folder
+	//t := time.Now().Format("2006-Jan-02_15:04:05")
+	base := RandomString(12)
 	dir := path.Join(UserDir, person.Folder, base)
-	//fmt.Println("copying to:", dir)
+
+	// check if the user has a directory, if not create one
+	if person.Folder == "" && person.Temp {
+		CreateUser(person)
+		if err != nil {
+			SendError(w, "Error Setting Up Program")
+			return
+		}
+	}
 	err = CopyDir(filepath.Join(progDir, input.Name), dir)
 	if err != nil {
+		SendError(w, "Error Setting Up Program")
 		fmt.Println("error copy:", err.Error())
 		return
 	}
@@ -108,13 +125,15 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	command = append(command, dir)
 	// save run to db
 	err = DBWriteMap(InsertRun, structs.Map(Stored{
-		person.Name, base, input.Name, "", float64(time.Now().Unix()),
+		person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp,
 	}))
 	if err != nil {
+		SendError(w, "Error Running Program")
 		fmt.Println("error insert:", err.Error())
 		return
 	}
 	Tasks <- command
+	w.Write([]byte("{}"))
 	return
 }
 
@@ -125,7 +144,8 @@ no params necessary
 func APIListResults(w http.ResponseWriter, r *http.Request) {
 	person, err := IsLoggedIn(w, r)
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		SendError(w, "Error Processing User")
+		fmt.Printf("Error: %s\n", err.Error())
 		return
 	}
 	var s []Stored
@@ -134,7 +154,7 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 	err = DBRead(QueryRuns, args, &s)
 	if err != nil {
 		fmt.Println("error:", err.Error())
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		SendError(w, "Error Processing Request")
 		return
 	}
 	//fmt.Println("results:", s)
@@ -154,7 +174,8 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(list)
 	b, err := json.Marshal(results)
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		fmt.Println("error:", err.Error())
+		SendError(w, "Error Formating Data")
 		return
 	}
 	//fmt.Println(string(b[:]))
@@ -169,27 +190,50 @@ copy the file contents into a struct, and send back in json object
 func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	user, err := IsLoggedIn(w, r)
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		fmt.Println("error:", err.Error())
+		SendError(w, "Error Processing User")
 		return
 	}
+	// parse url header for program name
 	r.ParseForm()
 	name := r.Form["name"][0]
 	var result Stored
 	var args []interface{}
 	args = append(args, name)
-	args = append(args, user.Name)
 	//fmt.Println(args)
 	err = DBReadRow(QueryRun, args, &result)
 	//fmt.Println("name:", name)
 	if err != nil {
 		fmt.Println("error:", err.Error())
-		w.Write([]byte(err.Error()))
+		SendError(w, "File Not Found")
+		return
+	}
+
+	// check if file can be accessed by temporary user
+	if result.Temp == false && user.Name != result.UserName {
+		SendError(w, "File Not Found")
+		return
+	}
+	if strings.Trim(result.Files, " ") == "" {
+		SendError(w, "Program Not Complete")
 		return
 	}
 	files := ReadFiles(filepath.Join(UserDir, user.Folder, name), strings.Split(result.Files, ","))
 	b, err := json.Marshal(Result{name, files})
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		SendError(w, "File Not Found")
+		fmt.Printf("Error: %s\n", err.Error())
+		return
+	}
+
+	// record that the user has viewed the program
+	if !result.Viewed {
+		err = DBWrite(UpdateViewed, args)
+		if err != nil {
+			fmt.Println("Error:", err.Error())
+			SendError(w, "Accessing File")
+			return
+		}
 	}
 	//fmt.Println(string(b))
 	w.Write(b)
@@ -202,7 +246,7 @@ upload zip of folder
 func APIDownload(w http.ResponseWriter, r *http.Request) {
 	user, err := IsLoggedIn(w, r)
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		SendError(w, err.Error())
 		return
 	}
 	r.ParseForm()
@@ -216,7 +260,7 @@ func APIDownload(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("name:", name)
 	if err != nil {
 		fmt.Println("error:", err.Error())
-		w.Write([]byte(err.Error()))
+		SendError(w, err.Error())
 		return
 	}
 }
