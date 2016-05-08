@@ -50,6 +50,29 @@ app.controller('MainCtrl', [
     $scope.software = [];
     $scope.results = [];
     $scope.result = {};
+
+    //for modevo example graph
+    $scope.types = [1, 2, 3];
+    $scope.graphType = 1;
+    $scope.constant = -3;
+    var g = buildData(1);
+    $scope.labels = g.labels;
+    $scope.series = ['Function 1'];
+    $scope.data = g.data;
+    $scope.opt = {
+      bezierCurve: true,
+      showXLabels: 25,
+      responsive: true
+    };
+
+    console.log($scope.data[0]);
+    console.log($scope.labels.length);
+
+     $scope.onClick = function (points, evt) {
+       console.log(points, evt);
+     };
+
+    //$scope.example.data = buildData();
     $scope.prog = "modEvo"; //hard coded for now, parse from url in future
 
 
@@ -129,6 +152,14 @@ app.controller('MainCtrl', [
         $('#dash').html($compile("<result obj='result'></result>")($scope));
       });
     };
+
+    $scope.loadData = function(){
+      var c = typeof $scope.constant;
+      if(c === 'number'){
+        $scope.data = buildData($scope.graphType, $scope.constant).data;
+      }
+    }
+
   }
 ]);
 
@@ -140,4 +171,39 @@ function fixSelection(element){
   })
 
   element.addClass("selected");
+}final
+
+//returns an object with data f-3ield and labels field
+function buildData(type, c){
+  var final = {};
+  var data = [];
+  var outer = []
+  var labels = []
+
+  if(type == 1){
+    for(var i = -8.0; i <= 8.0; i+= 0.5){
+      labels.push(String(i));
+      var ans = i/Math.pow((1+i*i), 0.5);
+      data.push(ans)
+    }
+  }
+  else if(type == 2){
+    for(var i = -8.0; i <= 8.0; i+= 0.5){
+      labels.push(String(i));
+      var ans = i/(1+Math.abs(i));
+      data.push(ans)
+    }
+  }
+  else if(type == 3){
+    for(var i = -8.0; i <= 8.0; i+= 0.5){
+      labels.push(String(i));
+      var ans = 1/(1+Math.exp(c*i));
+      data.push(ans)
+    }
+  }
+
+  outer.push(data);
+  final.data = outer;
+  final.labels = labels;
+  return final;
 }
