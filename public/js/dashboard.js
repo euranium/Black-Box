@@ -10,7 +10,7 @@ var app = angular.module('dashboard', ['ngSanitize', 'chart.js']);
 /*obj is of form
   {
     files: [{}],
-    graphs: [{}]
+    graphs: [    //alert($cookie.getAll());{}]
   }
 */
 app.directive('result', function() {
@@ -41,6 +41,7 @@ app.controller('MainCtrl', [
   '$sce',
   '$interval',
   function($scope, $http, $compile, $sce, $interval) {
+
 
     ////////////////////////////////////////////////////////////////////////////
     //Initialization
