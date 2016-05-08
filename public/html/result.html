@@ -9,6 +9,8 @@
   </div>
 </div>
 
-<div ng-repeat="file in obj.files">
-    <file obj='file' index='file.index'></file>
+<div masonry>
+  <div class="masonry-brick" ng-repeat="file in obj.files">
+      <file obj='file' index='file.index'></file>
+  </div>
 </div>
