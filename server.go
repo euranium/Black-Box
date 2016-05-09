@@ -165,6 +165,7 @@ func SetTempUser(w http.ResponseWriter, r *http.Request) (person *User, err erro
 	person = &User{}
 	ses, err := store.Get(r, "user")
 	if err != nil {
+		RemoveSession(w, r)
 		fmt.Println("error getting session:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
@@ -182,6 +183,16 @@ func SetTempUser(w http.ResponseWriter, r *http.Request) (person *User, err erro
 	return
 }
 
+func RemoveSession(w http.ResponseWriter, r *http.Request) {
+	ses, err := store.Get(r, "user")
+	if err != nil {
+		return
+	}
+	ses.Values["id"] = nil
+	ses.Values["session"] = nil
+	ses.Save(r, w)
+}
+
 func SaveTemp(w http.ResponseWriter, r *http.Request, person *User) (err error) {
 	ses, err := store.Get(r, "user")
 	if err != nil {
@@ -194,7 +205,6 @@ func SaveTemp(w http.ResponseWriter, r *http.Request, person *User) (err error) 
 	person.SessionKey = RandomString(64)
 	person.Temp = true
 	person.Hash = "none"
-	fmt.Println("temp user:", structs.Map(person))
 	err = DBWriteMap(InsertUser, structs.Map(person))
 	if err != nil {
 		fmt.Println("error:", err.Error())
@@ -215,17 +225,9 @@ log user out by updating db and deleting session info
 */
 func Logout(w http.ResponseWriter, r *http.Request) {
 	// get current person logged in to update db
-	ses, err := store.Get(r, "user")
-	if err != nil {
-		fmt.Println("error getting session:", err.Error())
-		SendError(w, err.Error())
-		return
-	}
-	person, err := IsLoggedIn(w, r)
-	ses.Values["id"] = nil
-	ses.Values["session"] = nil
-	defer ses.Save(r, w)
-	if err != nil || person == nil || person.Name == "" {
+	defer RemoveSession(w, r)
+	person, _ := IsLoggedIn(w, r)
+	if person == nil || person.Name == "" {
 		http.Redirect(w, r, "/", 302)
 		return
 	}
