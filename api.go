@@ -309,6 +309,8 @@ func APIRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	CreateUserFolder(person)
+
+	// log in user
 	ses, err := store.Get(r, "user")
 	if err != nil {
 		fmt.Println("error getting session:", err.Error())

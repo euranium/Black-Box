@@ -1,21 +1,25 @@
 body{
-  background-color: #FCFCFC;
+  background-color: #F6F6F6;
 }
 
 img{
   max-width: 100%;
 }
 
-.center {
-  display:block;
-  margin-left:auto;
-  margin-right:auto;
-}
-
 nav{
   border-bottom-style: none !important;
   background: #418EBA !important;
   color: white !important;
+}
+
+#dash{
+  max-width: 1400px;
+}
+
+.center {
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 .white{
@@ -53,6 +57,8 @@ i{
   margin-top: 15px;
 }
 
-#dash{
-  max-width: 1400px;
+.panel{
+  -webkit-box-shadow: 0px 2px 0px 0px rgba(226,226,226,1);
+  -moz-box-shadow: 0px 2px 0px 0px rgba(226,226,226,1);
+  box-shadow: 0px 2px 0px 0px rgba(226,226,226,1);
 }

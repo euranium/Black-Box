@@ -343,7 +343,7 @@ func DifFiles(folder string, oldFiles []string) (newFiles []string) {
 create user folder
 */
 func CreateUserFolder(person *User) {
-	// if person has no name, means a temp user so create a random unique name
+	// if person has no name or folder, means a temp user so create a random unique name
 	if person.Name == "" || person.Folder == "" {
 		person.Folder = RandomString(12)
 		for CheckDir(path.Join(UserDir, person.Folder)) {

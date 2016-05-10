@@ -1,4 +1,3 @@
-
 <div ng-repeat="graph in obj.graphs">
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -10,6 +9,8 @@
   </div>
 </div>
 
-<div ng-repeat="file in obj.files">
-    <file obj='file' index='file.index'></file>
+<div masonry>
+  <div class="masonry-brick" ng-repeat="file in obj.files">
+      <file obj='file' index='file.index'></file>
+  </div>
 </div>

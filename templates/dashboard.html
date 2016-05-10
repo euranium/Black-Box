@@ -3,36 +3,27 @@
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <title>Dashboard</title>
+  <title>Dashboard</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Charting css -->
-    <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css">
+  <!-- Charting css -->
+  <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css">
 
-    <!-- Custom CSS -->
-    <link href="css/simple-sidebar.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <!-- Custom CSS -->
+  <link href="css/dashboard.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-		<!-- Custom CSS -->
-    <style>
-    body {
-        padding-top: 50px;
-        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-    }
-    </style>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
@@ -41,79 +32,85 @@
 
 <body ng-app="dashboard" ng-controller="MainCtrl">
 
-	<div class="container-fluid">
+  <!-- <div class="container-fluid">
 		<div ng-include="'/html/header.html'"></div>
-	</div>
+	</div> -->
 
-	<div class="container-fluid">
-    <div id="wrapper">
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-					<div class="type">
-						<i class="fa fa-cogs"></i>Models
-					</div>
-          <span ng-repeat="item in software track by $index">
-  					<div class="item" ng-click="loadSoftware(item)">
-              {{item}}
-  					</div>
-        </span>
-
-          <div class="type">
-						<i class="fa fa-area-chart"></i>Results
-					</div>
-          <div class="item" ng-show="results == null">
-            no results yet :(
-          </div>
-          <span ng-repeat="item in results track by $index">
-            <div class="item" ng-click="loadResult(item.Name)">
-              {{item.Name}}
-            </div>
-        </span>
-        </div>
-        <!-- /#sidebar-wrapper -->
-
-        <!-- Page Content -->
-        <div id="page-content-wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12" id="dash">
-                      <h1>Dashboard</h1><p>This area will be populated with data from the menu item selected on the left</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /#page-content-wrapper -->
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div id="prog">
+      {{prog}}
     </div>
-    <!-- /#wrapper -->
-	</div>
+    <div id="models">
+      <div class="header">
+        <i class="fa fa-cogs"></i>Models
+      </div>
+      <span ng-repeat="item in software track by $index">
+  				<div class="item" ng-click="loadSoftware(item, $event)">
+            {{item}}
+  				</div>
+      </span>
+    </div>
 
-    <!-- jQuery -->
-    <script src="js/jquery.js"></script>
+    <div id="results">
+      <div class="header">
+        <i class="fa fa-area-chart"></i>Results
+      </div>
+      <div class="item" ng-show="results == null">
+        no results yet :(
+      </div>
+      <span ng-repeat="item in results track by $index">
+          <div class="item" ng-click="loadResult(item.Name, $event)">
+            {{item.Name}}
+          </div>
+      </span>
+    </div>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+  </div><!-- end of sidebar -->
 
-    <!-- Angular js stuff -->
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
+  <div id="dashWrapper">
+    <div id="nav">
+      <div id="navContent">
+        <a class="right" href="/login">Login</a>
+        <a class="right" href="/people">People</a>
+        <a class="right" href="/publications">Pulbications</a>
+        <span class="right">Computational Tools</span>
+        <a class="right" href="/">Home</a>
+      </div>
+    </div>
+    <div id="dash">
+      <h1>Dashboard</h1>
+      <p>This area will be populated with data from the menu item selected on the left</p>
+    </div>
+  </div>
 
-    <!-- Charting Stuff -->
-    <script src="bower_components/Chart.js/Chart.js"></script>
-    <script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
-
-    <!-- Main controller script -->
-    <script src="js/chartify.js"></script>
-    <script src="js/htmlify.js"></script>
-    <script src="js/dashboard.js"></script>
-
-    <!-- Menu Toggle Script -->
-    <script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-    </script>
-
+  <!-- /#page-content-wrapper -->
 </body>
+<!-- jQuery -->
+<script src="js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="js/bootstrap.min.js"></script>
+
+<!-- Angular js stuff -->
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
+
+<!-- Charting Stuff -->
+<script src="bower_components/Chart.js/Chart.js"></script>
+<script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+
+<!-- Main controller script -->
+<script src="js/chartify.js"></script>
+<script src="js/htmlify.js"></script>
+<script src="js/dashboard.js"></script>
+
+<!-- Menu Toggle Script -->
+<script>
+  $("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+  });
+</script>
 
 </html>
