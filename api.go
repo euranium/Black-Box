@@ -190,7 +190,7 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-given a request with query?name=name, query the db for the folder,
+given a request with api/results/query?name=name, query the db for the folder,
 copy the file contents into a struct, and send back in json object
 */
 func APIGetResults(w http.ResponseWriter, r *http.Request) {
@@ -241,11 +241,13 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	//fmt.Println(string(b))
 	w.Write(b)
 	return
 }
 
+/*
+get logged in status of user, will respond with only username and temp status
+*/
 func APILoggedIn(w http.ResponseWriter, r *http.Request) {
 	user, err := IsLoggedIn(w, r)
 	if err != nil {
@@ -262,6 +264,12 @@ func APILoggedIn(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+/*
+delete a stored result given the name
+if storing a logged in user, user must be logged in to delete
+else, just delete temp users folder
+url: /api/delete/query?name=name
+*/
 func APIDelete(w http.ResponseWriter, r *http.Request) {
 	user, err := IsLoggedIn(w, r)
 	if err != nil {
@@ -271,7 +279,6 @@ func APIDelete(w http.ResponseWriter, r *http.Request) {
 	}
 	r.ParseForm()
 	name := r.Form["name"][0]
-	fmt.Println("deleting:", name)
 	var args []interface{}
 	args = append(args, name)
 	args = append(args, user.Name)
@@ -281,6 +288,47 @@ func APIDelete(w http.ResponseWriter, r *http.Request) {
 		SendError(w, "File Not Found")
 		return
 	}
+}
+
+/*
+verify and register a new user, also log them in
+*/
+func APIRegister(w http.ResponseWriter, r *http.Request) {
+	type Message struct {
+		Success string
+	}
+	r.ParseForm()
+	// parse input, make sure not empty
+	name := r.Form["name"][0]
+	pass := r.Form["password"][0]
+	person := &User{name, name, RandomString(64), pass, time.Now().Unix(), false}
+	// attempt to add to db, should fail if username already taken
+	err := DBWriteMap(InsertUser, structs.Map(person))
+	if err != nil {
+		SendError(w, "Username Taken")
+		return
+	}
+	CreateUserFolder(person)
+	ses, err := store.Get(r, "user")
+	if err != nil {
+		fmt.Println("error getting session:", err.Error())
+		SendError(w, err.Error())
+		return
+	}
+	ses.Values["id"] = person.Name
+	ses.Values["session"] = person.SessionKey
+	ses.Save(r, w)
+	if err != nil {
+		fmt.Println("error:", err.Error())
+		SendError(w, err.Error())
+		return
+	}
+	b, err := json.Marshal(&Message{"Success"})
+	if err != nil {
+		fmt.Println("erro mashaling:", err.Error())
+		return
+	}
+	w.Write(b)
 }
 
 func SendError(w http.ResponseWriter, msg string) {

@@ -118,7 +118,7 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 	ses, err := store.Get(r, "user")
 	if err != nil {
 		fmt.Println("error getting session:", err.Error())
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		SendError(w, err.Error())
 		return
 	}
 	if ses.Values["id"] == nil || ses.Values["session"] == nil {
@@ -289,10 +289,35 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func register(w http.ResponseWriter, r *http.Request) {
+	file, err := ReadFile(path.Join(templateDir, "home.html"))
+	if err != nil {
+		fmt.Println("error:", err.Error())
+		w.Write([]byte("error"))
+		return
+	}
+	w.Write(file)
+	return
+}
+
 /*
 home page
 */
 func home(w http.ResponseWriter, r *http.Request) {
+	file, err := ReadFile(path.Join(templateDir, "home.html"))
+	if err != nil {
+		fmt.Println("error:", err.Error())
+		w.Write([]byte("error"))
+		return
+	}
+	w.Write(file)
+	return
+}
+
+/*
+home page
+*/
+func registration(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "home.html"))
 	if err != nil {
 		fmt.Println("error:", err.Error())

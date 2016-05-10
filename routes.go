@@ -74,6 +74,18 @@ var RouteList = Routes{
 		dashboard,
 	},
 	Route{
+		"register",
+		"GET",
+		"/register",
+		register,
+	},
+	Route{
+		"register",
+		"POST",
+		"/api/register",
+		APIRegister,
+	},
+	Route{
 		"API",
 		"GET",
 		"/api/listsoftware",
