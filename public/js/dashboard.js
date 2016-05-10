@@ -128,6 +128,7 @@ app.controller('MainCtrl', [
           }
         })
         .success(function(data) {
+          console.log(data.Name);
           console.log("Data sent");
           var refresh = $interval(function(){
             $http.get('/api/results').success(function(data) {
