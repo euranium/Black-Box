@@ -103,4 +103,16 @@ var RouteList = Routes{
 		"/api/submit",
 		APISubmitForm,
 	},
+	Route{
+		"API",
+		"GET",
+		"/api/loggedIn",
+		APILoggedIn,
+	},
+	Route{
+		"API",
+		"GET",
+		"/api/delete/{name}",
+		APIDelete,
+	},
 }

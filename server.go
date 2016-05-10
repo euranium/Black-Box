@@ -87,10 +87,6 @@ func CheckIn(person *User) (err error) {
 	return
 }
 
-func SendError(w http.ResponseWriter, err string) {
-	w.Write([]byte(fmt.Sprintf(`{"Error": "%s"}`, err)))
-}
-
 /*
 get and fill a user struct from the db,
 if no user is returned, return an error

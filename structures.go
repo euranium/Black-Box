@@ -22,6 +22,10 @@ type Route struct {
 	HandleFunc http.HandlerFunc
 }
 
+type ErrorMessage struct {
+	Error string
+}
+
 type Container []interface{}
 
 /*
@@ -30,10 +34,10 @@ row name, should be filled automatically by sqlx
 */
 type User struct {
 	Name       string `db:"Name"      `
-	Folder     string `db:"Folder"    `
-	SessionKey string `db:"SessionKey"`
-	Hash       string `db:"Hash"      `
-	Time       int64  `db:"Time"      `
+	Folder     string `db:"Folder"    json:"-"`
+	SessionKey string `db:"SessionKey"json:"-"`
+	Hash       string `db:"Hash"      json:"-"`
+	Time       int64  `db:"Time"      json:"-"`
 	Temp       bool   `db:"Temp"      `
 }
 

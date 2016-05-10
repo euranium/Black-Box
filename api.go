@@ -34,8 +34,7 @@ func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 		SendError(w, "Error Formating Data")
 		return
 	}
-	//fmt.Println(string(b))
-	w.Write([]byte(b))
+	w.Write(b)
 }
 
 /*
@@ -67,7 +66,6 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 		SendError(w, "Error Getting Files")
 		return
 	}
-	// TODO: format data
 	w.Write([]byte(file))
 	return
 }
@@ -104,7 +102,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	if person.Folder == "" && person.Temp {
 		err = SaveTemp(w, r, person)
 		if err != nil {
-			fmt.Println("err in temp creatin:", err.Error())
+			fmt.Println("err in temp creation:", err.Error())
 			SendError(w, "Error Setting Up Program")
 			return
 		}
@@ -125,16 +123,23 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	command = append(command, input.Input...)
 	command = append(command, dir)
 	// save run to db
-	err = DBWriteMap(InsertRun, structs.Map(Stored{
-		person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp,
-	}))
+	run := Stored{person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp}
+	//err = DBWriteMap(InsertRun, structs.Map(Stored{
+	//person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp,
+	//}))
+	err = DBWriteMap(InsertRun, structs.Map(run))
 	if err != nil {
 		SendError(w, "Error Running Program")
 		fmt.Println("error insert:", err.Error())
 		return
 	}
 	Tasks <- command
-	w.Write([]byte(fmt.Sprintf(`{"Name":"%s"}`, base)))
+	b, err := json.Marshal(run)
+	if err != nil {
+		fmt.Println("err", err.Error())
+		return
+	}
+	w.Write(b)
 	return
 }
 
@@ -241,27 +246,48 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-/*
-upload zip of folder
-*/
-func APIDownload(w http.ResponseWriter, r *http.Request) {
+func APILoggedIn(w http.ResponseWriter, r *http.Request) {
 	user, err := IsLoggedIn(w, r)
 	if err != nil {
-		SendError(w, err.Error())
+		fmt.Println("error:", err.Error())
+		SendError(w, "Error Processing User")
+		return
+	}
+	//b, err := json.Marshal(&Logged{user.Name, user.Temp})
+	b, err := json.Marshal(user)
+	if err != nil {
+		fmt.Println("erro mashaling:", err.Error())
+		return
+	}
+	w.Write(b)
+}
+
+func APIDelete(w http.ResponseWriter, r *http.Request) {
+	user, err := IsLoggedIn(w, r)
+	if err != nil {
+		fmt.Println("error:", err.Error())
+		SendError(w, "Error Processing User")
 		return
 	}
 	r.ParseForm()
 	name := r.Form["name"][0]
-	var result Stored
+	fmt.Println("deleting:", name)
 	var args []interface{}
 	args = append(args, name)
 	args = append(args, user.Name)
-	fmt.Println(args)
-	err = DBReadRow(QueryRun, args, &result)
-	//fmt.Println("name:", name)
+	err = DBWrite(DeleteRun, args)
 	if err != nil {
 		fmt.Println("error:", err.Error())
-		SendError(w, err.Error())
+		SendError(w, "File Not Found")
 		return
 	}
+}
+
+func SendError(w http.ResponseWriter, msg string) {
+	b, err := json.Marshal(&ErrorMessage{msg})
+	if err != nil {
+		fmt.Println("erro mashaling:", err.Error())
+		return
+	}
+	w.Write(b)
 }

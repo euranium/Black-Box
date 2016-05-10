@@ -15,38 +15,40 @@ global reference to sql prepared statements to user
 var (
 	db *sqlx.DB
 	// add user
-	InsertUser = `Insert Into Users (Name,Folder,SessionKey,Hash,Time,Temp) Values
+	InsertUser = `INSERT INTO Users (Name,Folder,SessionKey,Hash,Time,Temp) VALUES
 	(:Name,:Folder,:SessionKey,:Hash,:Time,:Temp)`
 	// get one user
-	QueryUser = "Select * from Users where name=$1"
+	QueryUser = "SELECT * FROM Users where name=$1"
 	// get all programs
-	QueryPrograms = "Select Folder, Name, ProgType, Files from Programs"
+	QueryPrograms = "SELECT Folder, Name, ProgType, Files FROM Programs"
 	// get info on one program
-	QueryProgram = `Select Folder, Name, ProgType, Files from Programs
-	where Name=$1`
+	QueryProgram = `SELECT Folder, Name, ProgType, Files FROM Programs
+	WHERE Name=$1`
 	// get results given a folder and username
-	QueryRun = `Select Folder, UserName, ProgName, Files, Viewed, Time, Temp from Stored
-	Where Folder=$1`
+	QueryRun = `SELECT Folder, UserName, ProgName, Files, Viewed, Time, Temp FROM Stored
+	WHERE Folder=$1`
 	// get all results associated w/ a user
-	QueryRuns = `Select Folder, ProgName, Files, Viewed, Time, Temp from Stored
-	Where UserName=$1`
+	QueryRuns = `SELECT Folder, ProgName, Files, Viewed, Time, Temp FROM Stored
+	WHERE UserName=$1`
 	// get all completed results
-	QueryCompleted = `Select Folder, UserName, ProgName, Files, Time from Stored
-	Where UserName=$1 and Files != " "`
+	QueryCompleted = `SELECT Folder, UserName, ProgName, Files, Time fROM Stored
+	WHERE UserName=$1 and Files != " "`
 	// add a program
-	InsertProgram = `Insert Into Programs (Folder,Name,ProgType,Files)
-	Values (:Folder,:Name,:ProgType,:Files)`
+	InsertProgram = `INSERT INTO Programs (Folder,Name,ProgType,Files)
+	VALUES (:Folder,:Name,:ProgType,:Files)`
 	// add a program run
-	InsertRun = `Insert Into Stored (UserName,Folder,ProgName,Files,Time,Temp)
-	Values (:UserName,:Folder,:ProgName,:Files,:Time,:Temp)`
+	InsertRun = `INSERT INTO Stored (UserName,Folder,ProgName,Files,Time,Temp)
+	VALUES (:UserName,:Folder,:ProgName,:Files,:Time,:Temp)`
 	// update a program run w/ generated files, error message
-	UpdateRun = `Update Stored Set Files=$1, Message=$2 Where Folder=$3`
+	UpdateRun = `UPDATE Stored SET Files=$1, Message=$2 WHERE Folder=$3`
 	// set viewed of program to true
-	UpdateViewed = `Update Stored Set Viewed=1 Where Folder=$1`
+	UpdateViewed = `UPDATE Stored SET Viewed=1 WHERE Folder=$1`
 	// update last time user has checked in
-	UpdateUserTime = `Update Users Set Time=$1 Where Name=$2`
+	UpdateUserTime = `UPDATE Users SET Time=$1 WHERE Name=$2`
 	// update what user session value is, normally for logging out
-	UpdateUserSession = `Update users Set SessionKey=$1, Time=$2 Where Name=$3`
+	UpdateUserSession = `UPDATE users SET SessionKey=$1, Time=$2 WHERE Name=$3`
+	// delete stored data
+	DeleteRun = `DELETE FROM STORED WHERE Folder=$1 AND (UserName=$2 OR Temp=1)`
 )
 
 /*
