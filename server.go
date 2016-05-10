@@ -338,12 +338,6 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
-	if ses.Values["id"] == nil {
-		fmt.Println("no id val")
-	} else {
-		id := ses.Values["id"].(string)
-		fmt.Println("id:", id)
-	}
 	file, err := ReadFile(path.Join(templateDir, "dashboard.html"))
 	if err != nil {
 		w.Write([]byte("error"))
