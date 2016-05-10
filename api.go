@@ -104,7 +104,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	if person.Folder == "" && person.Temp {
 		err = SaveTemp(w, r, person)
 		if err != nil {
-			fmt.Println("err in temp creatin:", err.Error())
+			fmt.Println("err in temp creation:", err.Error())
 			SendError(w, "Error Setting Up Program")
 			return
 		}
@@ -241,27 +241,17 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-/*
-upload zip of folder
-*/
-func APIDownload(w http.ResponseWriter, r *http.Request) {
+func LoggedIn(w http.ResponseWriter, r *http.Request) {
 	user, err := IsLoggedIn(w, r)
 	if err != nil {
-		SendError(w, err.Error())
-		return
-	}
-	r.ParseForm()
-	name := r.Form["name"][0]
-	var result Stored
-	var args []interface{}
-	args = append(args, name)
-	args = append(args, user.Name)
-	fmt.Println(args)
-	err = DBReadRow(QueryRun, args, &result)
-	//fmt.Println("name:", name)
-	if err != nil {
 		fmt.Println("error:", err.Error())
-		SendError(w, err.Error())
+		SendError(w, "Error Processing User")
 		return
 	}
+	user.Hash = ""
+	user.SessionKey = ""
+	user.Folder = ""
+	b, err := json.Marshal(user)
+	fmt.Println("sending:", b)
+	w.Write(b)
 }
