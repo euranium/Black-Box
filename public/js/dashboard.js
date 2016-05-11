@@ -51,7 +51,7 @@ app.controller('MainCtrl', [
     $scope.results = [];
     $scope.result = {};
 
-    //for modevo example graph
+    //for modevo example graph in form
     $scope.types = [1, 2, 3];
     $scope.graphType = 1;
     $scope.constant = -3;
@@ -64,9 +64,6 @@ app.controller('MainCtrl', [
       showXLabels: 25,
       responsive: true
     };
-
-    console.log($scope.data[0]);
-    console.log($scope.labels.length);
 
      $scope.onClick = function (points, evt) {
        console.log(points, evt);
@@ -85,7 +82,7 @@ app.controller('MainCtrl', [
 
     //Call backend to get list of all results----------------*/
     $http.get('/api/results').success(function(data) {
-      angular.copy(data, $scope.results);
+      $scope.results = data;
     });
 
     ////////////////////////////////////////////////////////////////////////////
@@ -172,7 +169,7 @@ function fixSelection(element){
   })
 
   element.addClass("selected");
-}final
+}
 
 //returns an object with data f-3ield and labels field
 function buildData(type, c){
