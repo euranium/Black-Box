@@ -332,12 +332,6 @@ func registration(w http.ResponseWriter, r *http.Request) {
 dashboard page
 */
 func dashboard(w http.ResponseWriter, r *http.Request) {
-	ses, err := store.Get(r, "user")
-	if err != nil {
-		fmt.Println("error getting session:", err.Error())
-		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		return
-	}
 	file, err := ReadFile(path.Join(templateDir, "dashboard.html"))
 	if err != nil {
 		w.Write([]byte("error"))
