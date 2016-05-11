@@ -164,14 +164,6 @@ app.controller('MainCtrl', [
   }
 ]);
 
-app.controller('Nav', [
-  '$scope',
-  '$http',
-  function($scope, $http) {
-    alert("test");
-]);
-
-
 function fixSelection(element){
   $(".selected").each(function(i, obj){
     if($(obj).hasClass("selected")){
@@ -180,7 +172,7 @@ function fixSelection(element){
   })
 
   element.addClass("selected");
-}
+}final
 
 //returns an object with data f-3ield and labels field
 function buildData(type, c){
