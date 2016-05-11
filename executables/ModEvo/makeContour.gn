@@ -1,0 +1,30 @@
+# set output params
+set terminal png
+set output "contourPlot.png"
+
+# define fitness function
+f(x,y)=((1.0/(abs(100.0 * 2 * 3.14))**0.5) * exp(-((x-0.4)**2)/(2*100.0))) + ((1.0/(abs(500.0 * 2 * 3.14))**0.5) * exp(-((y-12.0)**2)/(2*500)))
+
+# generate contour
+set isosample 500, 500
+set table 'contourBase.dat'
+splot [-20: 20] [-20: 20] f(x,y)
+unset table
+
+# create contour lines
+unset surface
+set contour base
+set cntrparam level incremental 0.0,0.005,1.0
+set table 'contourLines.dat'
+splot [-20: 20] [-20: 20] f(x,y)
+unset table
+
+reset
+set xrange [-20: 20]
+set yrange [-20: 20]
+set xlabel 'trait 1'
+set ylabel 'trait 2'
+set title 'fitness surface'
+unset key
+set palette rgbformulae 33,13,10
+plot 'contourBase.dat' with image, 'contourLines.dat' w l lt -1 lw 1, "< paste meanTraitOneValues_GeneralModel_1.txt meanTraitTwoValues_GeneralModel_1.txt" using 2:4 with lines
