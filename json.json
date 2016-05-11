@@ -30,12 +30,12 @@
 	"Name": "generated name"
 },
 
-"Post": "api/login",
+"Request": "api/loggedIn",
 {
 	"Name": "UserName",
-	"Password": "Password"
+	"Temp": "boolean"
 },
-"Request": "api/logout",
+"Request": "api/delete/query?name=name",
 
 "Error, will respond to request or post error with this",
 "Return" :
