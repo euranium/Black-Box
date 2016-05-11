@@ -82,7 +82,9 @@ app.controller('MainCtrl', [
 
     //Call backend to get list of all results----------------*/
     $http.get('/api/results').success(function(data) {
-      $scope.results = data;
+      if(data != "null"){
+        $scope.results = data;
+      }
     });
 
     ////////////////////////////////////////////////////////////////////////////
@@ -144,6 +146,7 @@ app.controller('MainCtrl', [
     //Parse the files, and compile them to the dom-----------*/
     //Name is the string seen on the dashboard menu with date*/
     $scope.loadResult = function(name, event) {
+      console.log("test!" + $scope.results);
       fixSelection($(event.target));
       $http.get('/api/results/query?name=' + name).success(function(data) {
         $scope.result = htmlify(data, "modEvo");

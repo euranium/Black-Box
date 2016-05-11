@@ -56,7 +56,7 @@
       <div class="header">
         <i class="fa fa-area-chart"></i>Results
       </div>
-      <div class="item" ng-show="results == null">
+      <div class="item" ng-show="results.length == 0">
         no results yet :(
       </div>
       <span ng-repeat="item in results track by $index">
