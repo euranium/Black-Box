@@ -1,3 +1,10 @@
+<!--Wrapper directive to wrap graph and file results
+obj is of form{files: [{}], graphs: []}-->
+
+<div class="alert alert-danger" role="alert" ng-show="message">
+  <span style="font-size:20px; font-weight: bold;"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>{{message}}</span>
+</div>
+
 <div ng-repeat="graph in obj.graphs">
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -9,8 +16,6 @@
   </div>
 </div>
 
-<div masonry>
-  <div class="masonry-brick" ng-repeat="file in obj.files">
-      <file obj='file' index='file.index'></file>
-  </div>
+<div ng-repeat="file in obj.files">
+    <file obj='file' index='file.index'></file>
 </div>
