@@ -84,6 +84,10 @@ app.controller('MainCtrl', [
     $http.get('/api/results').success(function(data) {
       if(data != "null"){
         $scope.results = data;
+        console.log("TESTING!!!!!" + $scope.results);
+      }
+      else{
+        $scope.results = [];
       }
     });
 
