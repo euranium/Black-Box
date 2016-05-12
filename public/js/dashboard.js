@@ -27,9 +27,6 @@ function($stateProvider, $urlRouterProvider) {
     $stateProvider
       .state('model', {
         url: '/model/{id}',
-        templateUrl: function ($stateParams){
-          return "/html/models/" + $stateParams.id + ".html";
-        },
         controller: 'ModelCtrl'
       });
 
@@ -73,7 +70,18 @@ app.controller('ModelCtrl', [
 '$rootScope',
 '$stateParams',
 '$http',
-function($scope, $rootScope, $stateParams, $http){
+'$compile',
+function($scope, $rootScope, $stateParams, $http, $compile){
+
+  $http.get('/api/template/query?name=' + $stateParams.id).success(function(data) {
+    if(data.hasOwnProperty('Error')){
+      var error = "<p>Invalid url ¯\\\_(ツ)_/¯</p>";
+      $('#dash').html($compile(error)($scope));
+    }
+    else{
+      $('#dash').html($compile(data)($scope));
+    }
+  });
 
   $scope.working = false;
 
