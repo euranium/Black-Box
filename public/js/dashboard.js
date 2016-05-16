@@ -4,24 +4,36 @@ Runs the "front end" of the dashboard
 Dynamically populates the dashboard page
 */
 
-var app = angular.module('dashboard', ['ngSanitize', 'chart.js']);
+var app = angular.module('dashboard', ['ngSanitize', 'ui.router', 'chart.js']);
 
-//Wrapper directive to wrap graph and file results
-/*obj is of form
-  {
-    files: [{}],
-    graphs: [    //alert($cookie.getAll());{}]
-  }
-*/
-app.directive('result', function() {
-    return {
-        restrict: 'E',
-        scope: {
-          obj: '='
-        },
-        templateUrl: '/html/result.html'
-    };
-});
+app.config([
+'$stateProvider',
+'$urlRouterProvider',
+function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider
+    .state('default', {
+      url: '/default',
+      templateUrl: '/html/default.html'
+    });
+
+  $stateProvider
+    .state('result', {
+      url: '/result/{id}',
+      templateUrl: '/html/result.html',
+      controller: 'ResultCtrl'
+    });
+
+    $stateProvider
+      .state('model', {
+        url: '/model/{id}',
+        controller: 'ModelCtrl'
+      });
+
+  $urlRouterProvider.otherwise('default');
+}]);
+
+
 
 app.directive('file', function() {
     return {
@@ -35,13 +47,119 @@ app.directive('file', function() {
     };
 });
 
-app.controller('MainCtrl', [
+app.controller('ResultCtrl', [
+'$scope',
+'$stateParams',
+'$http',
+function($scope, $stateParams, $http){
+  $scope.obj = {}
+  $scope.message = "";
+  $http.get('/api/results/query?name=' + $stateParams.id).success(function(data) {
+    if(data.hasOwnProperty('Error')){
+      $scope.message = "Invalid url ¯\\\_(ツ)_/¯";
+    }
+    else{
+      $scope.obj = htmlify(data, "modEvo");
+    }
+  });
+
+}]);
+
+app.controller('ModelCtrl', [
+'$scope',
+'$rootScope',
+'$stateParams',
+'$http',
+'$compile',
+function($scope, $rootScope, $stateParams, $http, $compile){
+
+  $http.get('/api/template/query?name=' + $stateParams.id).success(function(data) {
+    if(data.hasOwnProperty('Error')){
+      var error = "<p>Invalid url ¯\\\_(ツ)_/¯</p>";
+      $('#dash').html($compile(error)($scope));
+    }
+    else{
+      $('#dash').html($compile(data)($scope));
+    }
+  });
+
+  $scope.working = false;
+
+  //for modevo example graph in form
+  $scope.types = [1, 2, 3];
+  $scope.graphType = 1;
+  $scope.constant = -3;
+  var g = buildData(1);
+  $scope.labels = g.labels;
+  $scope.series = ['Function 1'];
+  $scope.data = g.data;
+  $scope.opt = {
+    bezierCurve: true,
+    showXLabels: 25,
+    responsive: true
+  };
+
+   $scope.onClick = function (points, evt) {
+     console.log(points, evt);
+   };
+
+   $scope.loadData = function(){
+     var c = typeof $scope.constant;
+     if(c === 'number'){
+       $scope.data = buildData($scope.graphType, $scope.constant).data;
+     }
+   }
+
+   //Sends the form data to the server to compute a result--*/
+   //Gets called when the submit button is clicked----------*/
+   //Builds argument list from inputs with 'sending' class--*/
+   $scope.send = function(name) {
+     if($scope.working){
+       return;
+     }
+     $scope.working = true;
+     console.log("sending for prog: " + name);
+
+     args = getInput();
+
+     obj = {
+       Name: name,
+       Input: args,
+     };
+
+     $http({
+         method: 'POST',
+         url: 'api/submit',
+         data: JSON.stringify(obj),
+         headers: {
+           'Content-Type': 'application/x-www-form-urlencoded'
+         }
+       })
+       .success(function(data) {
+         console.log(data.Name);
+         console.log("Data sent");
+         $rootScope.$broadcast('lemonade', 1);
+         $scope.working = false;
+       })
+       .error(function(data){
+         console.log("error!");
+       });
+
+   }
+
+
+
+}]);
+
+app.controller('SideBarCtrl', [
   '$scope',
+  '$rootScope',
   '$http',
   '$compile',
   '$sce',
   '$interval',
-  function($scope, $http, $compile, $sce, $interval) {
+  '$location',
+  function($scope, $rootScope, $http, $compile, $sce, $interval, $location) {
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -51,32 +169,8 @@ app.controller('MainCtrl', [
     $scope.results = [];
     $scope.result = {};
 
-    //for modevo example graph
-    $scope.types = [1, 2, 3];
-    $scope.graphType = 1;
-    $scope.constant = -3;
-    var g = buildData(1);
-    $scope.labels = g.labels;
-    $scope.series = ['Function 1'];
-    $scope.data = g.data;
-    $scope.opt = {
-      bezierCurve: true,
-      showXLabels: 25,
-      responsive: true
-    };
-
-    console.log($scope.data[0]);
-    console.log($scope.labels.length);
-
-     $scope.onClick = function (points, evt) {
-       console.log(points, evt);
-     };
-
     //$scope.example.data = buildData();
     $scope.prog = "modEvo"; //hard coded for now, parse from url in future
-
-
-
 
     //Call backend to get list of all software----------------*/
     $http.get('/api/listsoftware').success(function(data) {
@@ -85,7 +179,12 @@ app.controller('MainCtrl', [
 
     //Call backend to get list of all results----------------*/
     $http.get('/api/results').success(function(data) {
-      angular.copy(data, $scope.results);
+      if(data != "null"){
+        $scope.results = data;
+      }
+      else{
+        $scope.results = [];
+      }
     });
 
     ////////////////////////////////////////////////////////////////////////////
@@ -101,68 +200,36 @@ app.controller('MainCtrl', [
     //compiles the returned data to the dom--------------------*/
     $scope.loadSoftware = function(name, event) {
       fixSelection($(event.target));
-      $http.get('/api/template/query?name=' + name).success(function(data) {
-        $('#dash').html($compile(data)($scope)); //$sce.trustAsHtml(data);
-      });
+      $location.path("/model/" + name);
+
+      // $http.get('/api/template/query?name=' + name).success(function(data) {
+      //   $('#dash').html($compile(data)($scope)); //$sce.trustAsHtml(data);
+      // });
     };
 
-    //Sends the form data to the server to compute a result--*/
-    //Gets called when the submit button is clicked----------*/
-    //Builds argument list from inputs with 'sending' class--*/
-    $scope.send = function(name) {
-      console.log("sending for prog: " + name);
-
-      args = getInput();
-
-      obj = {
-        Name: name,
-        Input: args,
-      };
-
-      $http({
-          method: 'POST',
-          url: 'api/submit',
-          data: JSON.stringify(obj),
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        })
-        .success(function(data) {
-          console.log(data.Name);
-          console.log("Data sent");
-          var refresh = $interval(function(){
-            $http.get('/api/results').success(function(data) {
-              angular.copy(data, $scope.results);
-            });
-          }, 500, 6);
-        })
-        .error(function(data){
-          console.log("error!");
-        });
-
-    }
-
-    //Gets called when a result tab is clicked---------------*/
-    //Calls the back end api, which returns the files--------*/
+    //Gets called wheend api, which returns the files--------*/
     //Parse the files, and compile them to the dom-----------*/
     //Name is the string seen on the dashboard menu with date*/
     $scope.loadResult = function(name, event) {
       fixSelection($(event.target));
-      $http.get('/api/results/query?name=' + name).success(function(data) {
-        $scope.result = htmlify(data, "modEvo");
-        $('#dash').html($compile("<result obj='result'></result>")($scope));
-      });
+      $location.path("/result/" + name);
     };
 
-    $scope.loadData = function(){
-      var c = typeof $scope.constant;
-      if(c === 'number'){
-        $scope.data = buildData($scope.graphType, $scope.constant).data;
-      }
-    }
+    $rootScope.$on('lemonade', function(event, msg){
+        $http.get('/api/results').success(function(data) {
+          if(data != "null"){
+            $scope.results = data;
+          }
+          else{
+            $scope.results = [];
+          }
+        });
+    });
 
   }
 ]);
+
+//Non angular functions
 
 function fixSelection(element){
   $(".selected").each(function(i, obj){
@@ -172,7 +239,7 @@ function fixSelection(element){
   })
 
   element.addClass("selected");
-}final
+}
 
 //returns an object with data f-3ield and labels field
 function buildData(type, c){
