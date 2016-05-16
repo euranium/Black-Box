@@ -89,7 +89,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// parse json bytes to struct
-	var input Submit
+	var input []Submit
 	dec := json.NewDecoder(strings.NewReader(str))
 	err = dec.Decode(&input)
 	if err != nil {
@@ -112,18 +112,20 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	//t := time.Now().Format("2006-Jan-02_15:04:05")
 	base := RandomString(12)
 	dir := path.Join(UserDir, person.Folder, base)
-	err = CopyDir(filepath.Join(progDir, input.Name), dir)
+	err = CopyDir(filepath.Join(progDir, input[0].Name), dir)
 	if err != nil {
 		SendError(w, "Error Setting Up Program")
 		fmt.Println("error copy:", err.Error())
 		return
 	}
-	var command []string
-	command = append(command, "java", input.Name)
-	command = append(command, input.Input...)
-	command = append(command, dir)
+	/*
+		var command []string
+		command = append(command, "java", input.Name)
+		command = append(command, input.Input...)
+		command = append(command, dir)
+	*/
 	// save run to db
-	run := Stored{person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp}
+	run := Stored{person.Name, base, input[0].Name, "", false, time.Now().Unix(), person.Temp}
 	//err = DBWriteMap(InsertRun, structs.Map(Stored{
 	//person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp,
 	//}))
@@ -133,7 +135,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("error insert:", err.Error())
 		return
 	}
-	Tasks <- command
+	Tasks <- input
 	b, err := json.Marshal(run)
 	if err != nil {
 		fmt.Println("err", err.Error())

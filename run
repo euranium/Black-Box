@@ -10,7 +10,7 @@ clean=1
 tst=1
 port="-port=8080"
 echo options -ctip 8080
-echo c to clean, t to just test, i and p with port number
+echo c to clean, t to just test, i to import packages, and p with port number
 echo p and port number must go last
 while getopts ":ctip:" o; do
 	case $o in

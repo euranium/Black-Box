@@ -25,7 +25,7 @@ var (
 	UserDir     = "users/"
 	templateDir = "templates/"
 	progDir     = "executables/"
-	Tasks       = make(chan []string, 64)
+	Tasks       = make(chan []Submit, 64)
 	Signal      = make(chan os.Signal, 1)
 	store       = sessions.NewCookieStore([]byte("something-secret-or-not"))
 	//store       *sessions.CookieStore

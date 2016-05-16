@@ -20,10 +20,9 @@ var (
 	// get one user
 	QueryUser = "SELECT * FROM Users where name=$1"
 	// get all programs
-	QueryPrograms = "SELECT Folder, Name, ProgType, Files FROM Programs"
+	QueryPrograms = "SELECT Folder, Files FROM Programs"
 	// get info on one program
-	QueryProgram = `SELECT Folder, Name, ProgType, Files FROM Programs
-	WHERE Name=$1`
+	QueryProgram = `SELECT Folder, Files, CommandName FROM Programs WHERE Name=$1`
 	// get results given a folder and username
 	QueryRun = `SELECT Folder, UserName, ProgName, Files, Viewed, Time, Temp FROM Stored
 	WHERE Folder=$1`
@@ -34,8 +33,9 @@ var (
 	QueryCompleted = `SELECT Folder, UserName, ProgName, Files, Time fROM Stored
 	WHERE UserName=$1 and Files != " "`
 	// add a program
-	InsertProgram = `INSERT INTO Programs (Folder,Name,ProgType,Files)
-	VALUES (:Folder,:Name,:ProgType,:Files)`
+	InsertProgram = `INSERT INTO Programs (Folder,Files) VALUES (:Folder,:Files)`
+	// add command which references another command
+	InsertCommand = `INSERT INTO Command (Name,ProgType) VALUES (:Name,:ProgType)`
 	// add a program run
 	InsertRun = `INSERT INTO Stored (UserName,Folder,ProgName,Files,Time,Temp)
 	VALUES (:UserName,:Folder,:ProgName,:Files,:Time,:Temp)`

@@ -1,4 +1,9 @@
-{
+[{
 	"Name": "ModEvo",
 	"ProgType": "java"
-}
+},
+{
+		"Name": "makeContour.gn",
+		"ProgType": "gnuplot"
+	}
+]

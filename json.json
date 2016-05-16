@@ -18,13 +18,10 @@
 }],
 
 "Post": "api/submit",
-{
+[{
 	"Name": "progName",
-	"Input": [{
-		"Name": "fileName",
-		"File": "input"
-	]}
-},
+	"Input": ["input"]
+]},
 "Response":
 {
 	"Name": "generated name"

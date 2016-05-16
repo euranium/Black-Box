@@ -54,6 +54,65 @@ func AddProgram(folder string) (err error) {
 	if err != nil {
 		return
 	}
+	var cmd []Command
+	dec := json.NewDecoder(bytes.NewReader(config))
+	err = dec.Decode(&cmd)
+	if err != nil {
+		fmt.Println("error decode:", err.Error())
+		return
+	}
+	if len(cmd) <= 0 {
+		fmt.Println("Error: No config")
+		return errors.New("Error: config not properly configured")
+	}
+	for _, v := range cmd {
+		err = DBWriteMap(InsertCommand, structs.Map(v))
+	}
+	var prog Programs
+	prog.Folder = folder
+	files, err := ListDir(filepath.Join(progDir, folder))
+	if err != nil {
+		return
+	}
+	prog.Files = strings.Join(files, ",")
+	err = DBWriteMap(InsertProgram, structs.Map(prog))
+	if err != nil {
+		fmt.Println("add program err:", err)
+	}
+	return
+}
+
+/*
+func AddCommand(cmd *Cmd) (name string, err error) {
+	name = ""
+	if cmd.Exec != nil && cmd.Exec.Name != "" {
+		name, err = AddCommand(cmd.Exec)
+	}
+	if err != nil {
+		return
+	}
+	var c Command
+	c.Name = cmd.Name
+	c.ProgType = cmd.ProgType
+	c.CommandName = name
+	if name == "" {
+		var args []interface{}
+		args = append(args, c.Name)
+		args = append(args, c.ProgType)
+		err = DBWrite(InsertCmd, args)
+	} else {
+		err = DBWriteMap(InsertCommand, structs.Map(c))
+	}
+	return cmd.Name, err
+}
+
+/*
+func AddProgram(folder string) (err error) {
+	file := filepath.Join(progDir, folder, "config.json")
+	config, err := ReadFile(file)
+	if err != nil {
+		return
+	}
 	//fmt.Println("config:", string(config))
 	var prog Programs
 	prog.Folder = folder
@@ -79,6 +138,7 @@ func AddProgram(folder string) (err error) {
 	}
 	return
 }
+*/
 
 /*
 copy all files from a directory to a new dir

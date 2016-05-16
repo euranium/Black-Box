@@ -31,21 +31,20 @@ The program is then run with the provided arguments minus the last path
 func RunCmd() {
 	for {
 		select {
-		case args := <-Tasks:
-			if len(args) <= 2 {
-				fmt.Println("error: not enough arguments")
-				break
+		case input := <-Tasks:
+			var out []byte
+			for _, command := range input {
+				cmd := exec.Command("python", command.Input...)
+				out, err := cmd.CombinedOutput()
+				if err != nil {
+					fmt.Printf("error: %s, msg: %s", err.Error(), out)
+					break
+				}
 			}
-			args = append([]string{"exec.py"}, args...)
-			cmd := exec.Command("python", args...)
-			out, err := cmd.CombinedOutput()
-			if err != nil {
-				fmt.Printf("error: %s, msg: %s", err.Error(), out)
-				LogRun(args[len(args)-1], args[2], out)
-			} else {
-				fmt.Printf("finished running: %s\n", out)
-				LogRun(args[len(args)-1], args[2], []byte(""))
+			if out == nil {
+				out = []byte("")
 			}
+			LogRun(input[0].Dir, input[0].Name, out)
 		}
 	}
 }
