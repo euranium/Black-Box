@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/fatih/structs"
@@ -41,33 +39,14 @@ func FilesInit() (err error) {
 			}
 		}
 		if found == false {
-			fmt.Println("not found:", f)
 			AddProgram(f)
+			fmt.Println("Added Program:", f)
 		}
 	}
 	return
 }
 
 func AddProgram(folder string) (err error) {
-	file := filepath.Join(progDir, folder, "config.json")
-	config, err := ReadFile(file)
-	if err != nil {
-		return
-	}
-	var cmd []Command
-	dec := json.NewDecoder(bytes.NewReader(config))
-	err = dec.Decode(&cmd)
-	if err != nil {
-		fmt.Println("error decode:", err.Error())
-		return
-	}
-	if len(cmd) <= 0 {
-		fmt.Println("Error: No config")
-		return errors.New("Error: config not properly configured")
-	}
-	for _, v := range cmd {
-		err = DBWriteMap(InsertCommand, structs.Map(v))
-	}
 	var prog Programs
 	prog.Folder = folder
 	files, err := ListDir(filepath.Join(progDir, folder))

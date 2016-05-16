@@ -12,7 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 //Class to set up and run the models then graph the results
-public class ModEvo{
+public class ModEvo_Model_One{
 
    //The main method used to run the models
    public static void main(String[]args){

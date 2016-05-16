@@ -22,7 +22,9 @@ var (
 	// get all programs
 	QueryPrograms = "SELECT Folder, Files FROM Programs"
 	// get info on one program
-	QueryProgram = `SELECT Folder, Files, CommandName FROM Programs WHERE Name=$1`
+	QueryProgram = `SELECT Folder, Files FROM Programs WHERE Folder=$1`
+	// get program associated with a command
+	QueryCommand = `SELECT Name, ProgType FROM Command WHERE Name=$1`
 	// get results given a folder and username
 	QueryRun = `SELECT Folder, UserName, ProgName, Files, Viewed, Time, Temp FROM Stored
 	WHERE Folder=$1`

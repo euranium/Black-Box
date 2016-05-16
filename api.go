@@ -87,15 +87,30 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 			str = k
 		}
 	}
+	fmt.Println("input", str)
 
 	// parse json bytes to struct
-	var input []Submit
+	var input Submit
 	dec := json.NewDecoder(strings.NewReader(str))
 	err = dec.Decode(&input)
 	if err != nil {
 		SendError(w, "Error Processing Information")
 		return
 	}
+	var args []interface{}
+	args = append(args, input.Name)
+	var command Command
+	err = DBReadRow(QueryCommand, args, &command)
+	if err != nil {
+		fmt.Println("err in prog finding")
+		SendError(w, "Error Setting Up Program")
+		return
+	} else if command.Name == "" {
+		fmt.Println("No program found")
+		SendError(w, "Error No Program Found")
+		return
+	}
+	input.Input = append([]string{command.ProgType, command.Name}, input.Input...)
 
 	//fmt.Println("decoded:", input)
 	// check if the user has a directory, if not create one
@@ -112,12 +127,13 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	//t := time.Now().Format("2006-Jan-02_15:04:05")
 	base := RandomString(12)
 	dir := path.Join(UserDir, person.Folder, base)
-	err = CopyDir(filepath.Join(progDir, input[0].Name), dir)
+	err = CopyDir(filepath.Join(progDir, input.Name), dir)
 	if err != nil {
 		SendError(w, "Error Setting Up Program")
 		fmt.Println("error copy:", err.Error())
 		return
 	}
+	input.Dir = dir
 	/*
 		var command []string
 		command = append(command, "java", input.Name)
@@ -125,7 +141,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		command = append(command, dir)
 	*/
 	// save run to db
-	run := Stored{person.Name, base, input[0].Name, "", false, time.Now().Unix(), person.Temp}
+	run := Stored{person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp}
 	//err = DBWriteMap(InsertRun, structs.Map(Stored{
 	//person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp,
 	//}))
@@ -135,7 +151,10 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("error insert:", err.Error())
 		return
 	}
-	Tasks <- input
+	input.Input = append(input.Input, input.Dir)
+	var cmds []Submit
+	cmds = append(cmds, input)
+	Tasks <- cmds
 	b, err := json.Marshal(run)
 	if err != nil {
 		fmt.Println("err", err.Error())

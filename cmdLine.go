@@ -34,6 +34,8 @@ func RunCmd() {
 		case input := <-Tasks:
 			var out []byte
 			for _, command := range input {
+				fmt.Println("command", command)
+				command.Input = append([]string{"exec.py"}, command.Input...)
 				cmd := exec.Command("python", command.Input...)
 				out, err := cmd.CombinedOutput()
 				if err != nil {
@@ -60,6 +62,7 @@ func LogRun(pathTo, name string, errMsg []byte) {
 	err := DBReadRow(QueryProgram, args, &p)
 	if err != nil {
 		fmt.Println(err.Error())
+		return
 	}
 	if p.Files == "" {
 		fmt.Println("no results finding", name)

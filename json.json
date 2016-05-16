@@ -20,6 +20,7 @@
 "Post": "api/submit",
 [{
 	"Name": "progName",
+	"Model": "Model Name",
 	"Input": ["input"]
 ]},
 "Response":
