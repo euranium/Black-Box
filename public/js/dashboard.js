@@ -64,7 +64,6 @@ function($scope, $stateParams, $http){
       }
     })
     .then(function(){
-      alert("done");
       var msnry = new Masonry( '.grid', {
         // options
         itemSelector: '.gridItem',
