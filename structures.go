@@ -42,10 +42,13 @@ type User struct {
 }
 
 type Programs struct {
-	Folder   string `db:"Folder"  `
+	Folder string `db:"Folder"  `
+	Files  string `db:"Files"   `
+}
+
+type Command struct {
 	Name     string `db:"Name"    `
 	ProgType string `db:"ProgType"`
-	Files    string `db:"Files"   `
 }
 
 type Stored struct {
@@ -86,8 +89,14 @@ type Program struct {
 }
 
 type Submit struct {
-	Name  string
-	Input []string
+	Dir      string
+	Name     string
+	Commands []Cmd
+}
+
+type Cmd struct {
+	Program string
+	Input   []string
 }
 
 type ErrorVal struct {

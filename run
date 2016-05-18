@@ -9,9 +9,6 @@ clear
 clean=1
 tst=1
 port="-port=8080"
-echo options -ctip 8080
-echo c to clean, t to just test, i and p with port number
-echo p and port number must go last
 while getopts ":ctip:" o; do
 	case $o in
 		c)
@@ -29,8 +26,12 @@ while getopts ":ctip:" o; do
 			port="-port=$OPTARG"
 			;;
 		"?")
-			echo unknown argument
-			exit 1
+			echo options -ctip 8080
+			echo c to clean
+			echo t to just test
+			echo i to import packages
+			echo p port number, p and port number must go last
+			exit 0
 			;;
 	esac
 done

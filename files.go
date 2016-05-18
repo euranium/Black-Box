@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/fatih/structs"
@@ -41,13 +39,53 @@ func FilesInit() (err error) {
 			}
 		}
 		if found == false {
-			fmt.Println("not found:", f)
 			AddProgram(f)
+			fmt.Println("Added Program:", f)
 		}
 	}
 	return
 }
 
+func AddProgram(folder string) (err error) {
+	var prog Programs
+	prog.Folder = folder
+	files, err := ListDir(filepath.Join(progDir, folder))
+	if err != nil {
+		return
+	}
+	prog.Files = strings.Join(files, ",")
+	err = DBWriteMap(InsertProgram, structs.Map(prog))
+	if err != nil {
+		fmt.Println("add program err:", err)
+	}
+	return
+}
+
+/*
+func AddCommand(cmd *Cmd) (name string, err error) {
+	name = ""
+	if cmd.Exec != nil && cmd.Exec.Name != "" {
+		name, err = AddCommand(cmd.Exec)
+	}
+	if err != nil {
+		return
+	}
+	var c Command
+	c.Name = cmd.Name
+	c.ProgType = cmd.ProgType
+	c.CommandName = name
+	if name == "" {
+		var args []interface{}
+		args = append(args, c.Name)
+		args = append(args, c.ProgType)
+		err = DBWrite(InsertCmd, args)
+	} else {
+		err = DBWriteMap(InsertCommand, structs.Map(c))
+	}
+	return cmd.Name, err
+}
+
+/*
 func AddProgram(folder string) (err error) {
 	file := filepath.Join(progDir, folder, "config.json")
 	config, err := ReadFile(file)
@@ -79,6 +117,7 @@ func AddProgram(folder string) (err error) {
 	}
 	return
 }
+*/
 
 /*
 copy all files from a directory to a new dir

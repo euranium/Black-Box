@@ -87,6 +87,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 			str = k
 		}
 	}
+	fmt.Println("input", str)
 
 	// parse json bytes to struct
 	var input Submit
@@ -95,6 +96,19 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		SendError(w, "Error Processing Information")
 		return
+	}
+
+	// verify program is a valid one to run
+	for _, v := range input.Commands {
+		var args []interface{}
+		args = append(args, v.Program)
+		var command Command
+		err = DBReadRow(QueryCommand, args, &command)
+		if err != nil || command.Name == "" {
+			fmt.Println("err in prog finding")
+			SendError(w, "Error Setting Up Program")
+			return
+		}
 	}
 
 	//fmt.Println("decoded:", input)
@@ -108,7 +122,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// create a new folder
+	// create a new folder for program to run in
 	//t := time.Now().Format("2006-Jan-02_15:04:05")
 	base := RandomString(12)
 	dir := path.Join(UserDir, person.Folder, base)
@@ -118,22 +132,16 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("error copy:", err.Error())
 		return
 	}
-	var command []string
-	command = append(command, "java", input.Name)
-	command = append(command, input.Input...)
-	command = append(command, dir)
+	input.Dir = dir
 	// save run to db
 	run := Stored{person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp}
-	//err = DBWriteMap(InsertRun, structs.Map(Stored{
-	//person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp,
-	//}))
 	err = DBWriteMap(InsertRun, structs.Map(run))
 	if err != nil {
 		SendError(w, "Error Running Program")
 		fmt.Println("error insert:", err.Error())
 		return
 	}
-	Tasks <- command
+	Tasks <- input
 	b, err := json.Marshal(run)
 	if err != nil {
 		fmt.Println("err", err.Error())

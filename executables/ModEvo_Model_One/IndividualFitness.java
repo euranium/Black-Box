@@ -1,14 +1,14 @@
 /*
 	Name: Elizabeth Brooks
 	File: IndividualFitness
-	Modified: February 4, 2016
+	Modified: May 05, 2016
 */
 
 //A class to calculate the individual fitness 'w'
-public class IndividualFitness{
+public class IndividualFitness {
 
 	//Class fields to store variables
-   private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics
+    private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics
 	private double individualFitness; //Individual fitness
 	private double meanTraitOne; //Mean value of trait one
 	private double meanTraitTwo; //Mean value of trait two
@@ -32,28 +32,25 @@ public class IndividualFitness{
 	public int numIterations;
 	public double phenotypicVarianceTraitOneInitial;
 	public double phenotypicVarianceTraitTwoInitial;
-	public double phenotypicVarianceInterceptReactionNormInitial;
-	public double phenotypicVarianceSlopeReactionNormInitial;
-	public double phenotypicVariancePreferenceInitial;
 	public int simPopSize;
 	
 	//The class constructor which will set the fields values
 	public IndividualFitness(SpeciesCharacteristics speciesInputs)
 	{
-      //Initialize species characteristics
-      speciesValues = speciesInputs;
+      	//Initialize species characteristics
+      	speciesValues = speciesInputs;
 		//Set initial values
 		numIterations = speciesValues.getNumIterations();
 		simPopSize = speciesValues.getSimPopSize();
 		meanTraitOne = speciesValues.getMeanTraitOne();
 		meanTraitTwo = speciesValues.getMeanTraitTwo();
 		varianceTraitOne = speciesValues.getVarianceTraitOne();
-		optimumTraitOne = speciesValues.getOptimumTraitOne();
 		varianceTraitTwo = speciesValues.getVarianceTraitTwo();
+		optimumTraitOne = speciesValues.getOptimumTraitOne();
 		optimumTraitTwo = speciesValues.getOptimumTraitTwo();
 	}
    
-	//A method to calculate the value of the first exponent
+	//Method to calculate the value of the first exponent
 	public void calcExponentOne()
 	{
 		//Calculate the top of the fraction
@@ -64,7 +61,7 @@ public class IndividualFitness{
 		exponentOne = -(top/bottom);
 	}
 	
-	//A method to calculate the value of the second exponent
+	//Method to calculate the value of the second exponent
 	public void calcExponentTwo()
 	{
 		//Calculate the top of the fraction
@@ -75,7 +72,7 @@ public class IndividualFitness{
 		exponentTwo = -(top/bottom);
 	}
 	
-	//A method to calculate the value of the first fraction
+	//Method to calculate the value of the first fraction
 	public void calcFractionOne()
 	{
 		//Calculate the inside of the square root portion of the fraction
@@ -84,7 +81,7 @@ public class IndividualFitness{
 		fractionOne = (1/Math.sqrt(Math.abs(squareRootInside)));
 	}
 	
-	//A method to calculate the value of the second fraction
+	//Method to calculate the value of the second fraction
 	public void calcFractionTwo()
 	{
 		//Calculate the inside of the square root portion of the fraction
@@ -93,7 +90,7 @@ public class IndividualFitness{
 		fractionTwo = (1/Math.sqrt(Math.abs(squareRootInside)));
 	}
 	
-	//A method to calculate the total value of the individual fitness 'w'
+	//Method to calculate the total value of the individual fitness 'w'
 	public void calcIndividualFitness(double meanTraitOneInput, double meanTraitTwoInput)
 	{
 		meanTraitOne = meanTraitOneInput;
@@ -111,84 +108,65 @@ public class IndividualFitness{
 	}
 	
 	//Method to numerically calculate the derivation of the fitness function for trait one
-	public double numericallyCalcTraitOnePartialDerivative(int numIterationsInput, int simPopSizeInput, double meanTraitOneInput, double meanTraitTwoInput)
+	public double numericallyCalcTraitOnePartialDerivative(double meanTraitOneInput, double meanTraitTwoInput)
 	{
 		//Set initial values
 		meanTraitOne = meanTraitOneInput;
-		stepSize = (meanTraitOneInput * 0.001);
+		stepSize = (meanTraitOneInput * 0.00001);
 		//Calculate a small step up
 		meanTraitOne += stepSize;
-		getIndividualFitness(numIterationsInput, simPopSizeInput, meanTraitOne, meanTraitTwoInput);
+		getIndividualFitness(meanTraitOne, meanTraitTwoInput);
 		stepUpValue = individualFitness;		
-		
 		//Re-initialize
 		meanTraitOne = meanTraitOneInput;
 		//Calculate a small step down
 		meanTraitOne -= stepSize;
-		getIndividualFitness(numIterationsInput, simPopSizeInput, meanTraitOne, meanTraitTwoInput);
+		getIndividualFitness(meanTraitOne, meanTraitTwoInput);
 		stepDownValue = individualFitness;
-		
 		//Calculate the partial derivative of trait one
 		traitOnePartialDerivative = ((stepUpValue - stepDownValue)/(stepSize+stepSize));
 		return traitOnePartialDerivative;
 	}
 	
 	//Method to numerically calculate the derivation of the fitness function for trait two
-	public double numericallyCalcTraitTwoPartialDerivative(int numIterationsInput, int simPopSizeInput, double meanTraitOneInput, double meanTraitTwoInput)
+	public double numericallyCalcTraitTwoPartialDerivative(double meanTraitOneInput, double meanTraitTwoInput)
 	{
 		//Set initial values
 		meanTraitTwo = meanTraitTwoInput;
-		stepSize = (meanTraitTwoInput * 0.001);
+		stepSize = (meanTraitTwoInput * 0.00001);
 		//Calculate a small step up
 		meanTraitTwo += stepSize;
-		getIndividualFitness(numIterationsInput, simPopSizeInput, meanTraitOneInput, meanTraitTwo);
+		getIndividualFitness(meanTraitOneInput, meanTraitTwo);
 		stepUpValue = individualFitness;
-		
 		//Re-initialize
 		meanTraitTwo = meanTraitTwoInput;
 		//Calculate a small step down
 		meanTraitTwo -= stepSize;
-		getIndividualFitness(numIterationsInput, simPopSizeInput, meanTraitOneInput, meanTraitTwo);
+		getIndividualFitness(meanTraitOneInput, meanTraitTwo);
 		stepDownValue = individualFitness;
-
 		//Calculate the partial derivative of trait two
 		traitTwoPartialDerivative = ((stepUpValue - stepDownValue)/(stepSize+stepSize));
 		return traitTwoPartialDerivative;
 	}
 	
-	//Methods to set the updated mean values of trait one and two
-	public void setMeanTraitOne(double meanTraitOneInput)
-	{
-		meanTraitOne = meanTraitOneInput;
-	}
-	
-	public void setMeanTraitTwo(double meanTraitTwoInput)
-	{
-		meanTraitTwo = meanTraitTwoInput;
-	}
-	
-	//The following are methods to retrieve the value of specific variables
-	public double getIndividualFitness(int numIterationsInput, int simPopSizeInput, double meanTraitOneInput, double meanTraitTwoInput)
+	//Method to retrieve the individual fitness value of an individual with respect to traits one and two
+	public double getIndividualFitness(double meanTraitOneInput, double meanTraitTwoInput)
 	{
 		//Set initial values
-		numIterations = numIterationsInput;
-		simPopSize = simPopSizeInput;
 		varianceTraitOne = speciesValues.getVarianceTraitOne();
 		optimumTraitOne = speciesValues.getOptimumTraitOne();
 		varianceTraitTwo = speciesValues.getVarianceTraitTwo();
 		optimumTraitTwo = speciesValues.getOptimumTraitTwo();
-		
-      //Calculate the individual fitness based on the given mean trait values
+        //Calculate the individual fitness based on the given mean trait values
 		calcIndividualFitness(meanTraitOneInput, meanTraitTwoInput);
-
 		return individualFitness;
 	}
 	
+    //Getter methods
 	public double getMeanTraitOne()
 	{
 		return meanTraitOne;
-	}
-	
+	}	
 	
 	public double getVarianceTraitOne()
 	{
@@ -255,20 +233,77 @@ public class IndividualFitness{
 	{
 		return phenotypicVarianceTraitTwoInitial;
 	}
+   
+   //Setter methods
+	public void setMeanTraitOne(double meanTraitOneInput)
+	{
+		meanTraitOne = meanTraitOneInput;
+	}	
+	
+	public void setVarianceTraitOne(double varianceTraitOneInput)
+	{
+		varianceTraitOne = varianceTraitOneInput;
+	}
+	
+	public void setOptimumTraitOne(double optimumTraitOneInput)
+	{
+		optimumTraitOne = optimumTraitOneInput;
+	}
+	
+	public void setMeanTraitTwo(double meanTraitTwoInput)
+	{
+		meanTraitTwo = meanTraitTwoInput;
+	}
+	
+	public void setVarianceTraitTwo(double varianceTraitTwoInput)
+	{
+		varianceTraitTwo = varianceTraitTwoInput;
+	}
+	
+	public void setOptimumTraitTwo(double optimumTraitTwoInput)
+	{
+		optimumTraitTwo = optimumTraitTwoInput;
+	}
+	
+	public void setFractionOne(double fractionOneInput)
+	{
+		fractionOne = fractionOneInput;
+	}
+	
+	public void setFractionTwo(double fractionTwoInput)
+	{
+		fractionTwo = fractionTwoInput;
+	}
+	
+	public void setExponentOne(double exponentOneInput)
+	{
+		exponentOne = exponentOneInput;
+	}
+	
+	public void setExponentTwo(double exponentTwoInput)
+	{
+		exponentTwo = exponentTwoInput;
+	}
+	
+	//Setter methods for variables used in the MeanFitness subclasses
+	public void setIterationNum(int numIterationsInput)
+	{
+		numIterations = numIterationsInput;
+	}
+	
+	public void setSimPopSizeInitial(int simPopSizeInput)
+	{
+		simPopSize = simPopSizeInput;
+	}
+	
+	public void setPhenotypicVarianceTraitOneInitial(double phenotypicVarianceTraitOneInitialInput)
+	{
+		phenotypicVarianceTraitOneInitial = phenotypicVarianceTraitOneInitialInput;
+	}
+	
+	public void setPhenotypicVarianceTraitTwoInitial(double phenotypicVarianceTraitTwoInitialInput)
+	{
+		phenotypicVarianceTraitTwoInitial = phenotypicVarianceTraitTwoInitialInput;
+	}
 
-	
-	public double getPhenotypicVarianceInterceptReactionNormInitial()
-	{
-		return phenotypicVarianceInterceptReactionNormInitial;
-	}
-	
-	public double getPhenotypicVarianceSlopeReactionNormInitial()
-	{
-		return phenotypicVarianceSlopeReactionNormInitial;
-	}
-	
-	public double getPhenotypicVariancePreferenceInitial()
-	{
-		return phenotypicVariancePreferenceInitial;
-	}
 }

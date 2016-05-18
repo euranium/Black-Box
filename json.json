@@ -13,27 +13,33 @@
 	"Name": "folderName",
 	"Status": "complete/pending",
 	"Type": "progName",
-	"Viewed": "boolean",
-	"Time": "int"
+	"Viewed": true/false,
+	"Time": 1463525359 
 }],
 
 "Post": "api/submit",
 {
-	"Name": "progName",
-	"Input": [{
-		"Name": "fileName",
-		"File": "input"
-	]}
+	"Name": "Model Name",
+	"Commands" : {
+		"Program": "command name",
+		"Input": ["input"]
+	}
 },
 "Response":
 {
-	"Name": "generated name"
+	"UserName": "user name",
+	"Folder": "generated folder",
+	"ProgName": "program name",
+	"Files": "",
+	"Viewed": false,
+	"Time": 1463525359,
+	"Temp": false/true
 },
 
 "Request": "api/loggedIn",
 {
 	"Name": "UserName",
-	"Temp": "boolean"
+	"Temp": true/false
 },
 "Request": "api/delete/query?name=name",
 

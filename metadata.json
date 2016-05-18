@@ -1,0 +1,18 @@
+{
+  "projectName": "ModEvo",
+  "hostname": "modevo",
+  "facultyContact": "Filip Jagodzinski",
+  "client": "Filip Jagodzinski",
+  "teamMembers": [
+    {
+      "username": "harveyr8",
+      "name": "Rainier Harvey",
+      "email": "harveyr8@students.wwu.edu"
+    },
+    {
+      "username": "sliterj",
+      "name": "Jesse Sliter",
+      "email": "sliterj@students.wwu.edu"
+    }
+  ]
+}

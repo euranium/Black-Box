@@ -3,12 +3,12 @@ user name, folder name, session id, password hash, temp user or logged,
 time user last access in unix seconds
 */
 Create Table If Not Exists Users (
-	Name 		Text Unique,
-	Folder 		Text Unique,
-	SessionKey 	Text Unique,
-	Hash 		Text,
-	Time 		Numeric,
-	Temp 		Numeric
+	Name 		TEXT UNIQUE,
+	Folder 		TEXT UNIQUE,
+	SessionKey 	TEXT,
+	Hash 		TEXT,
+	Time 		NUMERIC,
+	Temp 		NUMERIC
 );
 
 /*
@@ -16,11 +16,14 @@ store of each program which can be run:
 folder name, main program name, type of program (eg java),
 files in folder in
 */
-Create Table If Not Exists Programs (
-	Folder 		Text Unique,
-	Name 		Text,
-	ProgType 	Text,
-	Files 		Text
+CREATE TABLE IF NOT EXISTS Programs (
+	Folder 		TEXT UNIQUE,
+	Files 		TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Command (
+	Name 		TEXT UNIQUE,
+	ProgType 	TEXT
 );
 
 /*
@@ -29,19 +32,23 @@ program associated w/, files outputed in struct string,
 weather the program has been viewed, last access in unix seconds
 output will be added when program is done, otherwise empty string
 */
-Create Table If Not Exists Stored (
-	Folder 		Text Unique,
-	UserName 	Text,
-	ProgName 	Text,
-	Message 	Text,
-	Files 		Text,
-	Viewed 		Numeric Default 0,
-	Time 		Numeric,
-	Temp 		Numeric
+CREATE TABLE IF NOT EXISTS Stored (
+	Folder 		TEXT UNIQUE,
+	UserName 	TEXT,
+	ProgName 	TEXT,
+	Message 	TEXT,
+	ErrMessage  TEXT,
+	Files 		TEXT,
+	Viewed 		NUMERIC DEFAULT 0,
+	Time 		NUMERIC,
+	Temp 		NUMERIC
 );
 
 /*
 for initilization purposes
 */
-Insert into Users (Name, Folder, SessionKey, Hash, Time, Temp) 
-Values ("aaa", "aaa", " ", "aaa", 1460501217, 0);
+INSERT INTO USERS (Name, Folder, SessionKey, Hash, Time, Temp)
+VALUES ("aaa", "aaa", " ", "aaa", 1463525359, 0);
+
+INSERT INTO Command (Name, ProgType) VALUES ("ModEvo", "java");
+INSERT INTO Command (Name, ProgType) VALUES ("plot.py", "python");
