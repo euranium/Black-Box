@@ -54,14 +54,24 @@ app.controller('ResultCtrl', [
 function($scope, $stateParams, $http){
   $scope.obj = {}
   $scope.message = "";
-  $http.get('/api/results/query?name=' + $stateParams.id).success(function(data) {
+  $http.get('/api/results/query?name=' + $stateParams.id)
+  .success(function(data) {
     if(data.hasOwnProperty('Error')){
       $scope.message = "Invalid url ¯\\\_(ツ)_/¯";
     }
     else{
       $scope.obj = htmlify(data, "modEvo");
     }
+  })
+  .finally(function(){
+    var msnry = new Masonry( '.grid', {
+      // options
+      itemSelector: '.gridItem',
+      columnWidth: '.col-md-6',
+      percentPosition: true
+    });
   });
+
 
 }]);
 
@@ -139,10 +149,14 @@ function($scope, $rootScope, $stateParams, $http, $compile){
      console.log("sending for prog: " + name);
 
      args = getInput();
+     console.log(args);
 
      obj = {
        Name: name,
-       Input: args,
+       Commands: {
+         Program: "ModEvo",
+         Input: args
+       }
      };
 
      $http({

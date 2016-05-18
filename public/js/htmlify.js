@@ -53,8 +53,12 @@ function getInput(){
   var args = [];
 
   for (var i = 0; i < allInputs.length; i++) {
-    args.push(allInputs[i].value);
+    var string = allInputs[i].id;
+    string = string + "=";
+    string = string + allInputs[i].value;
+    args.push(string);
   }
+  args.push("distributionName=defaultDistribution")
 
   args = args.filter(Boolean);
   return args;
