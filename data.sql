@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS Stored (
 	UserName 	TEXT,
 	ProgName 	TEXT,
 	Message 	TEXT,
+	ErrMessage  TEXT,
 	Files 		TEXT,
 	Viewed 		NUMERIC DEFAULT 0,
 	Time 		NUMERIC,
