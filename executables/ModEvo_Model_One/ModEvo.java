@@ -1,7 +1,7 @@
 /*
 	Name: Elizabeth Brooks
 	File: ModEvo
-	Modified: February 24, 2016
+	Modified: May 05, 2016
 */
 
 //Imports
@@ -12,7 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 //Class to set up and run the models then graph the results
-public class ModEvo_Model_One{
+public class ModEvo {
 
    //The main method used to run the models
    public static void main(String[]args){
@@ -40,15 +40,19 @@ public class ModEvo_Model_One{
       double slopeConcentration = 0; //The slope relating concentration of melanin to change in UVB transmittance
       int numIterations = 0; //The number of iterations the user would like the program run
       int simPopSize = 0; //The population size of the simulated populations
+      String distributionName = "defaultdistribution";
+      //int distributionArgsSize = 0; //The number of arguments for the input distribution
+      //double[] distributionArgs; //Array for storing the input distribution arguments
+      //int j = 2; //Variable for indexing input distribution array arguments
       
       //NOTE: Allow input selection of simulated population distribution
       
       //Initialize object reference variables
-      SpeciesCharacteristics speciesInputs; //SpeciesCharacteristics class object reference variable
-      GeneralModel modEvo; //GeneralModel class object reference variable
+      SpeciesCharacteristics speciesInputs; //SpeciesCharacteristics class reference variable
+      ModEvoMath modEvo; //ModelOne class reference variable
             
       //Verify the correct number of arguments have been input     
-      if(args.length == 22){
+      if(args.length == 23){
          //Report if there is an error in recieving argument inputs
          try {
             //Parse the args input as "varName=value" to ensure the correct value is entered for each variable
@@ -63,49 +67,58 @@ public class ModEvo_Model_One{
                //Retrieve each argument from its specified substring, order of input does not matter
                //Convert the input arguments from string to the appropriate data type (int or double)
                if((argStr.toLowerCase()).equals("species")){
-                     species = argSS[1];
+                     species = argVal.toUpperCase();
                }else if((argStr.toLowerCase()).equals("meantraitone")){
-   	               meanTraitOne = Double.parseDouble(argSS[1]);
+   	               meanTraitOne = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("meantraittwo")){
-                     meanTraitTwo = Double.parseDouble(argSS[1]);
+                     meanTraitTwo = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("phenotypicvariancetraitone")){
-                     phenotypicVarianceTraitOne = Double.parseDouble(argSS[1]);
+                     phenotypicVarianceTraitOne = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("phenotypicvariancetraittwo")){
-                     phenotypicVarianceTraitTwo = Double.parseDouble(argSS[1]);
+                     phenotypicVarianceTraitTwo = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("heritability")){
-                     heritability = Double.parseDouble(argSS[1]);
+                     heritability = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("optimumtraitone")){
-                     optimumTraitOne = Double.parseDouble(argSS[1]);
+                     optimumTraitOne = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("optimumtraittwo")){
-                     optimumTraitTwo = Double.parseDouble(argSS[1]);
+                     optimumTraitTwo = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("variancetraitone")){
-                     varianceTraitOne = Double.parseDouble(argSS[1]);
+                     varianceTraitOne = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("variancetraittwo")){
-                     varianceTraitTwo = Double.parseDouble(argSS[1]);
+                     varianceTraitTwo = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("attenuationcoefficient")){
-                     attenuationCoefficient = Double.parseDouble(argSS[1]);
+                     attenuationCoefficient = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("meaninterceptreactionnorm")){
-                     meanInterceptReactionNorm = Double.parseDouble(argSS[1]);
+                     meanInterceptReactionNorm = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("meanslopereactionnorm")){
-                     meanSlopeReactionNorm = Double.parseDouble(argSS[1]);
+                     meanSlopeReactionNorm = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("phenotypicvarianceinterceptreactionnorm")){
-                     phenotypicVarianceInterceptReactionNorm = Double.parseDouble(argSS[1]);
+                     phenotypicVarianceInterceptReactionNorm = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("phenotypicvarianceslopereactionnorm")){
-                     phenotypicVarianceSlopeReactionNorm = Double.parseDouble(argSS[1]);
+                     phenotypicVarianceSlopeReactionNorm = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("doseinitial")){
-                     doseInitial = Double.parseDouble(argSS[1]);
+                     doseInitial = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("meanpreference")){
-                     meanPreference = Double.parseDouble(argSS[1]);
+                     meanPreference = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("phenotypicvariancepreference")){
-                     phenotypicVariancePreference = Double.parseDouble(argSS[1]);
+                     phenotypicVariancePreference = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("transmittance")){
-                     transmittance = Double.parseDouble(argSS[1]);
+                     transmittance = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("slopeconcentration")){
-                     slopeConcentration = Double.parseDouble(argSS[1]);
+                     slopeConcentration = Double.parseDouble(argVal);
                }else if((argStr.toLowerCase()).equals("numiterations")){
-                     numIterations = Integer.parseInt(argSS[1]);
+                     numIterations = Integer.parseInt(argVal);
                }else if((argStr.toLowerCase()).equals("simpopsize")){
-                     simPopSize = Integer.parseInt(argSS[1]);
+                     simPopSize = Integer.parseInt(argVal);
+               }else if((argStr.toLowerCase()).equals("distributionname")){
+                     distributionName = argVal.toLowerCase();
+                     /*//Retrieve the number of dstribution arguments
+                     distributionArgsSize = Integer.parseInt(argVal);
+                     distributionArgs = new double[distributionArgsSize];
+                     //Store the input arguments for the chosen distribution
+                     for(int k=0; k<distributionArgsSize; k++){
+                        distributionArgs[k] = Double.parseDouble(argSS[j]);
+                     }*/
                }else{
                      System.err.println("Incorrect argument string entered for arg[" + i + "], program exited.");
                      System.exit(0); //Do not run the models if incorrect input is recieved
@@ -119,13 +132,14 @@ public class ModEvo_Model_One{
          speciesInputs = new SpeciesCharacteristics(species, meanTraitOne, meanTraitTwo, phenotypicVarianceTraitOne, phenotypicVarianceTraitTwo, heritability, 
                                                       optimumTraitOne, optimumTraitTwo, varianceTraitOne, varianceTraitTwo, attenuationCoefficient, meanInterceptReactionNorm, 
                                                       meanSlopeReactionNorm, phenotypicVarianceInterceptReactionNorm, phenotypicVarianceSlopeReactionNorm, doseInitial, 
-                                                      meanPreference, phenotypicVariancePreference, transmittance, slopeConcentration, numIterations, simPopSize);
+                                                      meanPreference, phenotypicVariancePreference, transmittance, slopeConcentration, numIterations, simPopSize, 
+                                                      distributionName);
          //Run the general model
-         modEvo = new GeneralModel(speciesInputs);                                             
+         modEvo = new ModEvoMath(speciesInputs);                                             
          //Program complete
    		System.out.println("Evolutionary trajectories modeled.");
       }else{
-         System.err.println("22 arguments are expected."); 
+         System.err.println("23 arguments are expected."); 
       }//End first if 
 	}//End main method
 }//End ModEvo class

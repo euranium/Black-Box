@@ -47,8 +47,7 @@ CREATE TABLE IF NOT EXISTS Stored (
 for initilization purposes
 */
 INSERT INTO USERS (Name, Folder, SessionKey, Hash, Time, Temp)
-VALUES ("aaa", "aaa", " ", "aaa", 1460501217, 0);
+VALUES ("aaa", "aaa", " ", "aaa", 1463525359, 0);
 
-INSERT INTO Command (Name, ProgType) VALUES ("ModEvo_Model_One", "java");
-INSERT INTO Command (Name, ProgType) VALUES ("ModEvo_Model_Two", "java");
-INSERT INTO Command (Name, ProgType) VALUES ("makeContour.gn", "gnuplot");
+INSERT INTO Command (Name, ProgType) VALUES ("ModEvo", "java");
+INSERT INTO Command (Name, ProgType) VALUES ("plot.py", "python");

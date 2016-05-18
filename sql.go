@@ -42,7 +42,7 @@ var (
 	InsertRun = `INSERT INTO Stored (UserName,Folder,ProgName,Files,Time,Temp)
 	VALUES (:UserName,:Folder,:ProgName,:Files,:Time,:Temp)`
 	// update a program run w/ generated files, error message
-	UpdateRun = `UPDATE Stored SET Files=$1, Message=$2 WHERE Folder=$3`
+	UpdateRun = `UPDATE Stored SET Files=$1, Message=$2, ErrMessage=$3 WHERE Folder=$4`
 	// set viewed of program to true
 	UpdateViewed = `UPDATE Stored SET Viewed=1 WHERE Folder=$1`
 	// update last time user has checked in

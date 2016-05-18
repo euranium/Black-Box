@@ -89,9 +89,14 @@ type Program struct {
 }
 
 type Submit struct {
-	Name  string
-	Dir   string
-	Input []string
+	Dir      string
+	Name     string
+	Commands []Cmd
+}
+
+type Cmd struct {
+	Program string
+	Input   []string
 }
 
 type ErrorVal struct {

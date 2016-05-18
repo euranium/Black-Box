@@ -97,20 +97,19 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		SendError(w, "Error Processing Information")
 		return
 	}
-	var args []interface{}
-	args = append(args, input.Name)
-	var command Command
-	err = DBReadRow(QueryCommand, args, &command)
-	if err != nil {
-		fmt.Println("err in prog finding")
-		SendError(w, "Error Setting Up Program")
-		return
-	} else if command.Name == "" {
-		fmt.Println("No program found")
-		SendError(w, "Error No Program Found")
-		return
+
+	// verify program is a valid one to run
+	for _, v := range input.Commands {
+		var args []interface{}
+		args = append(args, v.Program)
+		var command Command
+		err = DBReadRow(QueryCommand, args, &command)
+		if err != nil || command.Name == "" {
+			fmt.Println("err in prog finding")
+			SendError(w, "Error Setting Up Program")
+			return
+		}
 	}
-	input.Input = append([]string{command.ProgType, command.Name}, input.Input...)
 
 	//fmt.Println("decoded:", input)
 	// check if the user has a directory, if not create one
@@ -123,7 +122,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// create a new folder
+	// create a new folder for program to run in
 	//t := time.Now().Format("2006-Jan-02_15:04:05")
 	base := RandomString(12)
 	dir := path.Join(UserDir, person.Folder, base)
@@ -134,27 +133,15 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	input.Dir = dir
-	/*
-		var command []string
-		command = append(command, "java", input.Name)
-		command = append(command, input.Input...)
-		command = append(command, dir)
-	*/
 	// save run to db
 	run := Stored{person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp}
-	//err = DBWriteMap(InsertRun, structs.Map(Stored{
-	//person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp,
-	//}))
 	err = DBWriteMap(InsertRun, structs.Map(run))
 	if err != nil {
 		SendError(w, "Error Running Program")
 		fmt.Println("error insert:", err.Error())
 		return
 	}
-	input.Input = append(input.Input, input.Dir)
-	var cmds []Submit
-	cmds = append(cmds, input)
-	Tasks <- cmds
+	Tasks <- input
 	b, err := json.Marshal(run)
 	if err != nil {
 		fmt.Println("err", err.Error())
