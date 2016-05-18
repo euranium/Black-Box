@@ -42,22 +42,22 @@
 
     <div class="col-xs-4 form-group">
       <label for="meanone">Mean Trait One</label>
-      <input name="2" type="number" step="0.001" class="form-control sending" id="meanone" value="2.5">
+      <input name="2" type="number" step="0.001" class="form-control sending" id="meanTraitOne" value="2.5">
     </div>
 
     <div class="col-xs-4 form-group">
       <label for="meantwo">Mean Trait Two</label>
-      <input name="3" type="number" step="0.001" class="form-control sending" id="meantwo" value="1.0">
+      <input name="3" type="number" step="0.001" class="form-control sending" id="meanTraitTwo" value="1.0">
     </div>
 
     <div class="col-xs-4 form-group">
       <label for="pheno1">phenotypicVarianceTraitOne</label>
-      <input name="4" type="number" step="0.001" class="form-control sending" id="pheno1" value="0.004">
+      <input name="4" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceTraitOne" value="0.004">
     </div>
 
     <div class="col-xs-4 form-group">
       <label for="pheno2">phenotypicVarianceTraitTwo</label>
-      <input name="5" type="number" step="0.001" class="form-control sending" id="pheno2" value="0.2">
+      <input name="5" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceTraitTwo" value="0.2">
     </div>
 
     <div class="col-xs-4 form-group">
@@ -67,22 +67,22 @@
 
     <div class="col-xs-4 form-group">
       <label for="optim1">optimum Trait One</label>
-      <input name="7" type="number" step="0.001" class="form-control sending" id="optim1" value="0.4">
+      <input name="7" type="number" step="0.001" class="form-control sending" id="optimumTraitOne" value="0.4">
     </div>
 
     <div class="col-xs-4 form-group">
       <label for="optim2">optimum Trait Two</label>
-      <input name="8" type="number" step="0.001" class="form-control sending" id="optim2" value="12.0">
+      <input name="8" type="number" step="0.001" class="form-control sending" id="optimumTraitTwo" value="12.0">
     </div>
 
     <div class="col-xs-4 form-group">
       <label for="variance1">variance Trait One</label>
-      <input name="9" type="number" step="0.001" class="form-control sending" id="variance1" value="100.0">
+      <input name="9" type="number" step="0.001" class="form-control sending" id="varianceTraitOne" value="100.0">
     </div>
 
     <div class="col-xs-4 form-group">
       <label for="variance2">variance Trait Two</label>
-      <input name="10" type="number" step="0.001" class="form-control sending" id="variance2" value="500.0">
+      <input name="10" type="number" step="0.001" class="form-control sending" id="varianceTraitTwo" value="500.0">
     </div>
 
     <div class="col-xs-4 form-group">
@@ -145,10 +145,11 @@
       <input name="22" type="simPopSize" step="0.001" class="form-control sending" id="simPopSize" value="50">
     </div>
 
+
     <br>
 
     <div class="col-xs-4 form-group">
-      <button ng-click="send('ModEvo_Model_One')" class="btn btn-primary" ng-class="{true: 'disabled'}[working == true]">TestSubmit</button>
+      <button ng-click="send('ModEvo_Model_One')" class="btn btn-primary" ng-class="{true: 'disabled'}[working == true]">Submit</button>
     </div>
   </div>
 </div>
