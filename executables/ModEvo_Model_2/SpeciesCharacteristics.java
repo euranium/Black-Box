@@ -1,7 +1,7 @@
 /*
 	Name: Elizabeth Brooks
 	File: SpeciesCharacteristics
-   Modified: April 13, 2016
+   Modified: May 11, 2016
 */
 
 //Imports
@@ -29,6 +29,7 @@ public class SpeciesCharacteristics {
 	private double phenotypicVarianceSlopeReactionNorm; //The phenotypic variance of the slope of the reaction norm
    private int numIterations; //The number of iterations the user would like the program run
 	private int simPopSize; //The population size of the simulated populations
+   private String meanSelection; //The user selection of mean trait one analyzation method
    private double[][] heritabilityMatrix; //Heritability matrix
    //NOTE: Specific to Daphnia
    private double attenuationCoefficient; //The attenuation coefficient
@@ -37,7 +38,7 @@ public class SpeciesCharacteristics {
    private double phenotypicVarianceFunctionTrait; //The phenotypic variance of the mean preference
    private double transmittance; //The transmittance of a non-melanized Daphnia
    private double slopeConcentration; //The slope relating concentration of melanin to change in UVB transmittance
-	private String distributionName; //The user selected distribution
+	private String distributionSelection; //The user selected distribution
    //private double[] distributionArgs; //Array to store the arguments of the selected distribution
    //Class constructor to receive user input and set initial values for the model
    public SpeciesCharacteristics(String speciesInput, double meanTraitOneInput, double meanTraitTwoInput, double phenotypicVarianceTraitOneInput, 
@@ -45,7 +46,7 @@ public class SpeciesCharacteristics {
       double varianceTraitTwoInput, double attenuationCoefficientInput, double meanInterceptReactionNormInput, double meanSlopeReactionNormInput, 
       double phenotypicVarianceInterceptReactionNormInput, double phenotypicVarianceSlopeReactionNormInput, double doseInitialInput, double meanFunctionTraitInput, 
       double phenotypicVarianceFunctionTraitInput, double transmittanceInput, double slopeConcentrationInput, int numIterationsInput, int simPopSizeInput, 
-      String distributionNameInput)
+      String distributionSelectionInput, String meanSelectionInput)
 	{
       //Initialize fields with input values
       species = speciesInput;
@@ -70,7 +71,8 @@ public class SpeciesCharacteristics {
       slopeConcentration = slopeConcentrationInput;
       numIterations = numIterationsInput;
       simPopSize = simPopSizeInput;
-      distributionName = distributionNameInput;
+      distributionSelection = distributionSelectionInput;
+      meanSelection = meanSelectionInput;
       /*distributionArgs = new int[distributionArgsInput.length];
       System.arraycopy(distributionArgsInput, 0, distributionArgs, 0, distributionArgsInput.length);*/
       //Initialize the 2D array with 3 rows and 3 columns and set the matrix values
@@ -88,8 +90,8 @@ public class SpeciesCharacteristics {
       //Catch exceptions and write to file in TXT format
       try {
          //Determine which test number is being run for file naming
-         int fileCount = 1;
-         String speciesPath = "speciesInputs_GeneralModel.txt";
+         //int fileCount = 1;
+         String speciesPath = "speciesInputs_ModelTwo.txt";
          File speciesFile = new File(speciesPath);
          if (speciesFile.exists()){
             /*//Loop through the existing files
@@ -102,7 +104,7 @@ public class SpeciesCharacteristics {
             speciesFile.createNewFile();
             FileWriter fw = new FileWriter(speciesFile.getAbsoluteFile()); 
             //Write to file the header
-            fw.write("VariableName,VariableValue\n");
+            fw.write("VariableName VariableValue\n");
             String b;
             //Write to file VariableName,VariableValue
             fw.append("Species");
@@ -237,9 +239,15 @@ public class SpeciesCharacteristics {
             fw.append(b);
             fw.append("\n");
 
-            fw.append("Distribution");
+            fw.append("DistributionSelection");
             fw.append(" ");
-            b = distributionName;
+            b = distributionSelection;
+            fw.append(b);
+            fw.append("\n");
+
+            fw.append("MeanTraitOneMethodSelection");
+            fw.append(" ");
+            b = meanSelection;
             fw.append(b);
             fw.append("\n");              
             //Close the file
@@ -249,7 +257,7 @@ public class SpeciesCharacteristics {
             speciesFile.createNewFile();
             FileWriter fw = new FileWriter(speciesFile.getAbsoluteFile()); 
             //Write to file the header
-            fw.write("VariableName,VariableValue\n");
+            fw.write("VariableName VariableValue\n");
             String b;
             //Write to file VariableName,VariableValue
             fw.append("Species");
@@ -384,9 +392,15 @@ public class SpeciesCharacteristics {
             fw.append(b);
             fw.append("\n");
 
-            fw.append("Distribution");
+            fw.append("DistributionSelection");
             fw.append(" ");
-            b = distributionName;
+            b = distributionSelection;
+            fw.append(b);
+            fw.append("\n");
+
+            fw.append("MeanTraitOneMethodSelection");
+            fw.append(" ");
+            b = meanSelection;
             fw.append(b);
             fw.append("\n");
             //Close the file
@@ -468,8 +482,12 @@ public class SpeciesCharacteristics {
       return simPopSize;
    }
 
-   public String getDistributionName(){
-      return distributionName;
+   public String getDistributionSelection(){
+      return distributionSelection;
+   }
+
+   public String getMeanSelection(){
+      return meanSelection;
    }
 
    /*public double[] getDistributionArgs(){
@@ -566,8 +584,12 @@ public class SpeciesCharacteristics {
       simPopSize = simPopSizeInput;
    }
 
-   public void setDistributionName(String distributionNameInput){
-      distributionName = distributionNameInput;
+   public void setDistributionSelection(String distributionSelectionInput){
+      distributionSelection = distributionSelectionInput;
+   }
+
+   public void setMeanSelection(String meanSelectionInput){
+      meanSelection = meanSelectionInput;
    }
 
    /*public void setDistributionArgs(double[] distributionArgsInput){

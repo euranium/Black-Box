@@ -6,11 +6,17 @@
 
 //Class for modeling the evolutionary trajectories of a species with respect to multiple phenotypic traits
 //while also accounting for underlying developmental interactions
-public class ModEvoMath {
+public class ModEvoMath{
 
     //Class fields to store variables
-	private ModelOne modEvo; //Reference variable of the ModelOne class
+	private ModelTwo modEvo; //Reference variable of the GeneralModel class
 	private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics class
+   
+	//Default class constructor
+	public ModEvoMath()
+	{
+
+	}
 
 	//The class constructor
 	public ModEvoMath(SpeciesCharacteristics speciesInputs)
@@ -21,10 +27,8 @@ public class ModEvoMath {
 		//Write species data to a txt file
         speciesValues.writeSpeciesFile();
       		
-		//Initialize model one reference variable
-        modEvo = new ModelOne(speciesInputs);
-
-        //Run the model
-		modEvo.runModel();                                          
+		//Run the general model
+        modEvo = new ModelTwo(speciesValues);
+	modEvo.runModel();                                             
 	}	
 }

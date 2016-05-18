@@ -1,7 +1,7 @@
 Developer: Elizabeth Brooks 
 Email: merimaat1@gmail.com 
 Email: brookse@cwu.edu 
-Modified: 05/05/2016
+Modified: 05/11/2016
 
 -----------------------------------------------------------------------------------------------------------
 Program Instructions: 
@@ -36,23 +36,26 @@ List of expected arguments:
 20. slopeConcentration (double) //The slope relating concentration of melanin to change in UVB transmittance
 21. numIterations (int) //The number of iterations the user would like the program run
 22. simPopSize (int) //The population size of the simulated populations
-23. distributionName (String) //The nameof the distribution used to simulate populations of the given species
+23. distributionSelection (String) //The nameof the distribution used to simulate populations of the given species
+24. meanSelection (String) //The user selection of mean trait one analyzation method
 
 -----------------------------------------------------------------------------------------------------------	
 Sample command line invocation:(1)
 //Sample input arguments are initial testing values for the species Daphnia melanica, 
 //with regards to the phenotypic raits melanin and DVM
 //using the defulat gaussian distribution provided by the Random class
+//Mean trait one values are determined through analytical methods
 
-java ModEvo species=Daphnia meanTraitOne=2.5 meanTraitTwo=1.0 phenotypicVarianceTraitOne=0.04 phenotypicVarianceTraitTwo=0.2 heritability=0.5 optimumTraitOne=0.4 optimumTraitTwo=12.0 varianceTraitOne=100.0 varianceTraitTwo=500.0 attenuationCoefficient=0.26 meanInterceptReactionNorm=2.5 meanSlopeReactionNorm=0.0 phenotypicVarianceInterceptReactionNorm=0.2 phenotypicVarianceSlopeReactionNorm=0.2 doseInitial=27.9 meanPreference=10.0 phenotypicVariancePreference=0.5 transmittance=0.8 slopeConcentration=-0.16 numIterations=25 simPopSize=50 distributionName=defaultDistribution
+java ModEvo species=Daphnia meanTraitOne=2.5 meanTraitTwo=1.0 phenotypicVarianceTraitOne=0.04 phenotypicVarianceTraitTwo=0.2 heritability=0.5 optimumTraitOne=0.4 optimumTraitTwo=12.0 varianceTraitOne=100.0 varianceTraitTwo=500.0 attenuationCoefficient=0.26 meanInterceptReactionNorm=2.5 meanSlopeReactionNorm=0.0 phenotypicVarianceInterceptReactionNorm=0.2 phenotypicVarianceSlopeReactionNorm=0.2 doseInitial=27.9 meanPreference=10.0 phenotypicVariancePreference=0.5 transmittance=0.8 slopeConcentration=-0.16 numIterations=25 simPopSize=50 distributionSelection=default meanSelection=analytical
 
 -----------------------------------------------------------------------------------------------------------	
 Sample command line invocation:(2)
 //Sample input arguments are initial testing values for the species Daphnia melanica, 
 //with regards to the phenotypic raits melanin and DVM
 //using the developed gaussian distribution in the GaussianDistribution class
+//Mean trait one values are determined through simulation methods
 
-java ModEvo species=Daphnia meanTraitOne=2.5 meanTraitTwo=1.0 phenotypicVarianceTraitOne=0.04 phenotypicVarianceTraitTwo=0.2 heritability=0.5 optimumTraitOne=0.4 optimumTraitTwo=12.0 varianceTraitOne=100.0 varianceTraitTwo=500.0 attenuationCoefficient=0.26 meanInterceptReactionNorm=2.5 meanSlopeReactionNorm=0.0 phenotypicVarianceInterceptReactionNorm=0.2 phenotypicVarianceSlopeReactionNorm=0.2 doseInitial=27.9 meanPreference=10.0 phenotypicVariancePreference=0.5 transmittance=0.8 slopeConcentration=-0.16 numIterations=25 simPopSize=50 distributionName=gaussianDistribution
+java ModEvo species=Daphnia meanTraitOne=2.5 meanTraitTwo=1.0 phenotypicVarianceTraitOne=0.04 phenotypicVarianceTraitTwo=0.2 heritability=0.5 optimumTraitOne=0.4 optimumTraitTwo=12.0 varianceTraitOne=100.0 varianceTraitTwo=500.0 attenuationCoefficient=0.26 meanInterceptReactionNorm=2.5 meanSlopeReactionNorm=0.0 phenotypicVarianceInterceptReactionNorm=0.2 phenotypicVarianceSlopeReactionNorm=0.2 doseInitial=27.9 meanPreference=10.0 phenotypicVariancePreference=0.5 transmittance=0.8 slopeConcentration=-0.16 numIterations=25 simPopSize=50 distributionSelection=gaussian meanSelection=simulation
 
 -----------------------------------------------------------------------------------------------------------	
 Research Abstract: 
