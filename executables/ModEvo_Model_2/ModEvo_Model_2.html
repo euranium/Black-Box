@@ -1,0 +1,154 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">ModEvo Model 1</h3>
+  </div>
+
+  <div class="panel-body">
+
+
+    <div class="col-md-12">
+      <div class="col-xs-4 form-group">
+
+        <div class="row">
+          <label for="chartSelector">Choose Charting Type</label>
+          <br>
+          <select ng-model="graphType" id="chartSelector" ng-options="x for x in types" ng-change="loadData()"></select>
+        </div>
+
+        <div class="row" ng-show="graphType == 3">
+            <label for="chartOption1">Max</label>
+            <input name="24" type="number" step="0.001" class="form-control" id="chartOption1" ng-model="max" ng-change="loadData()">
+            <label for="chartOption2">Slope</label>
+            <input name="24" type="number" step="0.001" class="form-control" id="chartOption2" ng-model="slope" ng-change="loadData()">
+            <label for="chartOption3">Shift</label>
+            <input name="24" type="number" step="0.001" class="form-control" id="chartOption3" ng-model="shift" ng-change="loadData()">
+          </div>
+        </div>
+
+
+
+      <div class="col-md-8">
+        <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series" chart-click="onClick" chart-options="opt"></canvas>
+      </div>
+
+    </div><!--end of top col-md-12 group-->
+
+    <br>
+
+    <div class="col-xs-12 form-group">
+      <label for="species">Species</label>
+      <input name="1" type="text" class="form-control sending" id="species" value="Daphnia">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="meanone">Mean Trait One</label>
+      <input name="2" type="number" step="0.001" class="form-control sending" id="meanone" value="2.5">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="meantwo">Mean Trait Two</label>
+      <input name="3" type="number" step="0.001" class="form-control sending" id="meantwo" value="1.0">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="pheno1">phenotypicVarianceTraitOne</label>
+      <input name="4" type="number" step="0.001" class="form-control sending" id="pheno1" value="0.004">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="pheno2">phenotypicVarianceTraitTwo</label>
+      <input name="5" type="number" step="0.001" class="form-control sending" id="pheno2" value="0.2">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="heritability">heritability</label>
+      <input name="4" type="number" step="0.001" class="form-control sending" id="heritability" value="0.5">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="optim1">optimum Trait One</label>
+      <input name="7" type="number" step="0.001" class="form-control sending" id="optim1" value="0.4">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="optim2">optimum Trait Two</label>
+      <input name="8" type="number" step="0.001" class="form-control sending" id="optim2" value="12.0">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="variance1">variance Trait One</label>
+      <input name="9" type="number" step="0.001" class="form-control sending" id="variance1" value="100.0">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="variance2">variance Trait Two</label>
+      <input name="10" type="number" step="0.001" class="form-control sending" id="variance2" value="500.0">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="attenuationCoefficient">attenuationCoefficient</label>
+      <input name="11" type="number" step="0.001" class="form-control sending" id="attenuationCoefficient" value="0.24">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="meanInterceptReactionNorm">meanInterceptReactionNorm</label>
+      <input name="12" type="number" step="0.001" class="form-control sending" id="meanInterceptReactionNorm" value="2.5">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="meanSlopeReactionNorm">meanSlopeReactionNorm</label>
+      <input name="13" type="number" step="0.001" class="form-control sending" id="meanSlopeReactionNorm" value="0.0">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="phenotypicVarianceInterceptReactionNorm">phenotypicVarianceInterceptReactionNorm</label>
+      <input name="14" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceInterceptReactionNorm" value="0.2">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="phenotypicVarianceSlopeReactionNorm">phenotypicVarianceSlopeReactionNorm</label>
+      <input name="15" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceSlopeReactionNorm" value="0.2">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="doseInitial">doseInitial</label>
+      <input name="14" type="number" step="0.001" class="form-control sending" id="doseInitial" value="27.9">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="meanPreference">meanPreference</label>
+      <input name="17" type="number" step="0.001" class="form-control sending" id="meanPreference" value="10.0">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="phenotypicVariancePreference">phenotypicVariancePreference</label>
+      <input name="18" type="number" step="0.001" class="form-control sending" id="phenotypicVariancePreference" value="0.5">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="transmittance">transmittance</label>
+      <input name="19" type="number" step="0.001" class="form-control sending" id="transmittance" value="0.8">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="slopeConcentration">slopeConcentration</label>
+      <input name="20" type="number" step="0.001" class="form-control sending" id="slopeConcentration" value="-0.14">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="numIterations">numIterations</label>
+      <input name="21" type="number" step="0.001" class="form-control sending" id="numIterations" value="25">
+    </div>
+
+    <div class="col-xs-4 form-group">
+      <label for="simPopSize">numIterations</label>
+      <input name="22" type="simPopSize" step="0.001" class="form-control sending" id="simPopSize" value="50">
+    </div>
+
+    <br>
+
+    <div class="col-xs-4 form-group">
+      <button ng-click="send('ModEvo_Model_2')" class="btn btn-primary" ng-class="{true: 'disabled'}[working == true]">TestSubmit</button>
+    </div>
+  </div>
+</div>
