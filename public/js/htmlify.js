@@ -58,7 +58,7 @@ function getInput(){
     string = string + allInputs[i].value;
     args.push(string);
   }
-  args.push("distributionName=defaultDistribution")
+  args.push("distributionSelection=default")
 
   args = args.filter(Boolean);
   return args;

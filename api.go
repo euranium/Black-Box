@@ -75,38 +75,27 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 parse data submited to run a project and execute said project, no restrictions
 */
 func APISubmitForm(w http.ResponseWriter, r *http.Request) {
+	// parse data into struct
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println("ready body error", err)
 	}
-	fmt.Println(string(body))
 	var input Submit
-	dec := json.NewDecoder(r.Body)
-	err = dec.Decode(&input)
+	err = json.Unmarshal(body, &input)
 	if err != nil {
 		fmt.Println("Error parsing json:", err)
 		SendError(w, "Error Processing Information")
 		return
 	}
-	fmt.Println("input:", input)
 	r.ParseForm()
 	person, err := IsLoggedIn(w, r)
 	if err != nil {
 		SendError(w, "Error Processing User")
 		return
 	}
-	//str := ""
-	//for k, v := range r.Form {
-	//if str == "" {
-	//str = k
-	//}
-	//}
-	//fmt.Println("input", str)
-
-	// parse json bytes to struct
 
 	// verify program is a valid one to run
-	for _, v := range input.Commands {
+	for k, v := range input.Commands {
 		var args []interface{}
 		args = append(args, v.Program)
 		var command Command
@@ -116,6 +105,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 			SendError(w, "Error Setting Up Program")
 			return
 		}
+		input.Commands[k].ProgType = command.ProgType
 	}
 
 	//fmt.Println("decoded:", input)

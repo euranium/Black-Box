@@ -34,11 +34,12 @@ func RunCmd() {
 	for {
 		select {
 		case input := <-Tasks:
-			var msg []byte
+			msg := []byte(" ")
 			var err error
 			// iterate over all commands needing to be run
 			for _, command := range input.Commands {
-				input := []string{"exec.py", input.Dir, command.Program}
+				input := []string{"exec.py", input.Dir, command.ProgType, command.Program}
+				fmt.Println("command:", append(input, command.Input...))
 				cmd := exec.Command("python", append(input, command.Input...)...)
 				out, err := cmd.CombinedOutput()
 				if out != nil {
@@ -49,7 +50,16 @@ func RunCmd() {
 					break
 				}
 			}
-			LogRun(input.Dir, input.Name, err.Error(), msg)
+			errMsg := ""
+			msgMsg := ""
+			if err != nil {
+				errMsg = err.Error()
+			}
+			if msg != nil {
+				msgMsg = string(msg[:])
+				fmt.Println("output:", msgMsg)
+			}
+			LogRun(input.Dir, input.Name, errMsg, msgMsg)
 		}
 	}
 }
@@ -57,7 +67,7 @@ func RunCmd() {
 /*
 log a program run into the db
 */
-func LogRun(pathTo, name, errMsg string, msg []byte) {
+func LogRun(pathTo, name, errMsg, msg string) {
 	// query what files where there before
 	var p Programs
 	var args []interface{}
@@ -77,7 +87,7 @@ func LogRun(pathTo, name, errMsg string, msg []byte) {
 	files = DifFiles(pathTo, files)
 	// update row w/ new files
 	args[0] = strings.Join(files, ",")
-	args = append(args, string(msg))
+	args = append(args, msg)
 	args = append(args, errMsg)
 	args = append(args, filepath.Base(pathTo))
 	err = DBWrite(UpdateRun, args)

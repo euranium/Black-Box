@@ -95,8 +95,9 @@ type Submit struct {
 }
 
 type Cmd struct {
-	Program string
-	Input   []string
+	Program  string
+	ProgType string
+	Input    []string
 }
 
 type ErrorVal struct {

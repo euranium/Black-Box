@@ -153,10 +153,10 @@ function($scope, $rootScope, $stateParams, $http, $compile){
 
      obj = {
        Name: name,
-       Commands: {
+       Commands: [{
          Program: "ModEvo",
          Input: args
-       }
+       }]
      };
 
      $http({
