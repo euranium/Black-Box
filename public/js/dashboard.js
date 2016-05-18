@@ -88,8 +88,10 @@ function($scope, $rootScope, $stateParams, $http, $compile){
   //for modevo example graph in form
   $scope.types = [1, 2, 3];
   $scope.graphType = 1;
-  $scope.constant = -3;
-  var g = buildData(1);
+  $scope.max = 1;
+  $scope.slope = 1;
+  $scope.shift = 0;
+  var g = buildData($scope.max, $scope.shift, $scope.slope);
   $scope.labels = g.labels;
   $scope.series = ['Function 1'];
   $scope.data = g.data;
@@ -104,9 +106,25 @@ function($scope, $rootScope, $stateParams, $http, $compile){
    };
 
    $scope.loadData = function(){
-     var c = typeof $scope.constant;
-     if(c === 'number'){
-       $scope.data = buildData($scope.graphType, $scope.constant).data;
+     if($scope.graphType == 1){
+       $scope.max = 1;
+       $scope.slope = 1;
+       $scope.shift = 0;
+       $scope.data = buildData($scope.max, $scope.shift, $scope.slope).data;
+     }
+     else if($scope.graphType == 2){
+       $scope.max = 1;
+       $scope.slope = 4;
+       $scope.shift = 0;
+       $scope.data = buildData($scope.max, $scope.shift, $scope.slope).data;
+     }
+     else{
+       var a = typeof $scope.max;
+       var b = typeof $scope.slope;
+       var c = typeof $scope.shift;
+       if(a == 'number' && b == 'number' && c == 'number'){
+         $scope.data = buildData($scope.max, $scope.shift, $scope.slope).data;
+       }
      }
    }
 
@@ -242,32 +260,17 @@ function fixSelection(element){
 }
 
 //returns an object with data f-3ield and labels field
-function buildData(type, c){
+function buildData(max, shift, slope){
   var final = {};
   var data = [];
   var outer = []
   var labels = []
 
-  if(type == 1){
-    for(var i = -8.0; i <= 8.0; i+= 0.5){
-      labels.push(String(i));
-      var ans = i/Math.pow((1+i*i), 0.5);
-      data.push(ans)
-    }
-  }
-  else if(type == 2){
-    for(var i = -8.0; i <= 8.0; i+= 0.5){
-      labels.push(String(i));
-      var ans = i/(1+Math.abs(i));
-      data.push(ans)
-    }
-  }
-  else if(type == 3){
-    for(var i = -8.0; i <= 8.0; i+= 0.5){
-      labels.push(String(i));
-      var ans = 1/(1+Math.exp(c*i));
-      data.push(ans)
-    }
+
+  for(var i = -8.0; i <= 8.0; i+= 0.5){
+    labels.push(String(i));
+    var ans = max/(1+Math.exp((-1*(i-shift))*slope)); //1/(1+Math.exp(c*i));
+    data.push(ans)
   }
 
   outer.push(data);

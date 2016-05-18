@@ -12,12 +12,16 @@
         <div class="row">
           <label for="chartSelector">Choose Charting Type</label>
           <br>
-          <select ng-model="graphType" id="chartSelector" ng-options="x for x in types" ng-change="loadData(constant)"></select>
+          <select ng-model="graphType" id="chartSelector" ng-options="x for x in types" ng-change="loadData()"></select>
         </div>
 
         <div class="row" ng-show="graphType == 3">
-            <label for="chartOption">Chart 3 variable</label>
-            <input name="24" type="number" step="0.001" class="form-control" id="chartOption" ng-model="constant" ng-change="loadData()">
+            <label for="chartOption1">Max</label>
+            <input name="24" type="number" step="0.001" class="form-control" id="chartOption1" ng-model="max" ng-change="loadData()">
+            <label for="chartOption2">Slope</label>
+            <input name="24" type="number" step="0.001" class="form-control" id="chartOption2" ng-model="slope" ng-change="loadData()">
+            <label for="chartOption3">Shift</label>
+            <input name="24" type="number" step="0.001" class="form-control" id="chartOption3" ng-model="shift" ng-change="loadData()">
           </div>
         </div>
 
