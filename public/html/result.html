@@ -5,17 +5,21 @@ obj is of form{files: [{}], graphs: []}-->
   <span style="font-size:20px; font-weight: bold;"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>{{message}}</span>
 </div>
 
-<div ng-repeat="graph in obj.graphs">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4>{{graph.name}}</h4>
-    </div>
-    <div class="panel-body">
-      <canvas id='line' class='chart chart-line' chart-data='graph.info' chart-labels='graph.labels' chart-legend='true' chart-series='graph.series' chart-options='graph.opt'></canvas>
+<div class="grid">
+  <div ng-repeat="graph in obj.graphs">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>{{graph.name}}</h4>
+        </div>
+        <div class="panel-body">
+          <canvas id='line' class='chart chart-line' chart-data='graph.info' chart-labels='graph.labels' chart-legend='true' chart-series='graph.series' chart-options='graph.opt'></canvas>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<div ng-repeat="file in obj.files">
-    <file obj='file' index='file.index'></file>
+  <div ng-repeat="file in obj.files">
+      <file obj='file' index='file.index'></file>
+  </div>
 </div>

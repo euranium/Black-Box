@@ -61,7 +61,14 @@ function($scope, $stateParams, $http){
     else{
       $scope.obj = htmlify(data, "modEvo");
     }
+    var msnry = new Masonry( '.grid', {
+      // options
+      itemSelector: '.gridItem',
+      columnWidth: '.col-md-6',
+      percentPosition: true
+    });
   });
+
 
 }]);
 
