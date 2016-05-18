@@ -55,21 +55,22 @@ function($scope, $stateParams, $http){
   $scope.obj = {}
   $scope.message = "";
   $http.get('/api/results/query?name=' + $stateParams.id)
-  .success(function(data) {
-    if(data.hasOwnProperty('Error')){
-      $scope.message = "Invalid url ¯\\\_(ツ)_/¯";
-    }
-    else{
-      $scope.obj = htmlify(data, "modEvo");
-    }
-  })
-  .finally(function(){
-    var msnry = new Masonry( '.grid', {
-      // options
-      itemSelector: '.gridItem',
-      columnWidth: '.col-md-6',
-      percentPosition: true
-    });
+    .success(function(data) {
+      if(data.hasOwnProperty('Error')){
+        $scope.message = "Invalid url ¯\\\_(ツ)_/¯";
+      }
+      else{
+        $scope.obj = htmlify(data, "modEvo");
+      }
+    })
+    .then(function(){
+      alert("done");
+      var msnry = new Masonry( '.grid', {
+        // options
+        itemSelector: '.gridItem',
+        columnWidth: '.col-md-6',
+        percentPosition: true
+      });
   });
 
 
@@ -85,7 +86,7 @@ function($scope, $rootScope, $stateParams, $http, $compile){
 
   $http.get('/api/template/query?name=' + $stateParams.id).success(function(data) {
     if(data.hasOwnProperty('Error')){
-      var error = "<p>Invalid url ¯\\\_(ツ)_/¯</p>";
+      var error = "<div class='alert alert-danger' role='alert'><span style='font-size:20px; font-weight: bold;'><i class='fa fa-exclamation-triangle' aria-hidden='true'></i>Invalid url ¯\\\_(ツ)_/¯</span></div>";
       $('#dash').html($compile(error)($scope));
     }
     else{
@@ -106,7 +107,7 @@ function($scope, $rootScope, $stateParams, $http, $compile){
   $scope.series = ['Function 1'];
   $scope.data = g.data;
   $scope.opt = {
-    bezierCurve: true,
+    bezierCurve: false,
     showXLabels: 25,
     responsive: true
   };
