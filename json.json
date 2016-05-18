@@ -20,10 +20,10 @@
 "Post": "api/submit",
 {
 	"Name": "Model Name",
-	"Commands" : {
+	"Commands" : [{
 		"Program": "command name",
 		"Input": ["input"]
-	}
+	}]
 },
 "Response":
 {

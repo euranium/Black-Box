@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fatih/structs"
+	"io/ioutil"
 	"net/http"
 	"path"
 	"path/filepath"
@@ -74,29 +75,35 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 parse data submited to run a project and execute said project, no restrictions
 */
 func APISubmitForm(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println("ready body error", err)
+	}
+	fmt.Println(string(body))
+	var input Submit
+	dec := json.NewDecoder(r.Body)
+	err = dec.Decode(&input)
+	if err != nil {
+		fmt.Println("Error parsing json:", err)
+		SendError(w, "Error Processing Information")
+		return
+	}
+	fmt.Println("input:", input)
 	r.ParseForm()
 	person, err := IsLoggedIn(w, r)
 	if err != nil {
 		SendError(w, "Error Processing User")
 		return
 	}
-	// form is a map["form json"] => "", for some reason, need key to parse
-	str := ""
-	for k, _ := range r.Form {
-		if str == "" {
-			str = k
-		}
-	}
-	fmt.Println("input", str)
+	//str := ""
+	//for k, v := range r.Form {
+	//if str == "" {
+	//str = k
+	//}
+	//}
+	//fmt.Println("input", str)
 
 	// parse json bytes to struct
-	var input Submit
-	dec := json.NewDecoder(strings.NewReader(str))
-	err = dec.Decode(&input)
-	if err != nil {
-		SendError(w, "Error Processing Information")
-		return
-	}
 
 	// verify program is a valid one to run
 	for _, v := range input.Commands {
