@@ -108,7 +108,6 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		input.Commands[k].ProgType = command.ProgType
 	}
 
-	//fmt.Println("decoded:", input)
 	// check if the user has a directory, if not create one
 	if person.Folder == "" && person.Temp {
 		err = SaveTemp(w, r, person)
