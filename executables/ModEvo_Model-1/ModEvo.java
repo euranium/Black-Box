@@ -110,8 +110,9 @@ public class ModEvo {
                      numIterations = Integer.parseInt(argVal);
                }else if((argStr.toLowerCase()).equals("simpopsize")){
                      simPopSize = Integer.parseInt(argVal);
-               }else if((argStr.toLowerCase()).equals("distributionname")){
+               }else if((argStr.toLowerCase()).equals("distributionselection")){
                      distributionName = argVal.toLowerCase();
+					 distributionName += "distribution";
                      /*//Retrieve the number of dstribution arguments
                      distributionArgsSize = Integer.parseInt(argVal);
                      distributionArgs = new double[distributionArgsSize];
