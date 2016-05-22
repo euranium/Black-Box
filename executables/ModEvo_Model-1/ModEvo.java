@@ -1,7 +1,7 @@
 /*
 	Name: Elizabeth Brooks
 	File: ModEvo
-	Modified: May 11, 2016
+	Modified: May 05, 2016
 */
 
 //Imports
@@ -12,7 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 //Class to set up and run the models then graph the results
-public class ModEvo{
+public class ModEvo {
 
    //The main method used to run the models
    public static void main(String[]args){
@@ -40,8 +40,7 @@ public class ModEvo{
       double slopeConcentration = 0; //The slope relating concentration of melanin to change in UVB transmittance
       int numIterations = 0; //The number of iterations the user would like the program run
       int simPopSize = 0; //The population size of the simulated populations
-      String distributionSelection = "default";
-      String meanSelection = "analytical"; //The user selection of mean trait one analyzation method
+      String distributionName = "defaultdistribution";
       //int distributionArgsSize = 0; //The number of arguments for the input distribution
       //double[] distributionArgs; //Array for storing the input distribution arguments
       //int j = 2; //Variable for indexing input distribution array arguments
@@ -50,10 +49,10 @@ public class ModEvo{
       
       //Initialize object reference variables
       SpeciesCharacteristics speciesInputs; //SpeciesCharacteristics class reference variable
-      ModEvoMath modEvo; //ModEvoMath class reference variable
+      ModEvoMath modEvo; //ModelOne class reference variable
             
       //Verify the correct number of arguments have been input     
-      if(args.length == 24){
+      if(args.length == 23){
          //Report if there is an error in recieving argument inputs
          try {
             //Parse the args input as "varName=value" to ensure the correct value is entered for each variable
@@ -111,8 +110,8 @@ public class ModEvo{
                      numIterations = Integer.parseInt(argVal);
                }else if((argStr.toLowerCase()).equals("simpopsize")){
                      simPopSize = Integer.parseInt(argVal);
-               }else if((argStr.toLowerCase()).equals("distributionselection")){
-                     distributionSelection = argVal.toLowerCase();
+               }else if((argStr.toLowerCase()).equals("distributionname")){
+                     distributionName = argVal.toLowerCase();
                      /*//Retrieve the number of dstribution arguments
                      distributionArgsSize = Integer.parseInt(argVal);
                      distributionArgs = new double[distributionArgsSize];
@@ -120,8 +119,6 @@ public class ModEvo{
                      for(int k=0; k<distributionArgsSize; k++){
                         distributionArgs[k] = Double.parseDouble(argSS[j]);
                      }*/
-               }else if((argStr.toLowerCase()).equals("meanselection")){
-                     meanSelection = argVal.toLowerCase();
                }else{
                      System.err.println("Incorrect argument string entered for arg[" + i + "], program exited.");
                      System.exit(0); //Do not run the models if incorrect input is recieved
@@ -136,15 +133,13 @@ public class ModEvo{
                                                       optimumTraitOne, optimumTraitTwo, varianceTraitOne, varianceTraitTwo, attenuationCoefficient, meanInterceptReactionNorm, 
                                                       meanSlopeReactionNorm, phenotypicVarianceInterceptReactionNorm, phenotypicVarianceSlopeReactionNorm, doseInitial, 
                                                       meanPreference, phenotypicVariancePreference, transmittance, slopeConcentration, numIterations, simPopSize, 
-                                                      distributionSelection, meanSelection);
+                                                      distributionName);
          //Run the general model
          modEvo = new ModEvoMath(speciesInputs);                                             
          //Program complete
    		System.out.println("Evolutionary trajectories modeled.");
-      }else if(args.length > 24){
-         System.err.println("Too many arguments entered, 24 arguments are expected."); 
-      }else if(args.length < 24){
-         System.err.println("Too few arguments entered, 24 arguments are expected."); 
+      }else{
+         System.err.println("23 arguments are expected."); 
       }//End first if 
 	}//End main method
 }//End ModEvo class
