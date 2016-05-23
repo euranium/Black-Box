@@ -160,15 +160,16 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 	}
 	var s []Stored
 	var args []interface{}
+	//var results []Results
+	results := make([]Results, 0)
 	args = append(args, person.Name)
 	err = DBRead(QueryRuns, args, &s)
 	if err != nil {
-		fmt.Println("error:", err.Error())
+		fmt.Printf("%s\n", err.Error())
 		SendError(w, "Error Processing Request")
 		return
 	}
 	//fmt.Println("results:", s)
-	var results []Results
 	for _, v := range s {
 		var r Results
 		r.Name = v.Folder
@@ -184,7 +185,7 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(list)
 	b, err := json.Marshal(results)
 	if err != nil {
-		fmt.Println("error:", err.Error())
+		fmt.Println("marshal error:", err.Error())
 		SendError(w, "Error Formating Data")
 		return
 	}
