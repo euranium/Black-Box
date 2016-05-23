@@ -104,7 +104,7 @@ function modEvoHtml2(data, prog, $base){
   //     rt.files.push(temp);
   //   }
   //   else{
-  //     alert(i);
+  //     console.log(i);
   //   }
   // }
   return rt;
