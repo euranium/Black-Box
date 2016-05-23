@@ -6,8 +6,9 @@ obj is of form{files: [{}], graphs: []}-->
 </div>
 
 <div class="grid">
+
   <div ng-repeat="graph in obj.graphs">
-    <div class="col-md-12">
+    <div class="col-md-6">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4>{{graph.name}}</h4>
@@ -22,4 +23,7 @@ obj is of form{files: [{}], graphs: []}-->
   <div ng-repeat="file in obj.files">
       <file obj='file' index='file.index'></file>
   </div>
+
+    test<img ng-src="data:image/JPEG;base64,{{obj.image.Data}}">
+
 </div>

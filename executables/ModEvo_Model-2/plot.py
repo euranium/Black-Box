@@ -6,7 +6,7 @@ xmax = 0
 ymin = 9999
 ymax = 0
 
-with open("meanTraitOneValues_ModelOne.txt") as f:
+with open("meanTraitOneValues_ModelTwo.txt") as f:
     next(f)
     for line in f:
         stuff = line.rstrip().split(" ")
@@ -16,7 +16,7 @@ with open("meanTraitOneValues_ModelOne.txt") as f:
         if value > xmax:
             xmax = value
 
-with open("meanTraitTwoValues_ModelOne.txt") as f:
+with open("meanTraitTwoValues_ModelTwo.txt") as f:
     next(f)
     for line in f:
         stuff = line.rstrip().split(" ")
@@ -67,7 +67,7 @@ file.write("set ylabel 'trait 2'\n")
 file.write("set title 'fitness surface'\n")
 file.write("unset key\n")
 file.write("set palette rgbformulae 33,13,10\n")
-file.write("plot 'contourBase.dat' with image, 'contourLines.dat' w l lt -1 lw 1, \"< paste meanTraitOneValues_ModelOne.txt meanTraitTwoValues_ModelOne.txt\" using 2:4 with lines\n")
+file.write("plot 'contourBase.dat' with image, 'contourLines.dat' w l lt -1 lw 1, \"< paste meanTraitOneValues_ModelTwo.txt meanTraitTwoValues_ModelTwo.txt\" using 2:4 with lines\n")
 file.close();
 
 p = subprocess.Popen("gnuplot plot.gn", shell = True)
