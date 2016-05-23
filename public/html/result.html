@@ -20,10 +20,20 @@ obj is of form{files: [{}], graphs: []}-->
     </div>
   </div>
 
+  <div class="col-md-6" ng-show="!error">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4>Fitness Contour</h4>
+      </div>
+      <div class="panel-body">
+        <img src="img/contourPlot.png">
+      </div>
+    </div>
+  </div>
+
   <div ng-repeat="file in obj.files">
       <file obj='file' index='file.index'></file>
   </div>
 
-    test<img ng-src="data:image/JPEG;base64,{{obj.image.Data}}">
 
 </div>

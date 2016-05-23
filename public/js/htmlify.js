@@ -55,7 +55,7 @@ function modEvoHtml(data, prog, $base){
   var index = 0;
   var items = data.Results;
   for (var i = 0; i < items.length; i++) {
-    if(items[i].Name != "contourPlot.png"){
+    if(items[i].Name != "contourPlot.png" && items[i].Name != "contourBase.dat" && items[i].Name != "contourLines.dat" && items[i].Name != "plot.gn"){
       var temp = {}//"<div class='list-group'>";
       temp.index = index;
       temp.name = items[i].Name;
@@ -64,7 +64,7 @@ function modEvoHtml(data, prog, $base){
       index = index + 1;
     }
     else{
-      alert(i);
+
     }
   }
   return rt;
@@ -99,7 +99,7 @@ function modEvoHtml2(data, prog, $base){
   var items = data.Results;
   var index = 0;
   for (var i = 0; i < items.length; i++) {
-    if(items[i].Name != "contourPlot.png"){
+    if(items[i].Name != "contourPlot.png" && items[i].Name != "contourBase.dat" && items[i].Name != "contourLines.dat" && items[i].Name != "plot.gn"){
       var temp = {}//"<div class='list-group'>";
       temp.index = index;
       temp.name = items[i].Name;
