@@ -10,6 +10,7 @@ Called from dashboard.js
 {
   files:[]
   charts: []
+  images: []
 }
 */
 function htmlify(data, prog){
@@ -25,27 +26,33 @@ function modEvoHtml(data, prog){
   var rt = {
     files: [],
     graphs: [],
+    images: [],
   }
 
-  console.log(prog);
-  console.log("That was it ^^^");
 
   //build chart object and push to array
   //right now chartify returns an object
   //need to make it return an array to be compatible with future programs
-  rt.graphs.push(chartify(data, prog));
+  rt.graphs = chartify(data);
+
+  console.log(rt.graphs);
 
 
   //loop over every file returned to build files array
   //index is used to apply unique id's to elements in the directive
-  var items = data.Results;
-  for (var i = 0; i < items.length; i++) {
-    var temp = {}//"<div class='list-group'>";
-    temp.index = i;
-    temp.name = items[i].Name;
-    temp.data = splitByLine(items[i].Data);
-    rt.files.push(temp);
-  }
+  // var items = data.Results;
+  // for (var i = 0; i < items.length; i++) {
+  //   if(items[i].Name != "contourPlot.png"){
+  //     var temp = {}//"<div class='list-group'>";
+  //     temp.index = i;
+  //     temp.name = items[i].Name;
+  //     temp.data = splitByLine(items[i].Data);
+  //     rt.files.push(temp);
+  //   }
+  //   else{
+  //     alert(i);
+  //   }
+  // }
   return rt;
 }
 

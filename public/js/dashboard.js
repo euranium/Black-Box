@@ -149,7 +149,12 @@ function($scope, $rootScope, $stateParams, $http, $compile){
        Commands: [{
          Program: "ModEvo",
          Input: args
-       }]
+       },
+         {
+           Program: "plot.py",
+           input: []
+        }
+     ]
      };
 
      $http({
