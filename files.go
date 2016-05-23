@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"encoding/hex"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"github.com/fatih/structs"
