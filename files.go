@@ -38,7 +38,7 @@ func FilesInit() (err error) {
 				break
 			}
 		}
-		if found == false {
+		if !found {
 			AddProgram(f)
 			fmt.Println("Added Program:", f)
 		}
@@ -322,7 +322,7 @@ func ReadFileType(folder, tp string) []File {
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
-				files = append(files, File{f.Name(), string(byts)})
+				files = append(files, File{f.Name(), byts})
 			}
 		}
 	}
@@ -349,7 +349,7 @@ func ReadFiles(folder string, fls []string) []File {
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
-				files = append(files, File{f.Name(), string(byts)})
+				files = append(files, File{f.Name(), byts})
 			}
 		}
 	}
