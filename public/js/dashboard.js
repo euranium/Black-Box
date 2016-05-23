@@ -60,17 +60,10 @@ function($scope, $stateParams, $http){
         $scope.message = "Invalid url ¯\\\_(ツ)_/¯";
       }
       else{
+        console.log(data);
         $scope.obj = htmlify(data, "modEvo");
       }
-    })
-    .then(function(){
-      var msnry = new Masonry( '.grid', {
-        // options
-        itemSelector: '.gridItem',
-        columnWidth: '.col-md-6',
-        percentPosition: true
-      });
-  });
+    });
 
 
 }]);
@@ -156,7 +149,12 @@ function($scope, $rootScope, $stateParams, $http, $compile){
        Commands: [{
          Program: "ModEvo",
          Input: args
-       }]
+       },
+         {
+           Program: "plot.py",
+           input: []
+        }
+     ]
      };
 
      $http({
