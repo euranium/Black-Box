@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"encoding/hex"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"github.com/fatih/structs"
@@ -323,7 +323,6 @@ func ReadFileType(folder, tp string) []File {
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
-				//files = append(files, File{f.Name(), hex.EncodeToString(byts)})
 				files = append(files, File{f.Name(), string(byts)})
 			}
 		}
@@ -351,7 +350,14 @@ func ReadFiles(folder string, fls []string) []File {
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
-				//files = append(files, File{f.Name(), hex.EncodeToString(byts)})
+				if filepath.Ext(f.Name()) == ".png" {
+					encoded := base64.StdEncoding.EncodeToString(byts)
+					byts, err = base64.StdEncoding.DecodeString(encoded)
+					if err != nil {
+						fmt.Println("error converting to base64:", err.Error())
+						return nil
+					}
+				}
 				files = append(files, File{f.Name(), string(byts)})
 			}
 		}
