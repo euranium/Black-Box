@@ -15,6 +15,7 @@ Called from dashboard.js
 */
 function htmlify(data, prog){
 
+
   if(prog == "modEvo"){
     return modEvoHtml(data, prog);
   }
@@ -22,11 +23,11 @@ function htmlify(data, prog){
 }
 
 
-function modEvoHtml(data, prog){
+function modEvoHtml(data, prog, $base){
   var rt = {
     files: [],
     graphs: [],
-    images: [],
+    image: {},
   }
 
 
@@ -35,7 +36,15 @@ function modEvoHtml(data, prog){
   //need to make it return an array to be compatible with future programs
   rt.graphs = chartify(data);
 
-  console.log(rt.graphs);
+  var bytes = [];
+
+  for (var i = 0; i < data.Results[2].Data.length; ++i) {
+    bytes.push(data.Results[2].Data.charCodeAt(i));
+}
+
+  data.Results[2].Data = base64ArrayBuffer(bytes);
+
+  rt.image = data.Results[2];
 
 
   //loop over every file returned to build files array

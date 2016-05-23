@@ -35,11 +35,11 @@ function modEvoChart1(data){
 
 
   //Add file names to series
-  result1.series.push(data.Results[1].Name);
-  result1.series.push(data.Results[2].Name);
+  result1.series.push(data.Results[4].Name);
+  result1.series.push(data.Results[5].Name);
 
   //loop over first file to get lables and first info set
-  var lines = splitByLine(data.Results[1].Data);
+  var lines = splitByLine(data.Results[4].Data);
   var s1 = []
   for (var i = 1; i < lines.length; i++) {
     var parts = lines[i].split(" ");
@@ -48,7 +48,7 @@ function modEvoChart1(data){
   }
 
   //loop over second file to get second info set
-  var lines = splitByLine(data.Results[2].Data);
+  var lines = splitByLine(data.Results[5].Data);
   var s2 = []
   for (var i = 1; i < lines.length; i++) {
     var parts = lines[i].split(" ");
@@ -72,10 +72,10 @@ function modEvoChart1(data){
   };
 
   //Add file names to series
-  result2.series.push(data.Results[0].Name);
+  result2.series.push(data.Results[3].Name);
 
   //loop over first file to get lables and first info set
-  var lines = splitByLine(data.Results[0].Data);
+  var lines = splitByLine(data.Results[3].Data);
   var s3 = []
   for (var i = 1; i < lines.length; i++) {
     var parts = lines[i].split(" ");

@@ -41,7 +41,7 @@ xmax = xmax * 1.1
 ymax = ymax * 1.1
 
 file = open('plot.gn', 'w+')
-file.write("set terminal png\n")
+file.write("set terminal jpeg\n")
 file.write("set output \"contourPlot.png\"\n")
 file.write("f(x,y)=((1.0/(abs(100.0 * 2 * 3.14))**0.5) * exp(-((x-0.4)**2)/(2*100.0))) + ((1.0/(abs(500.0 * 2 * 3.14))**0.5) * exp(-((y-12.0)**2)/(2*500)))\n")
 
