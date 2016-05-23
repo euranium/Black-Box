@@ -235,6 +235,7 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Error: %s\n", err.Error())
 		return
 	}
+	fmt.Println(string(b))
 
 	// record that the user has viewed the program
 	if !result.Viewed {
