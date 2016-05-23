@@ -61,7 +61,7 @@ function($scope, $stateParams, $http){
       }
       else{
         console.log(data);
-        $scope.obj = htmlify(data, "modEvo");
+        $scope.obj = htmlify(data);
       }
     });
 
