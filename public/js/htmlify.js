@@ -52,19 +52,21 @@ function modEvoHtml(data, prog, $base){
 
   //loop over every file returned to build files array
   //index is used to apply unique id's to elements in the directive
-  // var items = data.Results;
-  // for (var i = 0; i < items.length; i++) {
-  //   if(items[i].Name != "contourPlot.png"){
-  //     var temp = {}//"<div class='list-group'>";
-  //     temp.index = i;
-  //     temp.name = items[i].Name;
-  //     temp.data = splitByLine(items[i].Data);
-  //     rt.files.push(temp);
-  //   }
-  //   else{
-  //     alert(i);
-  //   }
-  // }
+  var index = 0;
+  var items = data.Results;
+  for (var i = 0; i < items.length; i++) {
+    if(items[i].Name != "contourPlot.png"){
+      var temp = {}//"<div class='list-group'>";
+      temp.index = index;
+      temp.name = items[i].Name;
+      temp.data = splitByLine(items[i].Data);
+      rt.files.push(temp);
+      index = index + 1;
+    }
+    else{
+      alert(i);
+    }
+  }
   return rt;
 }
 
@@ -94,19 +96,21 @@ function modEvoHtml2(data, prog, $base){
 
   //loop over every file returned to build files array
   //index is used to apply unique id's to elements in the directive
-  // var items = data.Results;
-  // for (var i = 0; i < items.length; i++) {
-  //   if(items[i].Name != "contourPlot.png"){
-  //     var temp = {}//"<div class='list-group'>";
-  //     temp.index = i;
-  //     temp.name = items[i].Name;
-  //     temp.data = splitByLine(items[i].Data);
-  //     rt.files.push(temp);
-  //   }
-  //   else{
-  //     console.log(i);
-  //   }
-  // }
+  var items = data.Results;
+  var index = 0;
+  for (var i = 0; i < items.length; i++) {
+    if(items[i].Name != "contourPlot.png"){
+      var temp = {}//"<div class='list-group'>";
+      temp.index = index;
+      temp.name = items[i].Name;
+      temp.data = splitByLine(items[i].Data);
+      rt.files.push(temp);
+      index = index + 1;
+    }
+    else{
+      console.log(i);
+    }
+  }
   return rt;
 }
 
