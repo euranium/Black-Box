@@ -229,7 +229,7 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	files := ReadFiles(filepath.Join(UserDir, user.Folder, name), strings.Split(result.Files, ","))
-	b, err := json.Marshal(Result{name, files})
+	b, err := json.Marshal(Result{result.ProgName, files})
 	if err != nil {
 		SendError(w, "File Not Found")
 		fmt.Printf("Error: %s\n", err.Error())
