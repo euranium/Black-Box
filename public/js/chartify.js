@@ -10,7 +10,6 @@ function chartify(data) {
 
   //currently only one program, extend if statement in future
   if (data.Name == "ModEvo_Model-1") {
-    console.log("dis is it");
     return modEvoChart1(data);
   }
 
@@ -32,6 +31,13 @@ function modEvoChart1(data){
     showXLabels: 25,
     responsive: true
   };
+
+  console.log(data.Results[4].Data);
+
+  data.Results[4].Data = bin2String(data.Results[4].Data);
+  data.Results[5].Data = bin2String(data.Results[5].Data);
+
+
 
 
   //Add file names to series
