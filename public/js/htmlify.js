@@ -27,6 +27,9 @@ function modEvoHtml(data, prog){
     graphs: [],
   }
 
+  console.log(prog);
+  console.log("That was it ^^^");
+
   //build chart object and push to array
   //right now chartify returns an object
   //need to make it return an array to be compatible with future programs
