@@ -80,7 +80,7 @@ type Results struct {
 
 type File struct {
 	Name string
-	Data []byte
+	Data string
 }
 
 type Program struct {

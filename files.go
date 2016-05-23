@@ -1,6 +1,7 @@
 package main
 
 import (
+	//"encoding/hex"
 	"errors"
 	"fmt"
 	"github.com/fatih/structs"
@@ -322,7 +323,8 @@ func ReadFileType(folder, tp string) []File {
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
-				files = append(files, File{f.Name(), byts})
+				//files = append(files, File{f.Name(), hex.EncodeToString(byts)})
+				files = append(files, File{f.Name(), string(byts)})
 			}
 		}
 	}
@@ -349,7 +351,8 @@ func ReadFiles(folder string, fls []string) []File {
 			if err != nil {
 				fmt.Println(err.Error())
 			} else {
-				files = append(files, File{f.Name(), byts})
+				//files = append(files, File{f.Name(), hex.EncodeToString(byts)})
+				files = append(files, File{f.Name(), string(byts)})
 			}
 		}
 	}
