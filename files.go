@@ -351,14 +351,10 @@ func ReadFiles(folder string, fls []string) []File {
 				fmt.Println(err.Error())
 			} else {
 				if filepath.Ext(f.Name()) == ".png" {
-					encoded := base64.StdEncoding.EncodeToString(byts)
-					byts, err = base64.StdEncoding.DecodeString(encoded)
-					if err != nil {
-						fmt.Println("error converting to base64:", err.Error())
-						return nil
-					}
+					files = append(files, File{f.Name(), base64.StdEncoding.EncodeToString(byts)})
+				} else {
+					files = append(files, File{f.Name(), string(byts)})
 				}
-				files = append(files, File{f.Name(), string(byts)})
 			}
 		}
 	}
