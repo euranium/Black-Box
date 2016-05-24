@@ -9,7 +9,7 @@ clear
 clean=1
 tst=1
 port="-port=8080"
-while getopts ":ctip:" o; do
+while getopts ":ctijp:" o; do
 	case $o in
 		c)
 			clean=0
@@ -21,6 +21,10 @@ while getopts ":ctip:" o; do
 			go get
 			go install github.com/jmoiron/sqlx
 			go install github.com/mattn/go-sqlite3
+			;;
+		j)
+			$(cd executables/ModEvo_Model-1; javac *.java)
+			$(cd executables/ModEvo_Model-2; javac *.java)
 			;;
 		p)
 			port="-port=$OPTARG"

@@ -58,6 +58,7 @@ function($scope, $stateParams, $http){
     .success(function(data) {
       if(data.hasOwnProperty('Error')){
         $scope.message = "Invalid url ¯\\\_(ツ)_/¯";
+        $scope.error = 1;
       }
       else{
         console.log(data);
@@ -80,6 +81,7 @@ function($scope, $rootScope, $stateParams, $http, $compile){
     if(data.hasOwnProperty('Error')){
       var error = "<div class='alert alert-danger' role='alert'><span style='font-size:20px; font-weight: bold;'><i class='fa fa-exclamation-triangle' aria-hidden='true'></i>Invalid url ¯\\\_(ツ)_/¯</span></div>";
       $('#dash').html($compile(error)($scope));
+      $scope.error = 1;
     }
     else{
       $('#dash').html($compile(data)($scope));
