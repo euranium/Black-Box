@@ -1,7 +1,7 @@
 <div class="item">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h4>{{obj.name}} <span class="right download"><i class="fa fa-download"></i> Download</span></h4>
+      <h4>{{obj.name}} <a download="{{obj.name}}" class="right download" ng-click="download($event)"><i class="fa fa-download"></i> Download</a></h4>
     </div>
     <div class="panel-body scroll">
       <ul class="list-group" id="{{obj.index}}">

@@ -33,17 +33,22 @@ function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('default');
 }]);
 
-
-
 app.directive('file', function() {
     return {
         restrict: 'E',
-        replace: true,
+        replace: false,
         scope: {
           obj: '=',
           index: '='
         },
-        templateUrl: '/html/file.html'
+        templateUrl: '/html/file.html',
+        link: function(scope, element, attrs) {
+          scope.download = function($event){
+            //console.log($event.currentTarget);
+            $event.currentTarget.href = makeTextFile(scope.obj.data);
+            //console.log(scope.obj.data);
+          }
+        }
     };
 });
 
@@ -79,8 +84,6 @@ function($scope, $stateParams, $http){
     // $grid.imagesLoaded().progress( function() {
     //   $grid.masonry('layout');
     // });
-
-
 }]);
 
 //Controller that opperates when the user selects a model from the side menu
@@ -309,3 +312,19 @@ function buildData(max, shift, slope){
   final.labels = labels;
   return final;
 }
+
+//Gets used for creating download links
+makeTextFile = function (text) {
+    textFile = null;
+    var data = new Blob([text], {type: 'text/plain'});
+
+    // If we are replacing a previously generated file we need to
+    // manually revoke the object URL to avoid memory leaks.
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+
+    textFile = window.URL.createObjectURL(data);
+
+    return textFile;
+  };

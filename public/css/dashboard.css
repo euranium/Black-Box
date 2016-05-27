@@ -171,10 +171,12 @@ i{
 
 .download{
   cursor: pointer;
+  color: #354052;
 }
 
 .download:hover{
-  color: blue;
+  color: #15A4FA;
+  text-decoration: none;
 }
 
 .half{
