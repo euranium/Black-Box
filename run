@@ -23,6 +23,7 @@ while getopts ":ctijp:" o; do
 			go install github.com/mattn/go-sqlite3
 			;;
 		j)
+			echo compiling java code
 			$(cd executables/ModEvo_Model-1; javac *.java)
 			$(cd executables/ModEvo_Model-2; javac *.java)
 			;;
