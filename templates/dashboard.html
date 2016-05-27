@@ -46,7 +46,7 @@
         <i class="fa fa-cogs"></i>Models
       </div>
       <span ng-repeat="item in software track by $index">
-  				<div class="item" ng-click="loadSoftware(item, $event)">
+  				<div class="menu-item" ng-click="loadSoftware(item, $event)">
             {{item}}
   				</div>
       </span>
@@ -56,11 +56,11 @@
       <div class="header">
         <i class="fa fa-area-chart"></i>Results
       </div>
-      <div class="item" ng-show="results.length == 0">
+      <div class="menu-item" ng-show="results.length == 0">
         no results yet :(
       </div>
       <span ng-repeat="item in results track by $index">
-          <div class="item" ng-click="loadResult(item.Name, $event)">
+          <div class="menu-item" ng-click="loadResult(item.Name, $event)">
             {{item.Name}}
           </div>
       </span>

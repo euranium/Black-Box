@@ -83,6 +83,7 @@ function($scope, $stateParams, $http){
 
 }]);
 
+//Controller that opperates when the user selects a model from the side menu
 app.controller('ModelCtrl', [
 '$scope',
 '$rootScope',
@@ -197,6 +198,7 @@ function($scope, $rootScope, $stateParams, $http, $compile){
 
 }]);
 
+//Controller that opperates the side menu
 app.controller('SideBarCtrl', [
   '$scope',
   '$rootScope',
@@ -275,8 +277,8 @@ app.controller('SideBarCtrl', [
   }
 ]);
 
-//Non angular functions
 
+//Non angular functions
 function fixSelection(element){
   $(".selected").each(function(i, obj){
     if($(obj).hasClass("selected")){
@@ -287,7 +289,8 @@ function fixSelection(element){
   element.addClass("selected");
 }
 
-//returns an object with data f-3ield and labels field
+//returns an object with data field and labels field
+//used for the example charts in model submission forms.
 function buildData(max, shift, slope){
   var final = {};
   var data = [];

@@ -1,12 +1,14 @@
-<div class="col-md-6">
+<div class="item">
   <div class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" data-target="#{{obj.index}}" style="cursor:pointer;">
-      <h4>{{obj.name}}</h4>
+    <div class="panel-heading">
+      <h4>{{obj.name}} <span class="right download"><i class="fa fa-download"></i> Download</span></h4>
     </div>
-    <ul class="list-group collapse" id="{{obj.index}}">
-      <li class="list-group-item" ng-repeat="line in obj.data">
-        {{line}}
-      </li>
-    </ul>
+    <div class="panel-body scroll">
+      <ul class="list-group" id="{{obj.index}}">
+        <li class="list-group-item" ng-repeat="line in obj.data">
+          {{line}}
+        </li>
+      </ul>
+    </div>
   </div>
 <div>
