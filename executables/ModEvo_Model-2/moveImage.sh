@@ -2,6 +2,6 @@
 
 fld=${PWD##*/}
 
-mkdir ../../public/img/${fld}
+mkdir ../../../public/img/gnu/${fld}
 
-cp *.png ../../public/img/${fld}
+mv *.png ../../../public/img/gnu/${fld}
