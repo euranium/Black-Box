@@ -3,8 +3,8 @@ html{
 }
 
 img{
-  max-height: 100%;
-  max-width: 100%;
+  max-width:100%;
+  max-height:100%;
 }
 
 canvas{
@@ -129,14 +129,7 @@ i{
   padding-bottom: 5px;
   font-size: 15px;
   cursor: pointer;
-}
-
-.item{
-  width:48%;
-  margin: 1%;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  float: left;
+  max-width: 500px;
 }
 
 .selected{
@@ -162,11 +155,21 @@ i{
 }
 
 .panel-body{
-  max-height: 500px;
+  height: 500px;
+  overflow-y: hidden;
 }
 
-.scroll{
+.scroll:hover{
   overflow-y: scroll;
+}
+
+.item{
+  display: block;
+  width:48%;
+  margin: 1%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  float: left;
 }
 
 .download{
