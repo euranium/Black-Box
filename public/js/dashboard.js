@@ -230,7 +230,7 @@ app.controller('SideBarCtrl', [
       else{
         $scope.results = [];
       }
-    });model
+    });
 
     ////////////////////////////////////////////////////////////////////////////
     //Angular Functions
