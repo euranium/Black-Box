@@ -58,14 +58,6 @@ app.controller('ResultCtrl', [
 '$http',
 function($scope, $stateParams, $http){
 
-  // var $grid = $('.grid').masonry({
-  //   // set itemSelector so .grid-sizer is not used in layout
-  //   itemSelector: '.item',
-  //   // use element for option
-  //   columnWidth: '.item',
-  //   percentPosition: true
-  // })
-
   $scope.obj = {}
   $scope.message = "";
   $http.get('/api/results/query?name=' + $stateParams.id)
@@ -76,14 +68,11 @@ function($scope, $stateParams, $http){
       }
       else{
         console.log(data);
-        $scope.obj = htmlify(data);
-        //$grid.masonry('layout');
+        $scope.obj = parse(data);
       }
     });
 
-    // $grid.imagesLoaded().progress( function() {
-    //   $grid.masonry('layout');
-    // });
+
 }]);
 
 //Controller that opperates when the user selects a model from the side menu
