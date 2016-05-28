@@ -159,10 +159,14 @@ function($scope, $rootScope, $stateParams, $http, $compile){
          Program: "ModEvo",
          Input: args
        },
-         {
-           Program: "plot.py",
-           input: []
-        }
+       {
+         Program: "plot.py",
+         input: []
+      },
+      {
+        Program: "moveImage.sh",
+        input: []
+      }
      ]
      };
 
@@ -226,7 +230,7 @@ app.controller('SideBarCtrl', [
       else{
         $scope.results = [];
       }
-    });
+    });model
 
     ////////////////////////////////////////////////////////////////////////////
     //Angular Functions
