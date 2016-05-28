@@ -39,6 +39,11 @@ func ClearFiles() {
 						fmt.Println(err.Error())
 						return
 					}
+					err = DeleteFolder(path.Join("public/img/gnu", u.Name))
+					if err != nil {
+						fmt.Println(err.Error())
+						return
+					}
 					var args []interface{}
 					args = append(args, s.Folder)
 					err = DBWrite(DeleteStored, args)
