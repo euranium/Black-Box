@@ -19,9 +19,11 @@ var (
 	(:Name,:Folder,:SessionKey,:Hash,:Time,:Temp)`
 	// get one user
 	QueryUser = "SELECT * FROM Users where name=$1"
+	// get every user info
+	QueryUsers = `SELECT * FROM Users`
 	// get all programs
 	QueryPrograms = "SELECT Folder, Files FROM Programs"
-	// get info on one program
+	// get times associated with stored results
 	QueryProgram = `SELECT Folder, Files FROM Programs WHERE Folder=$1`
 	// get program associated with a command
 	QueryCommand = `SELECT Name, ProgType FROM Command WHERE Name=$1`
@@ -31,6 +33,8 @@ var (
 	// get all results associated w/ a user
 	QueryRuns = `SELECT Folder, ProgName, Files, Viewed, Time, Temp FROM Stored
 	WHERE UserName=$1`
+	// get info on all stored results
+	QueryStored = `SELECT Folder, ProgName, Files, Viewed, Time, Temp FROM Stored`
 	// get all completed results
 	QueryCompleted = `SELECT Folder, UserName, ProgName, Files, Time fROM Stored
 	WHERE UserName=$1 and Files != " "`
@@ -50,7 +54,10 @@ var (
 	// update what user session value is, normally for logging out
 	UpdateUserSession = `UPDATE users SET SessionKey=$1, Time=$2 WHERE Name=$3`
 	// delete stored data
-	DeleteRun = `DELETE FROM STORED WHERE Folder=$1 AND (UserName=$2 OR Temp=1)`
+	DeleteRun    = `DELETE FROM Stored WHERE Folder=$1 AND (UserName=$2 OR Temp=1)`
+	DeleteStored = `DELETE FROM Stored WHERE Folder=$1`
+	// delete user
+	DeleteUser = `DELETE FROM Users where Name=$1`
 )
 
 /*

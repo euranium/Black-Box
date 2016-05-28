@@ -56,7 +56,7 @@ type Stored struct {
 	Folder   string `db:"Folder"  `
 	ProgName string `db:"ProgName"`
 	Files    string `db:"Files"   `
-	Viewed   bool   `db:"Viewed"  `
+	Viewed   int    `db:"Viewed"  `
 	Time     int64  `db:"Time"    `
 	Temp     bool   `db:"Temp"    `
 }
