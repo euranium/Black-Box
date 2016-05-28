@@ -18,6 +18,59 @@ import (
 )
 
 /*
+check age of files and users, delete if deliquent for over 2 weeks
+*/
+func ClearFiles() {
+	for {
+		select {
+		case <-ticker.C:
+			var stored []Stored
+			var a []interface{}
+			err := DBRead(QueryRuns, a, &stored)
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+			t := time.Now().Unix()
+			for _, s := range stored {
+				if t-s.Time > 1209600 {
+					err = DeleteFolder(path.Join(UserDir, s.UserName, s.Folder))
+					if err != nil {
+						fmt.Println(err.Error())
+						return
+					}
+					var args []interface{}
+					args = append(args, s.Folder)
+					err = DBWrite(DeleteStored, args)
+					if err != nil {
+						fmt.Println(err.Error())
+						return
+					}
+				}
+			}
+			var users []User
+			err = DBRead(QueryUsers, a, &users)
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+			for _, u := range users {
+				if t-u.Time > 1209600 {
+					err = DeleteFolder(path.Join(UserDir, u.Name))
+					if err != nil {
+						fmt.Println(err.Error())
+						return
+					}
+					var args []interface{}
+					args = append(args, u.Name)
+					err = DBWrite(DeleteUser, args)
+				}
+			}
+		}
+	}
+}
+
+/*
 Make sure all programs in the fs are in the db
 */
 func FilesInit() (err error) {
@@ -61,64 +114,6 @@ func AddProgram(folder string) (err error) {
 	}
 	return
 }
-
-/*
-func AddCommand(cmd *Cmd) (name string, err error) {
-	name = ""
-	if cmd.Exec != nil && cmd.Exec.Name != "" {
-		name, err = AddCommand(cmd.Exec)
-	}
-	if err != nil {
-		return
-	}
-	var c Command
-	c.Name = cmd.Name
-	c.ProgType = cmd.ProgType
-	c.CommandName = name
-	if name == "" {
-		var args []interface{}
-		args = append(args, c.Name)
-		args = append(args, c.ProgType)
-		err = DBWrite(InsertCmd, args)
-	} else {
-		err = DBWriteMap(InsertCommand, structs.Map(c))
-	}
-	return cmd.Name, err
-}
-
-/*
-func AddProgram(folder string) (err error) {
-	file := filepath.Join(progDir, folder, "config.json")
-	config, err := ReadFile(file)
-	if err != nil {
-		return
-	}
-	//fmt.Println("config:", string(config))
-	var prog Programs
-	prog.Folder = folder
-	files, err := ListDir(filepath.Join(progDir, folder))
-	if err != nil {
-		return
-	}
-	prog.Files = strings.Join(files, ",")
-	//fmt.Println("programs:", prog)
-
-	dec := json.NewDecoder(bytes.NewReader(config))
-	err = dec.Decode(&prog)
-	if err != nil {
-		fmt.Println("error decode:", err.Error())
-		return
-	}
-	if prog.ProgType == "" {
-		return errors.New("Incorrect config formation")
-	}
-	err = DBWriteMap(InsertProgram, structs.Map(prog))
-	if err != nil {
-		fmt.Println("insert err:", err.Error())
-	}
-	return
-}
-*/
 
 /*
 copy all files from a directory to a new dir
@@ -399,10 +394,6 @@ func CreateUserFolder(person *User) {
 	return
 }
 
-func AddFile(user, fileName string) (err error) {
-	return
-}
-
-func DeleteFile(user, fileName string) (err error) {
-	return
+func DeleteFolder(folderName string) (err error) {
+	return os.RemoveAll(folderName)
 }

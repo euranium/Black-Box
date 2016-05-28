@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 # set up the db, build the go project, check if succesfull
 # if success, mv executable to an .o file for .gitinore
 # then run
@@ -35,6 +35,7 @@ while getopts ":ctijp:" o; do
 			echo c to clean
 			echo t to just test
 			echo i to import packages
+			echo j to compile java
 			echo p port number, p and port number must go last
 			exit 0
 			;;
@@ -50,11 +51,14 @@ if [ $clean -eq 0 ]; then
 fi
 
 if [ ! -e "data.db" ]; then
-	sqlite3 data.db < data.sql
+	f="$(cat data.sql)"
+	sql=$(printf $f $(date +%s))
+	sqlite3 data.db $sql
 	if [ $? -ne 0 ]; then
 		echo $(tput setaf 1)error creating sqlite db$(tput sgr0)
 		exit 1
 	fi
+	echo created db
 fi
 
 if [ ! -d "users/aaa" ]; then

@@ -130,7 +130,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	}
 	input.Dir = dir
 	// save run to db
-	run := Stored{person.Name, base, input.Name, "", false, time.Now().Unix(), person.Temp}
+	run := Stored{person.Name, base, input.Name, "", 0, time.Now().Unix(), person.Temp}
 	err = DBWriteMap(InsertRun, structs.Map(run))
 	if err != nil {
 		SendError(w, "Error Running Program")
@@ -160,7 +160,6 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 	}
 	var s []Stored
 	var args []interface{}
-	//var results []Results
 	results := make([]Results, 0)
 	args = append(args, person.Name)
 	err = DBRead(QueryRuns, args, &s)
@@ -169,7 +168,7 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 		SendError(w, "Error Processing Request")
 		return
 	}
-	//fmt.Println("results:", s)
+
 	for _, v := range s {
 		var r Results
 		r.Name = v.Folder
@@ -178,18 +177,21 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 		} else {
 			r.Status = "complete"
 		}
+		if v.Viewed == 0 {
+			r.Viewed = false
+		} else {
+			r.Viewed = true
+		}
 		r.Type = v.ProgName
 		results = append(results, r)
-		//list = append(list, v.Folder)
 	}
-	//fmt.Println(list)
+
 	b, err := json.Marshal(results)
 	if err != nil {
 		fmt.Println("marshal error:", err.Error())
 		SendError(w, "Error Formating Data")
 		return
 	}
-	//fmt.Println(string(b[:]))
 	w.Write(b)
 	return
 }
@@ -238,7 +240,7 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// record that the user has viewed the program
-	if !result.Viewed {
+	if result.Viewed == 0 {
 		err = DBWrite(UpdateViewed, args)
 		if err != nil {
 			fmt.Println("Error:", err.Error())

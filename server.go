@@ -28,7 +28,7 @@ var (
 	Tasks       = make(chan Submit, 64)
 	Signal      = make(chan os.Signal, 1)
 	store       = sessions.NewCookieStore([]byte("something-secret-or-not"))
-	//store       *sessions.CookieStore
+	ticker      = time.NewTicker(30 * time.Second)
 )
 
 func main() {
@@ -40,6 +40,7 @@ func main() {
 
 	// start routine to handle program execution
 	go RunCmd()
+	go ClearFiles()
 
 	// serve static files for stuff like css, js, imgs from public folder
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
