@@ -52,3 +52,4 @@ VALUES ("aaa", "aaa", " ", "aaa", %s, 0);
 
 INSERT INTO Command (Name, ProgType) VALUES ("ModEvo", "java");
 INSERT INTO Command (Name, ProgType) VALUES ("plot.py", "python");
+INSERT INTO Command (Name, ProgType) VALUES ("moveImage.sh", "bash");
