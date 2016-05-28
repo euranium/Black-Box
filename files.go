@@ -26,7 +26,7 @@ func ClearFiles() {
 		case <-ticker.C:
 			var stored []Stored
 			var a []interface{}
-			err := DBRead(QueryRuns, a, &stored)
+			err := DBRead(QueryStored, a, &stored)
 			if err != nil {
 				fmt.Println(err.Error())
 				return

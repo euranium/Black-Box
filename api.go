@@ -164,8 +164,14 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 	args = append(args, person.Name)
 	err = DBRead(QueryRuns, args, &s)
 	if err != nil {
-		fmt.Printf("%s\n", err.Error())
-		SendError(w, "Error Processing Request")
+		fmt.Printf("querying results: %s\n", err.Error())
+		b, err := json.Marshal(results)
+		if err != nil {
+			fmt.Println("marshal error:", err.Error())
+			SendError(w, "Error Formating Data")
+			return
+		}
+		w.Write(b)
 		return
 	}
 
