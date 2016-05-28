@@ -59,11 +59,16 @@
       <div class="menu-item" ng-show="results.length == 0">
         no results yet :(
       </div>
-      <span ng-repeat="item in results track by $index">
-          <div class="menu-item" ng-click="loadResult(item.Name, $event)">
-            {{item.Name}}
-          </div>
+
+      <span ng-repeat="model in software track by $index">
+        <div class="subHeader">{{model}}</div>
+        <span ng-repeat="item in results track by $index">
+            <div class="menu-item" ng-click="loadResult(item.Name, $event)" ng-show="item.Type == model">
+              {{item.Name}}
+            </div>
+        </span>
       </span>
+      
     </div>
 
   </div><!-- end of sidebar -->

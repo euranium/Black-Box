@@ -221,6 +221,7 @@ app.controller('SideBarCtrl', [
     $http.get('/api/results').success(function(data) {
       if(data != "null"){
         $scope.results = data;
+        console.log(data);
       }
       else{
         $scope.results = [];
