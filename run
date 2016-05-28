@@ -48,6 +48,7 @@ if [ $clean -eq 0 ]; then
 	echo $(tput setaf 1)clearing dabase and files$(tput sgr0)
 	rm "data.db"
 	rm -rf "users"
+	rm -rf "public/img/gnu"
 fi
 
 if [ ! -e "data.db" ]; then
@@ -67,6 +68,10 @@ if [ ! -d "users/aaa" ]; then
 		echo $(tput setaf 1)error creating user directory$(tput sgr0)
 		exit 1
 	fi
+fi
+
+if [ ! -d "public/img/gnu" ]; then
+	mkdir "public/img/gnu"
 fi
 
 go build
