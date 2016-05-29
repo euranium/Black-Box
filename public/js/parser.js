@@ -13,7 +13,7 @@ Called from dashboard.js
   images: []
 }
 */
-function parse(data){
+function parse(data, folder){
 
   var rt = {
     files: [],
@@ -47,6 +47,13 @@ function parse(data){
     }
 
   }
+
+  var image = {
+    src: "img/gnu/" + folder + "/contourPlot.png",
+    name: "Fitness Contour"
+  }
+
+  rt.images.push(image);
 
   //model 2 has mean trait values 1 and 2, and mean Fitness values
 

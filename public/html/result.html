@@ -20,16 +20,19 @@ obj is of form{files: [{}], graphs: []}-->
     </div>
   </div>
 
-  <div class="item" ng-show="!error">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4>Fitness Contour</h4>
-      </div>
-      <div class="panel-body">
-        <img src="img/contourPlot.png">
+  <div ng-repeat="img in obj.images">
+    <div class="item">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>{{img.name}}</h4>
+        </div>
+        <div class="panel-body">
+          <img src="{{img.src}}">
+        </div>
       </div>
     </div>
   </div>
+
 
   <div ng-repeat="file in obj.files">
       <file obj='file' index='file.index'></file>

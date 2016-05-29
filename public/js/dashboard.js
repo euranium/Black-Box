@@ -68,7 +68,7 @@ function($scope, $stateParams, $http){
       }
       else{
         console.log(data);
-        $scope.obj = parse(data);
+        $scope.obj = parse(data, $stateParams.id);
       }
     });
 

@@ -28,17 +28,17 @@ with open("meanTraitTwoValues_ModelTwo.txt") as f:
 
 
 if xmin > 0:
-    xmin = xmin *.9
+    xmin = xmin *.98
 else:
-    xmin = xmin * 1.1
+    xmin = xmin * 1.02
 
 if ymin > 0:
-    ymin = ymin * .9
+    ymin = ymin * .98
 else:
-    ymin = ymin * 1.1
+    ymin = ymin * 1.02
 
-xmax = xmax * 1.1
-ymax = ymax * 1.1
+xmax = xmax * 1.02
+ymax = ymax * 1.02
 
 file = open('plot.gn', 'w+')
 file.write("set terminal jpeg\n")
@@ -62,12 +62,12 @@ file.write("unset table\n")
 file.write("reset\n")
 file.write("set xrange [" + str(xmin) + ": " + str(xmax) + "]\n")
 file.write("set yrange [" + str(ymin) + ": " + str(ymax) + "]\n")
-file.write("set xlabel 'trait 1'\n")
-file.write("set ylabel 'trait 2'\n")
+file.write("set xlabel 'Melanin'\n")
+file.write("set ylabel 'DVM'\n")
 file.write("set title 'fitness surface'\n")
 file.write("unset key\n")
 file.write("set palette rgbformulae 33,13,10\n")
-file.write("plot 'contourBase.dat' with image, 'contourLines.dat' w l lt -1 lw 1, \"< paste meanTraitOneValues_ModelTwo.txt meanTraitTwoValues_ModelTwo.txt\" using 2:4 with lines\n")
+file.write("plot 'contourBase.dat' with image, 'contourLines.dat' w l lt -1 lw 1, \"< paste meanTraitOneValues_ModelTwo.txt meanTraitTwoValues_ModelTwo.txt\" using 2:4 with lines lw 2 lt 4\n")
 file.close();
 
 p = subprocess.Popen("gnuplot plot.gn", shell = True)
