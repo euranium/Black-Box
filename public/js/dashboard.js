@@ -50,9 +50,7 @@ app.directive('file', function() {
         templateUrl: '/html/file.html',
         link: function(scope, element, attrs) {
           scope.download = function($event){
-            //console.log($event.currentTarget);
             $event.currentTarget.href = makeTextFile(scope.obj.data);
-            //console.log(scope.obj.data);
           }
         }
     };
@@ -230,7 +228,6 @@ app.controller('SideBarCtrl', [
     $http.get('/api/results').success(function(data) {
       if(data != "null"){
         $scope.results = data;
-        console.log(data);
       }
       else{
         $scope.results = [];
