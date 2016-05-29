@@ -60,7 +60,7 @@
         no results yet :(
       </div>
 
-      <span ng-repeat="model in software track by $index">
+      <span ng-repeat="model in software track by $index" ng-hide="results.length == 0">
         <div class="subHeader">{{model}}</div>
         <span ng-repeat="item in results track by $index">
             <div class="menu-item" ng-click="loadResult(item.Name, $event)" ng-show="item.Type == model">
@@ -74,10 +74,11 @@
   </div><!-- end of sidebar -->
 
   <div id="dashWrapper">
-    <div id="nav">
+    <div id="nav" ng-controller="Nav">
       <div id="navContent">
-        <a class="right" href="/logout">Logout</a>
-        <a class="right" href="/login">Login</a>
+        <a class="right" href="/logout" ng-show="user.Temp == false">Logout</a>
+        <a class="right" href="/login" ng-show="user.Temp == true">Register</a>
+        <a class="right" href="/login" ng-show="user.Temp == true">Login</a>
         <a class="right" href="/people">People</a>
         <a class="right" href="/publications">Pulbications</a>
         <span class="right">Computational Tools</span>

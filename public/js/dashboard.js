@@ -6,6 +6,17 @@ Dynamically populates the dashboard page
 
 var app = angular.module('dashboard', ['ngSanitize', 'ui.router', 'chart.js']);
 
+app.factory('Auth', ['$http', function($http){
+  var a = {};
+
+  a.isLoggedIn = function(){
+    return $http.get('/api/loggedIn');
+  }
+
+  return a;
+}]);
+
+
 app.config([
 '$stateProvider',
 '$urlRouterProvider',
@@ -82,6 +93,22 @@ function($scope, $stateParams, $http, $state){
       }
     });
 
+
+}]);
+
+app.controller('Nav', [
+'$scope',
+'$stateParams',
+'$http',
+'$state',
+'Auth',
+function($scope, $stateParams, $http, $state, Auth){
+
+  $scope.user = {};
+
+  Auth.isLoggedIn().success(function(data){
+    $scope.user = data;
+  });
 
 }]);
 
@@ -216,9 +243,8 @@ function($scope, $rootScope, $stateParams, $http, $compile, $state){
          }
        })
        .success(function(data) {
-         console.log(data.Name);
          console.log("Data sent");
-         $rootScope.$broadcast('lemonade', 1);
+         $rootScope.$broadcast('lemonade', 1); //hahaha get it
          $scope.working = false;
        })
        .error(function(data){
