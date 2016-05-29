@@ -36,6 +36,13 @@ function($stateProvider, $urlRouterProvider) {
           templateUrl: '/html/error.html',
         });
 
+        $stateProvider
+          .state('running', {
+            url: '/running/{id}',
+            controller: 'Running',
+            templateUrl: '/html/running.html'
+          });
+
   $urlRouterProvider.otherwise('default');
 }]);
 
@@ -56,6 +63,28 @@ app.directive('file', function() {
     };
 });
 
+app.controller('Running', [
+'$scope',
+'$stateParams',
+'$http',
+'$state',
+function($scope, $stateParams, $http, $state){
+
+  $http.get('/api/results/query?name=' + $stateParams.id)
+    .success(function(data) {
+      if(data.hasOwnProperty('Error')){
+        if(data.Error == "Program Not Found"){
+            $state.go("error");
+        }
+      }
+      else{
+        $state.go("result", {"id": $stateParams.id})
+      }
+    });
+
+
+}]);
+
 app.controller('ResultCtrl', [
 '$scope',
 '$stateParams',
@@ -68,7 +97,12 @@ function($scope, $stateParams, $http, $state){
   $http.get('/api/results/query?name=' + $stateParams.id)
     .success(function(data) {
       if(data.hasOwnProperty('Error')){
-        $state.go("error");
+        if(data.Error == "Program Not Complete"){
+          $state.go("running", {"id": $stateParams.id});
+        }
+        else{
+          $state.go("error");
+        }
       }
       else{
         console.log(data);
