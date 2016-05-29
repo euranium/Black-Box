@@ -224,13 +224,13 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("name:", name)
 	if err != nil {
 		fmt.Println("error:", err.Error())
-		SendError(w, "File Not Found")
+		SendError(w, "Program Not Found")
 		return
 	}
 
 	// check if file can be accessed by temporary user
 	if result.Temp == false && user.Name != result.UserName {
-		SendError(w, "File Not Found")
+		SendError(w, "Program Not Found")
 		return
 	}
 	if strings.Trim(result.Files, " ") == "" {
