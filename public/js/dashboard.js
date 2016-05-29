@@ -30,6 +30,12 @@ function($stateProvider, $urlRouterProvider) {
         controller: 'ModelCtrl'
       });
 
+      $stateProvider
+        .state('error', {
+          url: '/error',
+          templateUrl: '/html/error.html',
+        });
+
   $urlRouterProvider.otherwise('default');
 }]);
 
@@ -56,15 +62,15 @@ app.controller('ResultCtrl', [
 '$scope',
 '$stateParams',
 '$http',
-function($scope, $stateParams, $http){
+'$state',
+function($scope, $stateParams, $http, $state){
 
   $scope.obj = {}
   $scope.message = "";
   $http.get('/api/results/query?name=' + $stateParams.id)
     .success(function(data) {
       if(data.hasOwnProperty('Error')){
-        $scope.message = "Invalid url ¯\\\_(ツ)_/¯";
-        $scope.error = 1;
+        $state.go("error");
       }
       else{
         console.log(data);
@@ -82,13 +88,12 @@ app.controller('ModelCtrl', [
 '$stateParams',
 '$http',
 '$compile',
-function($scope, $rootScope, $stateParams, $http, $compile){
+'$state',
+function($scope, $rootScope, $stateParams, $http, $compile, $state){
 
   $http.get('/api/template/query?name=' + $stateParams.id).success(function(data) {
     if(data.hasOwnProperty('Error')){
-      var error = "<div class='alert alert-danger' role='alert'><span style='font-size:20px; font-weight: bold;'><i class='fa fa-exclamation-triangle' aria-hidden='true'></i>Invalid url ¯\\\_(ツ)_/¯</span></div>";
-      $('#dash').html($compile(error)($scope));
-      $scope.error = 1;
+      $state.go("error");
     }
     else{
       $('#dash').html($compile(data)($scope));
