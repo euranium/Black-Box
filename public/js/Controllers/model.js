@@ -11,9 +11,10 @@ app.controller('ModelCtrl', [
 '$http',
 '$compile',
 '$state',
-function($scope, $rootScope, $stateParams, $http, $compile, $state){
+'Model',
+function($scope, $rootScope, $stateParams, $http, $compile, $state, Model){
 
-  $http.get('/api/template/query?name=' + $stateParams.id).success(function(data) {
+  Model.getModel($stateParams.id).success(function(data) {
     if(data.hasOwnProperty('Error')){
       $state.go("error");
     }

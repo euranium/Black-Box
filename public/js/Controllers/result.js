@@ -8,12 +8,13 @@ app.controller('ResultCtrl', [
 '$stateParams',
 '$http',
 '$state',
-function($scope, $stateParams, $http, $state){
+'Result',
+function($scope, $stateParams, $http, $state, Result){
 
   $scope.obj = {}
   $scope.message = "";
-  
-  $http.get('/api/results/query?name=' + $stateParams.id)
+
+  Result.getResult($stateParams.id)
     .success(function(data) {
       if(data.hasOwnProperty('Error')){
         if(data.Error == "Program Not Complete"){
