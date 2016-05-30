@@ -26,10 +26,10 @@ function parse(data, folder){
   var index = 0;
   var items = data.Results;
   for (var i = 0; i < items.length; i++) {
+    //items[i].Name = items[i].Name.replace("TraitOne", "Melanin");
+    //items[i].Name = items[i].Name.replace("TraitTwo", "DVM");
     if(fileExtension(items[i].Name) == "txt"){
-      items[i].Name = items[i].Name.replace("TraitOne", "Melanin");
-      items[i].Name = items[i].Name.replace("TraitTwo", "DVM");
-      var temp = {}//"<div class='list-group'>";
+      var temp = {}
       temp.index = index;
       temp.name = items[i].Name;
       temp.data = splitByLine(items[i].Data);
