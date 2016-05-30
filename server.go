@@ -138,7 +138,6 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 		ses.Values["id"] = nil
 		ses.Values["session"] = nil
 		_ = ses.Save(r, w)
-		http.Redirect(w, r, "/login", 302)
 		return
 	}
 	if person.SessionKey != session || time.Now().Unix()-person.Time > 1209600 {
@@ -148,7 +147,6 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 		if err != nil {
 			fmt.Println("error:", err.Error())
 		}
-		http.Redirect(w, r, "/login", 302)
 		return
 	}
 	CheckIn(person)
@@ -187,7 +185,10 @@ func RemoveSession(w http.ResponseWriter, r *http.Request) {
 	}
 	ses.Values["id"] = nil
 	ses.Values["session"] = nil
-	ses.Save(r, w)
+	err = ses.Save(r, w)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 func SaveTemp(w http.ResponseWriter, r *http.Request, person *User) (err error) {
@@ -222,8 +223,8 @@ log user out by updating db and deleting session info
 */
 func Logout(w http.ResponseWriter, r *http.Request) {
 	// get current person logged in to update db
-	defer RemoveSession(w, r)
 	person, _ := IsLoggedIn(w, r)
+	RemoveSession(w, r)
 	if person == nil || person.Name == "" {
 		http.Redirect(w, r, "/", 302)
 		return
