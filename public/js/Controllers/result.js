@@ -1,3 +1,8 @@
+/*
+Controller for the result state
+Deals with parsing the data recieved from the server
+calls to parsify to keep the code here concise
+*/
 app.controller('ResultCtrl', [
 '$scope',
 '$stateParams',
@@ -7,6 +12,7 @@ function($scope, $stateParams, $http, $state){
 
   $scope.obj = {}
   $scope.message = "";
+  
   $http.get('/api/results/query?name=' + $stateParams.id)
     .success(function(data) {
       if(data.hasOwnProperty('Error')){

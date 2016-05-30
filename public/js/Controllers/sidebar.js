@@ -1,4 +1,8 @@
-//Controller that opperates the side menu
+/*
+Controller for the sidebar
+Populates the navbar by querying the back end
+Responsible for changing states on menu item clicks
+*/
 app.controller('SideBarCtrl', [
   '$scope',
   '$rootScope',

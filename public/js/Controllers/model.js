@@ -1,4 +1,9 @@
-//Controller that opperates when the user selects a model from the side menu
+/*
+Controller for the model state, where a user is fills out the form
+Deals with generating data for the example graphs
+Deals with collecting and building arguement list from the form
+Builds and sends the back end an 'execute' object
+*/
 app.controller('ModelCtrl', [
 '$scope',
 '$rootScope',
