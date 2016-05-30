@@ -7,7 +7,7 @@ Called from htmlify.js
 function buildSingleGraph(file){
 
   result = {};
-  result.name = "Mean Trait Values";
+  result.name = file.Name.split(".")[0];
   result.labels = []; //lables are the axis
   result.series = []
   result.info = [];

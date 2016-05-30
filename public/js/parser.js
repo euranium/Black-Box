@@ -27,6 +27,8 @@ function parse(data, folder){
   var items = data.Results;
   for (var i = 0; i < items.length; i++) {
     if(fileExtension(items[i].Name) == "txt"){
+      items[i].Name = items[i].Name.replace("TraitOne", "Melanin");
+      items[i].Name = items[i].Name.replace("TraitTwo", "DVM");
       var temp = {}//"<div class='list-group'>";
       temp.index = index;
       temp.name = items[i].Name;
@@ -54,8 +56,6 @@ function parse(data, folder){
   }
 
   rt.images.push(image);
-
-  //model 2 has mean trait values 1 and 2, and mean Fitness values
 
 
   return rt;
