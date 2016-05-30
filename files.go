@@ -220,14 +220,6 @@ func RandomString(strlen int) string {
 		str += string(result[i])
 	}
 	return str
-
-}
-
-/*
-check if name is an executable program
-*/
-func IsExec(name string) bool {
-	return CheckDir(path.Join("executables", name))
 }
 
 /*
@@ -304,10 +296,6 @@ func WatchForFileCreation(fileName string) (err error) {
 	<-done
 
 	return
-}
-
-func IsResult(user, folder string) bool {
-	return CheckDir(path.Join("users", user, folder))
 }
 
 func ReadFileType(folder, tp string) []File {

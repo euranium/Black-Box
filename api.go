@@ -25,7 +25,7 @@ func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 		SendError(w, "Error Processing Request")
 		return
 	}
-	var progs []string
+	progs := make([]string, 0)
 	for _, pr := range p {
 		progs = append(progs, pr.Folder)
 	}
@@ -119,7 +119,6 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create a new folder for program to run in
-	//t := time.Now().Format("2006-Jan-02_15:04:05")
 	base := RandomString(12)
 	dir := path.Join(UserDir, person.Folder, base)
 	err = CopyDir(filepath.Join(progDir, input.Name), dir)
@@ -268,10 +267,10 @@ func APILoggedIn(w http.ResponseWriter, r *http.Request) {
 		SendError(w, "Error Processing User")
 		return
 	}
-	//b, err := json.Marshal(&Logged{user.Name, user.Temp})
 	b, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println("erro mashaling:", err.Error())
+		SendError(w, "Error Processing User")
 		return
 	}
 	w.Write(b)

@@ -36,7 +36,7 @@ var (
 	// get info on all stored results
 	QueryStored = `SELECT Folder, ProgName, Files, Viewed, Time, Temp FROM Stored`
 	// get all completed results
-	QueryCompleted = `SELECT Folder, UserName, ProgName, Files, Time fROM Stored
+	QueryCompleted = `SELECT Folder, UserName, ProgName, Files, Time FROM Stored
 	WHERE UserName=$1 and Files != " "`
 	// add a program
 	InsertProgram = `INSERT INTO Programs (Folder,Files) VALUES (:Folder,:Files)`

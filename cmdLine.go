@@ -39,7 +39,6 @@ func RunCmd() {
 			// iterate over all commands needing to be run
 			for _, command := range input.Commands {
 				input := []string{"exec.py", input.Dir, command.ProgType, command.Program}
-				fmt.Println("command:", append(input, command.Input...))
 				cmd := exec.Command("python", append(input, command.Input...)...)
 				out, err := cmd.CombinedOutput()
 				if out != nil {
@@ -59,7 +58,7 @@ func RunCmd() {
 				msgMsg = string(msg[:])
 				fmt.Println("output:", msgMsg)
 			}
-			LogRun(input.Dir, input.Name, errMsg, msgMsg)
+			go LogRun(input.Dir, input.Name, errMsg, msgMsg)
 		}
 	}
 }
