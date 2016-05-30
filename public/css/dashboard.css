@@ -195,3 +195,8 @@ i{
 .half{
   width: 50%;
 }
+
+#logo{
+  padding:10px;
+  padding-left: 0px;
+}
