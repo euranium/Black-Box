@@ -41,6 +41,9 @@ func main() {
 	// start routine to handle program execution
 	go RunCmd()
 	go ClearFiles()
+	// db initilization
+	DBInit()
+	FilesInit()
 
 	// serve static files for stuff like css, js, imgs from public folder
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
@@ -48,17 +51,12 @@ func main() {
 
 	// pass opt flag -port=# to specify an operating port
 	flgs := flag.String("port", "8080", "a string")
-	//flgs := flag.String("port", "3000", "a string")
 	flag.Parse()
 	fmt.Println("running on port:", *flgs)
 	port := ":" + *flgs
 
 	// signal handling
 	//signal.Notify(Signal, os.Interrupt)
-	// db initilization
-	DBInit()
-	FilesInit()
-
 	// start server
 	http.ListenAndServe(port, r)
 }
@@ -80,6 +78,9 @@ func Close(sig os.Signal) {
 	return
 }
 
+/*
+update the db to set last accessed time of user
+*/
 func CheckIn(person *User) (err error) {
 	var args []interface{}
 	args = append(args, time.Now().Unix())
@@ -90,7 +91,7 @@ func CheckIn(person *User) (err error) {
 
 /*
 get and fill a user struct from the db,
-if no user is returned, return an error
+if no user, return an error
 */
 func GetUser(id string) (person *User, err error) {
 	person = &User{}
