@@ -43,7 +43,7 @@ func main() {
 	go ClearFiles()
 	// db initilization
 	DBInit()
-	FilesInit()
+	AddSoftware()
 
 	// serve static files for stuff like css, js, imgs from public folder
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))

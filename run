@@ -5,10 +5,21 @@
 # make dir users for user folder, not tracked by git
 # make dir aaa for testing stuff in
 
+tst=$(which sqlite3)
+if [ tst -eq "" ]; then
+	echo no sqlite3 installed, cannot run program
+	exit 1
+fi
+tst=$(which go)
+if [ tst -eq "" ]; then
+	echo no Golang installed, cannot run program
+	exit 1
+fi
 clear
 clean=1
 tst=1
 port="-port=8080"
+
 while getopts ":ctijp:" o; do
 	case $o in
 		c)

@@ -24,6 +24,7 @@ func ClearFiles() {
 	for {
 		select {
 		case <-ticker.C:
+			AddSoftware()
 			var stored []Stored
 			var a []interface{}
 			err := DBRead(QueryStored, a, &stored)
@@ -78,7 +79,7 @@ func ClearFiles() {
 /*
 Make sure all programs in the fs are in the db
 */
-func FilesInit() (err error) {
+func AddSoftware() (err error) {
 	folders, err := ListDir(progDir)
 	if err != nil {
 		return

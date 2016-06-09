@@ -12,15 +12,19 @@ Create Table If Not Exists Users (
 );
 
 /*
-store of each program which can be run:
-folder name, main program name, type of program (eg java),
-files in folder in
+store of each program which can be run with the folder name
+and list of all the files in a comma seperated string
 */
 CREATE TABLE IF NOT EXISTS Programs (
 	Folder 		TEXT UNIQUE,
 	Files 		TEXT
 );
 
+/*
+store a list of all the programs which can be executed
+stored in name of the file and the program which executes
+the file, eg java or python
+*/
 CREATE TABLE IF NOT EXISTS Command (
 	Name 		TEXT UNIQUE,
 	ProgType 	TEXT
@@ -45,7 +49,7 @@ CREATE TABLE IF NOT EXISTS Stored (
 );
 
 /*
-for initilization purposes
+for initilization purposes, update whenever you have a new program type
 */
 INSERT INTO USERS (Name, Folder, SessionKey, Hash, Time, Temp)
 VALUES ("aaa", "aaa", " ", "aaa", %s, 0);
