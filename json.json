@@ -10,11 +10,11 @@
 
 "Request": "api/results",
 "Return Sucess": [{
-	"Name": "folderName",
+	"Name": "id",
 	"Status": "complete/pending",
 	"Type": "progName",
 	"Viewed": true/false,
-	"Time": 1463525359 
+	"Time": 1463525359
 }],
 
 "Post": "api/submit",

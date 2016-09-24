@@ -30,8 +30,7 @@ while getopts ":ctijp:" o; do
 			;;
 		i)
 			go get
-			go install github.com/jmoiron/sqlx
-			go install github.com/mattn/go-sqlite3
+			go install
 			;;
 		j)
 			echo compiling java code
