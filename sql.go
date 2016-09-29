@@ -98,12 +98,12 @@ insert values into a the db given a prepared statement and arguments
 will return the error thown
 first is given array of arguments in an interface, second is in a map format
 */
-func DBWrite(pref string, args []interface{}) (err error) {
-	_, err = db.Exec(pref, args...)
+func DBWrite(prep string, args []interface{}) (err error) {
+	_, err = db.Exec(prep, args...)
 	return
 }
 
-func DBWriteMap(pref string, values map[string]interface{}) (err error) {
-	_, err = db.NamedExec(pref, values)
+func DBWriteMap(prep string, values map[string]interface{}) (err error) {
+	_, err = db.NamedExec(prep, values)
 	return
 }
