@@ -55,5 +55,5 @@ INSERT INTO USERS (Name, Folder, SessionKey, Hash, Time, Temp)
 VALUES ("aaa", "aaa", " ", "aaa", %s, 0);
 
 INSERT INTO Command (Name, ProgType) VALUES ("ModEvo", "java");
-INSERT INTO Command (Name, ProgType) VALUES ("plot.py", "python");
-INSERT INTO Command (Name, ProgType) VALUES ("moveImage.sh", "bash");
+INSERT INTO Command (Name, ProgType) VALUES ("plot.py", "%s");
+INSERT INTO Command (Name, ProgType) VALUES ("moveImage.sh", "%s");
