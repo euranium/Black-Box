@@ -61,6 +61,12 @@ type Stored struct {
 	Temp     bool   `db:"Temp"    `
 }
 
+type ErrorLog struct {
+	Message string `db:"message"`
+	Time    int64  `db:"Time"   `
+	Folder  string `db:"Folder"json:"-"`
+}
+
 /*
 structs for data hand offs
 to be converted to and from JSON
