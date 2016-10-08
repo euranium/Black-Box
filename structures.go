@@ -109,3 +109,15 @@ type Cmd struct {
 type ErrorVal struct {
 	Error string
 }
+
+type Params struct {
+	Type  string
+	Id    string
+	Value string
+}
+
+type Model struct {
+	Program  string
+	ProgType string
+	Input    []Params
+}

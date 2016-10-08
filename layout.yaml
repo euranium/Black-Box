@@ -1,0 +1,8 @@
+---
+- Model:
+    Program: name of program to execute
+    ProgType: program type (e.g. java, python)
+    Params:
+        - {Type:type, Id: id, Value: value}
+        - {Type: text, Id: species, Value: Daphnia}
+...
