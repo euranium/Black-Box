@@ -50,18 +50,6 @@ var RouteList = Routes{
 		Logout,
 	},
 	Route{
-		"news",
-		"GET",
-		"/news",
-		news,
-	},
-	Route{
-		"publications",
-		"GET",
-		"/publications",
-		publications,
-	},
-	Route{
 		"people",
 		"GET",
 		"/people",
@@ -72,6 +60,24 @@ var RouteList = Routes{
 		"GET",
 		"/dashboard",
 		dashboard,
+	},
+	Route{
+		"contact",
+		"GET",
+		"/contact",
+		contact,
+	},
+	Route{
+		"science",
+		"GET",
+		"/science",
+		science,
+	},
+	Route{
+		"quickStart",
+		"GET",
+		"/quickstart",
+		quickstart,
 	},
 	Route{
 		"register",

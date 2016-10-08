@@ -129,28 +129,38 @@ func loginPage(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func news(w http.ResponseWriter, r *http.Request) {
-	file, err := ReadFile(path.Join(templateDir, "login.html"))
-	if err != nil {
-		w.Write([]byte("error"))
-		return
-	}
-	w.Write(file)
-	return
-}
-
-func publications(w http.ResponseWriter, r *http.Request) {
-	file, err := ReadFile(path.Join(templateDir, "publications.html"))
-	if err != nil {
-		w.Write([]byte("error"))
-		return
-	}
-	w.Write(file)
-	return
-}
-
 func people(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "people.html"))
+	if err != nil {
+		w.Write([]byte("error"))
+		return
+	}
+	w.Write(file)
+	return
+}
+
+func contact(w http.ResponseWriter, r *http.Request) {
+	file, err := ReadFile(path.Join(templateDir, "contact.html"))
+	if err != nil {
+		w.Write([]byte("error"))
+		return
+	}
+	w.Write(file)
+	return
+}
+
+func science(w http.ResponseWriter, r *http.Request) {
+	file, err := ReadFile(path.Join(templateDir, "science.html"))
+	if err != nil {
+		w.Write([]byte("error"))
+		return
+	}
+	w.Write(file)
+	return
+}
+
+func quickstart(w http.ResponseWriter, r *http.Request) {
+	file, err := ReadFile(path.Join(templateDir, "quickstart.html"))
 	if err != nil {
 		w.Write([]byte("error"))
 		return
