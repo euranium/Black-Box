@@ -58,6 +58,8 @@ var (
 	DeleteStored = `DELETE FROM Stored WHERE Folder=$1`
 	// delete user
 	DeleteUser = `DELETE FROM Users where Name=$1`
+	// log error
+	LogError = `Insert into ErrorLog (Message,Time,Folder) VALUES (:Message,:Time,:Folder)`
 )
 
 /*
@@ -107,3 +109,5 @@ func DBWriteMap(prep string, values map[string]interface{}) (err error) {
 	_, err = db.NamedExec(prep, values)
 	return
 }
+
+   
