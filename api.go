@@ -353,3 +353,32 @@ func SendError(w http.ResponseWriter, msg string) {
 	}
 	w.Write(b)
 }
+
+/*
+logs errors into sql database
+queries the client for user information, and the system for time information, inserts into the log schema
+*/
+func DBLogError(e error, w http.ResponseWriter, r *http.request) (err error) {
+	if r != nil{
+	   person, err:=IsLoggedIn(w,r)
+	}
+      if err != nil{
+		   w.write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		   Folder="NULL"
+		}
+		else{
+		   Folder:=&person.folder
+		}
+	else{
+	      Folder="NULL"
+	t:=Time.Now().Unix()
+	Message:=e.Error()
+	log := ErrorLog{
+		Message,
+		t,
+		Folder
+	}
+	DBWriteMap(LogError,structs.map(log))
+}
+	return
+}
