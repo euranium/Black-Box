@@ -1,4 +1,4 @@
-#!/usr/local/bin/zsh
+#!/usr/bin/env zsh
 # set up the db, build the go project, check if succesfull
 # if success, mv executable to an .o file for .gitinore
 # then run

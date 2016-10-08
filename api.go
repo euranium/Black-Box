@@ -297,7 +297,7 @@ func APIDelete(w http.ResponseWriter, r *http.Request) {
 	err = DBWrite(DeleteRun, args)
 	if err != nil {
 		fmt.Println("error:", err.Error())
-		SendError(w, "File Not Found")
+		SendError(w, fmt.Sprintf("File %s Not Found", name))
 		return
 	}
 }
