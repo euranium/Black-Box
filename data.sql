@@ -48,6 +48,12 @@ CREATE TABLE IF NOT EXISTS Stored (
 	Temp 		NUMERIC
 );
 
+CREATE TABLE IF NOT EXISTS ErrorLog (
+	Message     TEXT,
+	Time        NUMERIC,
+	Folder      TEXT
+);
+
 /*
 for initilization purposes, update whenever you have a new program type
 */
