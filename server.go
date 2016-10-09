@@ -98,6 +98,7 @@ func registration(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("error:", err.Error())
 		w.Write([]byte("error"))
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	w.Write(file)
@@ -110,6 +111,7 @@ dashboard page
 func dashboard(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "dashboard.html"))
 	if err != nil {
+		//DBLogError(err.Error(),w,r)
 		w.Write([]byte("error"))
 		return
 	}
@@ -123,6 +125,7 @@ func loginPage(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "login.html"))
 	if err != nil {
 		w.Write([]byte("error"))
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	w.Write(file)
@@ -133,6 +136,7 @@ func news(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "login.html"))
 	if err != nil {
 		w.Write([]byte("error"))
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	w.Write(file)
@@ -143,6 +147,7 @@ func publications(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "publications.html"))
 	if err != nil {
 		w.Write([]byte("error"))
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	w.Write(file)
@@ -153,6 +158,7 @@ func people(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "people.html"))
 	if err != nil {
 		w.Write([]byte("error"))
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	w.Write(file)

@@ -53,6 +53,7 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 	if err != nil {
 		fmt.Println("error getting session:", err.Error())
 		SendError(w, err.Error())
+		DBLogError(err.Error(),w,r)
 		return
 	}
 	if ses.Values["id"] == nil || ses.Values["session"] == nil {
@@ -79,6 +80,7 @@ func IsLoggedIn(w http.ResponseWriter, r *http.Request) (person *User, err error
 		err = ses.Save(r, w)
 		if err != nil {
 			fmt.Println("error:", err.Error())
+			DBLogError(err.Error(),w,r)
 		}
 		return
 	}
@@ -93,6 +95,7 @@ func SetTempUser(w http.ResponseWriter, r *http.Request) (person *User, err erro
 	person = &User{}
 	ses, err := store.Get(r, "user")
 	if err != nil {
+		GBLogError(err.Error(),w,r)
 		RemoveSession(w, r)
 		fmt.Println("error getting session:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
@@ -114,12 +117,14 @@ func SetTempUser(w http.ResponseWriter, r *http.Request) (person *User, err erro
 func RemoveSession(w http.ResponseWriter, r *http.Request) {
 	ses, err := store.Get(r, "user")
 	if err != nil {
+		DBLogError(err.Error(),w,r)
 		return
 	}
 	ses.Values["id"] = nil
 	ses.Values["session"] = nil
 	err = ses.Save(r, w)
 	if err != nil {
+		DBLogError(err.Error(),w,r)
 		fmt.Println(err.Error())
 	}
 }
@@ -127,6 +132,7 @@ func RemoveSession(w http.ResponseWriter, r *http.Request) {
 func SaveTemp(w http.ResponseWriter, r *http.Request, person *User) (err error) {
 	ses, err := store.Get(r, "user")
 	if err != nil {
+		DBLogError(err.Error(),w,r)
 		fmt.Println("error getting session:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
@@ -138,6 +144,7 @@ func SaveTemp(w http.ResponseWriter, r *http.Request, person *User) (err error) 
 	person.Hash = "none"
 	err = DBWriteMap(InsertUser, structs.Map(person))
 	if err != nil {
+		DBLogErrorLocal(err.Error(),w,r)
 		fmt.Println("error:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
@@ -146,6 +153,7 @@ func SaveTemp(w http.ResponseWriter, r *http.Request, person *User) (err error) 
 	ses.Values["session"] = person.SessionKey
 	err = ses.Save(r, w)
 	if err != nil {
+		DBErrorLog(err.Error(),w,r)
 		fmt.Println("error:", err.Error())
 	}
 	return
@@ -181,6 +189,7 @@ user's checkin to db
 func Login(w http.ResponseWriter, r *http.Request) {
 	ses, err := store.Get(r, "user")
 	if err != nil {
+		DBLogError(err.Error(),w,r)
 		fmt.Println("error getting session:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
@@ -195,6 +204,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// make array size 1 w/ an empty element
 	person, err := GetUser(id)
 	if err != nil || person == nil || person.Name == "" {
+		DBLogError(err.Error(),w,r)
 		fmt.Println("person:", person)
 		http.Redirect(w, r, "/login", 302)
 		return
@@ -208,6 +218,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	args = append(args, person.Name)
 	err = DBWrite(UpdateUserSession, args)
 	if err != nil {
+		DBLogError(err.Error(),w,r)
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
@@ -217,6 +228,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	ses.Values["session"] = session
 	err = ses.Save(r, w)
 	if err != nil {
+		DBLogError(err.Error(),w,r)
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
 	}
@@ -227,6 +239,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func register(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "home.html"))
 	if err != nil {
+		DBLogError(err.Error(),w,r)
 		fmt.Println("error:", err.Error())
 		w.Write([]byte("error"))
 		return

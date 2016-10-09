@@ -17,7 +17,7 @@ exec'd program should also recieve it and shut down if needed. Probably no need 
 the case, unless wanting to wait on program then exit.
 
 to have program run,
-Tasks <- {"Name": "Model Name", "Dir" "path/to", "Commands":
+Tasks <- {"Name": "Model Name", "Dir": "path/to", "Commands":
 	[{ "Program": "program name", "Input": [params]}]
 }
 example:
@@ -46,6 +46,7 @@ func RunCmd() {
 				}
 				if err != nil {
 					fmt.Printf("error: %s, msg: %s\n", err.Error(), msg)
+					DBLogErrorLocal(err.Error(),input.Dir)
 					break
 				}
 			}
@@ -53,6 +54,7 @@ func RunCmd() {
 			msgMsg := ""
 			if err != nil {
 				errMsg = err.Error()
+				DBLogErrorLocal(err.Error(),input.dir)
 			}
 			if msg != nil {
 				msgMsg = string(msg[:])
@@ -74,10 +76,12 @@ func LogRun(pathTo, name, errMsg, msg string) {
 	err := DBReadRow(QueryProgram, args, &p)
 	if err != nil {
 		fmt.Println(err.Error())
+		DBLogErrorLocal(err.Error(),pathTo)
 		return
 	}
 	if p.Files == "" {
 		fmt.Println("no results finding", name)
+		DBLogErrorLocal("no results finding", pathTo)
 		return
 	}
 
@@ -92,6 +96,18 @@ func LogRun(pathTo, name, errMsg, msg string) {
 	err = DBWrite(UpdateRun, args)
 	if err != nil {
 		fmt.Println(err.Error())
+		DBLogErrorLocal(err.Error(),pathTo)
 	}
 	return
+}
+
+/*
+log an error from a local command into the error database
+*/
+func DBLogErrorLocal(Message, Folder string) {
+	var args[]interface{}
+	args[0]=Message
+	args=append(args,time.Now().Unix())
+	args=append(args,"local")
+	DBWrite(LogError, args)	
 }
