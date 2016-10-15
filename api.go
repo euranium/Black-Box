@@ -395,7 +395,6 @@ queries the client for user information, and the system for time information, in
 func DBLogError(Message string, w http.ResponseWriter, r *http.request) (err error) {
 	if r != nil{
 	   person, err:=IsLoggedIn(w,r)
-	}
       if err != nil{
 		   w.write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		   Folder="NULL"
@@ -403,8 +402,10 @@ func DBLogError(Message string, w http.ResponseWriter, r *http.request) (err err
 		else{
 		   Folder:=&person.folder
 		}
+	}
 	else{
 	      Folder="NULL"
+	}
 	t:=Time.Now().Unix()
 	log := ErrorLog{
 		Message,
