@@ -246,6 +246,20 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// set the user session to the requested folder owner
+	if user == nil || user.Folder == "" {
+		user = &User{}
+		user.Folder = result.UserName
+		user.Name = result.UserName
+		user.Temp = true
+		err = Login(w, r, user)
+		if err != nil {
+			fmt.Println("error:", err.Error())
+			SendError(w, "Error retrieving data")
+			return
+		}
+	}
+
 	// check if file can be accessed by temporary user
 	if result.Temp == false && user.Name != result.UserName {
 		SendError(w, "Program Not Found")
@@ -339,8 +353,7 @@ func APIRegister(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	// parse input, make sure not empty
 	name := r.Form["name"][0]
-	pass := r.Form["password"][0]
-	person := &User{name, name, RandomString(64), pass, time.Now().Unix(), false}
+	person := &User{name, name, RandomString(64), time.Now().Unix(), false}
 	// attempt to add to db, should fail if username already taken
 	err := DBWriteMap(InsertUser, structs.Map(person))
 	if err != nil {

@@ -32,24 +32,6 @@ var RouteList = Routes{
 		home,
 	},
 	Route{
-		"login",
-		"POST",
-		"/login",
-		Login,
-	},
-	Route{
-		"login",
-		"GET",
-		"/login",
-		loginPage,
-	},
-	Route{
-		"login",
-		"GET",
-		"/logout",
-		Logout,
-	},
-	Route{
 		"people",
 		"GET",
 		"/people",

@@ -15,8 +15,8 @@ global reference to sql prepared statements to user
 var (
 	db *sqlx.DB
 	// try and add new user, should fail if username already taken
-	InsertUser = `INSERT INTO Users (Name,Folder,SessionKey,Hash,Time,Temp) VALUES
-	(:Name,:Folder,:SessionKey,:Hash,:Time,:Temp)`
+	InsertUser = `INSERT INTO Users (Name,Folder,SessionKey,Time,Temp) VALUES
+	(:Name,:Folder,:SessionKey,:Time,:Temp)`
 	// get one user
 	QueryUser = "SELECT * FROM Users where name=$1"
 	// get every user info
@@ -109,5 +109,3 @@ func DBWriteMap(prep string, values map[string]interface{}) (err error) {
 	_, err = db.NamedExec(prep, values)
 	return
 }
-
-   

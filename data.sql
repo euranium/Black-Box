@@ -6,7 +6,6 @@ Create Table If Not Exists Users (
 	Name 		TEXT UNIQUE,
 	Folder 		TEXT UNIQUE,
 	SessionKey 	TEXT,
-	Hash 		TEXT,
 	Time 		NUMERIC,
 	Temp 		NUMERIC
 );
@@ -57,8 +56,6 @@ CREATE TABLE IF NOT EXISTS ErrorLog (
 /*
 for initilization purposes, update whenever you have a new program type
 */
-INSERT INTO USERS (Name, Folder, SessionKey, Hash, Time, Temp)
-VALUES ("aaa", "aaa", " ", "aaa", %s, 0);
 
 INSERT INTO Command (Name, ProgType) VALUES ("ModEvo", "java");
 INSERT INTO Command (Name, ProgType) VALUES ("plot.py", "%s");

@@ -118,20 +118,6 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 	w.Write(file)
 }
 
-/*
-login page
-*/
-func loginPage(w http.ResponseWriter, r *http.Request) {
-	file, err := ReadFile(path.Join(templateDir, "login.html"))
-	if err != nil {
-		w.Write([]byte("error"))
-		//DBLogError(err.Error(),w,r)
-		return
-	}
-	w.Write(file)
-	return
-}
-
 func people(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "people.html"))
 	if err != nil {

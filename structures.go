@@ -36,7 +36,6 @@ type User struct {
 	Name       string `db:"Name"      `
 	Folder     string `db:"Folder"    json:"-"`
 	SessionKey string `db:"SessionKey"json:"-"`
-	Hash       string `db:"Hash"      json:"-"`
 	Time       int64  `db:"Time"      json:"-"`
 	Temp       bool   `db:"Temp"      `
 }
