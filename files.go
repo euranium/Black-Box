@@ -30,6 +30,7 @@ func ClearFiles() {
 			err := DBRead(QueryStored, a, &stored)
 			if err != nil {
 				fmt.Println(err.Error())
+				DBLogErrorLocal(err.Error(),"DBQuery")
 				return
 			}
 			t := time.Now().Unix()
@@ -38,11 +39,13 @@ func ClearFiles() {
 					err = DeleteFolder(path.Join(UserDir, s.UserName, s.Folder))
 					if err != nil {
 						fmt.Println(err.Error())
+						DBLogErrorLocal(err.Error(),s.Folder)
 						return
 					}
 					err = DeleteFolder(path.Join("public/img/gnu", s.Folder))
 					if err != nil {
 						fmt.Println(err.Error())
+						DBLogErrorLocal(err.Error(),s.Folder)
 						return
 					}
 					var args []interface{}
@@ -50,6 +53,7 @@ func ClearFiles() {
 					err = DBWrite(DeleteStored, args)
 					if err != nil {
 						fmt.Println(err.Error())
+						DBlogErrorLocal(err.Error(),s.Folder)
 						return
 					}
 				}
@@ -58,6 +62,7 @@ func ClearFiles() {
 			err = DBRead(QueryUsers, a, &users)
 			if err != nil {
 				fmt.Println(err.Error())
+				DBLogErrorLocal(err.Error(),"User Query")
 				return
 			}
 			for _, u := range users {
@@ -65,6 +70,7 @@ func ClearFiles() {
 					err = DeleteFolder(path.Join(UserDir, u.Name))
 					if err != nil {
 						fmt.Println(err.Error())
+						DBLogErrorLocal(err.Error(),u.Folder)
 						return
 					}
 					var args []interface{}
@@ -82,12 +88,14 @@ Make sure all programs in the fs are in the db
 func AddSoftware() (err error) {
 	folders, err := ListDir(progDir)
 	if err != nil {
+		DBLogErrorLocal(err.Error(),"querying folders")
 		return
 	}
 	var p []Programs
 	err = DBRead(QueryPrograms, EmptyInter, &p)
 	if err != nil {
 		fmt.Println("err query:", err.Error())
+		DBLogErrorLocal(err.Error(),"Query Programs")
 		return
 	}
 	for _, f := range folders {
@@ -111,11 +119,13 @@ func AddProgram(folder string) (err error) {
 	prog.Folder = folder
 	files, err := ListDir(filepath.Join(progDir, folder))
 	if err != nil {
+		DBLogLocal(err.Error(),folder)
 		return
 	}
 	prog.Files = strings.Join(files, ",")
 	err = DBWriteMap(InsertProgram, structs.Map(prog))
 	if err != nil {
+		DBLogErrorLocal(err.Error(),folder)
 		fmt.Println("add program err:", err)
 	}
 	return
@@ -133,10 +143,12 @@ func CopyDir(src, dst string) (err error) {
 	}
 	sfi, err := os.Stat(src)
 	if err != nil {
+		DBLogErrorLocal(err.Error(),src)
 		return
 	}
 	dir, _ := os.Open(src)
 	if err != nil {
+		DBLogErrorLocal(err.Error(),src)
 		return
 	}
 	err = os.Mkdir(dst, sfi.Mode())
@@ -149,11 +161,13 @@ func CopyDir(src, dst string) (err error) {
 		if obj.IsDir() {
 			err = CopyDir(srcptr, dstptr)
 			if err != nil {
+				DBLogErrorLocal(err.Error(),srcptr)
 				return
 			}
 		} else {
 			err = CopyFile(srcptr, dstptr)
 			if err != nil {
+				DBLogErrorLocal(err.Error(),srcptr)
 				return
 			}
 		}
@@ -164,6 +178,7 @@ func CopyDir(src, dst string) (err error) {
 func CopyFile(src, dst string) (err error) {
 	sfi, err := os.Stat(src)
 	if err != nil {
+		DBLogErrorLocal(err.Error(), dst)
 		return
 	}
 	if !sfi.Mode().IsRegular() {
@@ -171,10 +186,12 @@ func CopyFile(src, dst string) (err error) {
 	}
 	// if destination does exist
 	if err != nil && !os.IsNotExist(err) {
+		DBLogErrorLocal(err.Error(),src)
 		return
 	}
 	if err = os.Link(src, dst); err == nil {
 		fmt.Errorf("Link file: %s, %s", src, dst)
+		DBLogErrorLocal(err.Error(),src)
 		return
 	}
 	err = copyFileContents(src, dst)
@@ -185,11 +202,13 @@ func copyFileContents(src, dst string) (err error) {
 	fmt.Println("hard copying")
 	in, err := os.Open(src)
 	if err != nil {
+		DBLogLocal(err.Error(),src)
 		return
 	}
 	defer in.Close()
 	out, err := os.Create(dst)
 	if err != nil {
+		DBLogLocal(err.Error(),dst)
 		return
 	}
 	defer func() {
@@ -199,6 +218,7 @@ func copyFileContents(src, dst string) (err error) {
 		}
 	}()
 	if _, err = io.Copy(out, in); err != nil {
+		DBLogErrorLocal(err.Error(),dst)
 		return
 	}
 	err = out.Sync()
@@ -229,6 +249,7 @@ get the contents of a file,
 func ReadFile(path string) (file []byte, err error) {
 	file, err = ioutil.ReadFile(path)
 	if err != nil {
+		DBLogErrorLocal(err.Error(),path)
 		return
 	}
 	return
@@ -258,6 +279,7 @@ func CheckFile(file string) bool {
 func ListDir(directory string) (list []string, err error) {
 	dir, err := ioutil.ReadDir(directory)
 	if err != nil {
+		DBLogErrorLocal(err.Error(),directory)
 		return nil, err
 	}
 	for _, n := range dir {
@@ -265,7 +287,7 @@ func ListDir(directory string) (list []string, err error) {
 	}
 	return
 }
-
+/*
 func WatchForFileCreation(fileName string) (err error) {
 	watch, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -298,11 +320,12 @@ func WatchForFileCreation(fileName string) (err error) {
 
 	return
 }
-
+*/
 func ReadFileType(folder, tp string) []File {
 	var files []File
 	file, err := ioutil.ReadDir(folder)
 	if err != nil {
+		DBLogErrorLocal(err.Error(),folder)
 		fmt.Println(err.Error())
 		return nil
 	}
@@ -310,6 +333,7 @@ func ReadFileType(folder, tp string) []File {
 		if filepath.Ext(f.Name()) == tp {
 			byts, err := ReadFile(path.Join(folder, f.Name()))
 			if err != nil {
+				DBLogErrorLocal(err.Error())
 				fmt.Println(err.Error())
 			} else {
 				files = append(files, File{f.Name(), string(byts)})
@@ -330,6 +354,7 @@ func ReadFiles(folder string, fls []string) []File {
 	}
 	file, err := ioutil.ReadDir(folder)
 	if err != nil {
+		DBLogErrorLocal(err.Error(),folder)
 		fmt.Println(err.Error())
 		return nil
 	}
@@ -337,6 +362,7 @@ func ReadFiles(folder string, fls []string) []File {
 		if members[f.Name()] {
 			byts, err := ReadFile(path.Join(folder, f.Name()))
 			if err != nil {
+				DBlogErrorLocal(err.Error(),folder)
 				fmt.Println(err.Error())
 			} else {
 				if filepath.Ext(f.Name()) == ".png" {
@@ -361,6 +387,7 @@ func DifFiles(folder string, oldFiles []string) (newFiles []string) {
 	}
 	file, err := ioutil.ReadDir(folder)
 	if err != nil {
+		DBLogErrorLocal(err.Error(),folder)
 		fmt.Println(err.Error())
 		return nil
 	}

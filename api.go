@@ -23,6 +23,7 @@ func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("err query:", err.Error())
 		SendError(w, "Error Processing Request")
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	progs := make([]string, 0)
@@ -33,6 +34,7 @@ func APIListSoftware(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("err marshal:", err.Error())
 		SendError(w, "Error Formating Data")
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	w.Write(b)
@@ -56,15 +58,18 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("err query:", err.Error())
 		SendError(w, "Error Processing Data")
+      //DBLogError(err.Error(),w,r)
 		return
 	}
 	if p.Files == "" {
 		SendError(w, "Error No Files Found")
+		//DBLogError("Error No Files Found",w,r)
 	}
 	name = path.Join(progDir, name, name+".html")
 	file, err := ReadFile(name)
 	if err != nil {
 		SendError(w, "Error Getting Files")
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	w.Write([]byte(file))
@@ -79,18 +84,21 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println("ready body error", err)
+		//DBLogError("err.Error(),w,r)
 	}
 	var input Submit
 	err = json.Unmarshal(body, &input)
 	if err != nil {
 		fmt.Println("Error parsing json:", err)
 		SendError(w, "Error Processing Information")
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	r.ParseForm()
 	person, err := IsLoggedIn(w, r)
 	if err != nil {
 		SendError(w, "Error Processing User")
+		//DBLogError("Error Processing User",w,r)
 		return
 	}
 
@@ -103,6 +111,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		if err != nil || command.Name == "" {
 			fmt.Println("err in prog finding")
 			SendError(w, "Error Setting Up Program")
+			//DBLogError(err.Error(),w,r)
 			return
 		}
 		input.Commands[k].ProgType = command.ProgType
@@ -114,6 +123,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("err in temp creation:", err.Error())
 			SendError(w, "Error Setting Up Program")
+			//DBLogError(err.Error(),w,r)
 			return
 		}
 	}
@@ -125,6 +135,7 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		SendError(w, "Error Setting Up Program")
 		fmt.Println("error copy:", err.Error())
+		//DBLogErrror(err.Error(),w,r)
 		return
 	}
 	input.Dir = dir
@@ -134,12 +145,14 @@ func APISubmitForm(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		SendError(w, "Error Running Program")
 		fmt.Println("error insert:", err.Error())
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	Tasks <- input
 	b, err := json.Marshal(run)
 	if err != nil {
 		fmt.Println("err", err.Error())
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	w.Write(b)
@@ -155,6 +168,7 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		SendError(w, "Error Processing User")
 		fmt.Printf("Error: %s\n", err.Error())
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	var s []Stored
@@ -164,10 +178,12 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 	err = DBRead(QueryRuns, args, &s)
 	if err != nil {
 		fmt.Printf("querying results: %s\n", err.Error())
+		//DBLogError(err.Error(),w,r)
 		b, err := json.Marshal(results)
 		if err != nil {
 			fmt.Println("marshal error:", err.Error())
 			SendError(w, "Error Formating Data")
+			//DBLogError(err.Error(),w,r)
 			return
 		}
 		w.Write(b)
@@ -195,6 +211,7 @@ func APIListResults(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("marshal error:", err.Error())
 		SendError(w, "Error Formating Data")
+		//go DBLogError(err.Error(), w, r)
 		return
 	}
 	w.Write(b)
@@ -210,6 +227,7 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("error:", err.Error())
 		SendError(w, "Error Processing User")
+		//go DBLogError(err.Error(), w, r)
 		return
 	}
 	// parse url header for program name
@@ -224,16 +242,19 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("error:", err.Error())
 		SendError(w, "Program Not Found")
+      //go DBLogError("Program Not Found", w, r)
 		return
 	}
 
 	// check if file can be accessed by temporary user
 	if result.Temp == false && user.Name != result.UserName {
 		SendError(w, "Program Not Found")
+		//go DBLogError("Program Not Found",w,r)
 		return
 	}
 	if strings.Trim(result.Files, " ") == "" {
 		SendError(w, "Program Not Complete")
+		//go DBLogError("Program Not Complete",w,r)
 		return
 	}
 	files := ReadFiles(filepath.Join(UserDir, user.Folder, name), strings.Split(result.Files, ","))
@@ -241,6 +262,7 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		SendError(w, "File Not Found")
 		fmt.Printf("Error: %s\n", err.Error())
+		//go DBLogError(err.Error(),w,r)
 		return
 	}
 
@@ -250,6 +272,7 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("Error:", err.Error())
 			SendError(w, "Accessing File")
+		//go DBLogError(err.Error(),w,r)
 			return
 		}
 	}
@@ -265,12 +288,14 @@ func APILoggedIn(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("error:", err.Error())
 		SendError(w, "Error Processing User")
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	b, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println("erro mashaling:", err.Error())
 		SendError(w, "Error Processing User")
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	w.Write(b)
@@ -287,6 +312,7 @@ func APIDelete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("error:", err.Error())
 		SendError(w, "Error Processing User")
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	r.ParseForm()
@@ -298,6 +324,7 @@ func APIDelete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("error:", err.Error())
 		SendError(w, fmt.Sprintf("File %s Not Found", name))
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 }
@@ -318,6 +345,7 @@ func APIRegister(w http.ResponseWriter, r *http.Request) {
 	err := DBWriteMap(InsertUser, structs.Map(person))
 	if err != nil {
 		SendError(w, "Username Taken")
+//		DBLogError("Username Taken",w,r)
 		return
 	}
 	CreateUserFolder(person)
@@ -325,21 +353,27 @@ func APIRegister(w http.ResponseWriter, r *http.Request) {
 	// log in user
 	ses, err := store.Get(r, "user")
 	if err != nil {
-		fmt.Println("error getting session:", err.Error())
-		SendError(w, err.Error())
+		m=err.Error()
+		fmt.Println("error getting session:", m)
+		SendError(w, m)
+//		DBLogError(m,w,r)
 		return
 	}
 	ses.Values["id"] = person.Name
 	ses.Values["session"] = person.SessionKey
 	ses.Save(r, w)
 	if err != nil {
-		fmt.Println("error:", err.Error())
-		SendError(w, err.Error())
+		m=err.Error()
+		fmt.Println("error:", m)
+		SendError(w, m)
+		//DBLogError(m,w,r)
 		return
 	}
 	b, err := json.Marshal(&Message{"Success"})
 	if err != nil {
-		fmt.Println("erro mashaling:", err.Error())
+		m=err.Error()
+		fmt.Println("erro mashaling:", m)
+		//DBLogError(m,w,r)
 		return
 	}
 	w.Write(b)
@@ -352,4 +386,32 @@ func SendError(w http.ResponseWriter, msg string) {
 		return
 	}
 	w.Write(b)
+}
+
+/*
+logs errors into sql database
+queries the client for user information, and the system for time information, inserts into the log schema
+*/
+func DBLogError(Message string, w http.ResponseWriter, r *http.request) (err error) {
+	if r != nil{
+	   person, err:=IsLoggedIn(w,r)
+      if err != nil{
+		   w.write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+		   Folder="NULL"
+		}
+		else{
+		   Folder:=&person.folder
+		}
+	}
+	else{
+	      Folder="NULL"
+	}
+	t:=Time.Now().Unix()
+	log := ErrorLog{
+		Message,
+		t,
+		Folder
+	}
+	DBWriteMap(LogError,structs.map(log))
+	return
 }
