@@ -58,7 +58,7 @@ func APITemplate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("err query:", err.Error())
 		SendError(w, "Error Processing Data")
-      //DBLogError(err.Error(),w,r)
+		//DBLogError(err.Error(),w,r)
 		return
 	}
 	if p.Files == "" {
@@ -242,7 +242,7 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("error:", err.Error())
 		SendError(w, "Program Not Found")
-      //go DBLogError("Program Not Found", w, r)
+		//go DBLogError("Program Not Found", w, r)
 		return
 	}
 
@@ -272,7 +272,7 @@ func APIGetResults(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("Error:", err.Error())
 			SendError(w, "Accessing File")
-		//go DBLogError(err.Error(),w,r)
+			//go DBLogError(err.Error(),w,r)
 			return
 		}
 	}
@@ -345,7 +345,7 @@ func APIRegister(w http.ResponseWriter, r *http.Request) {
 	err := DBWriteMap(InsertUser, structs.Map(person))
 	if err != nil {
 		SendError(w, "Username Taken")
-//		DBLogError("Username Taken",w,r)
+		//		DBLogError("Username Taken",w,r)
 		return
 	}
 	CreateUserFolder(person)
@@ -353,17 +353,17 @@ func APIRegister(w http.ResponseWriter, r *http.Request) {
 	// log in user
 	ses, err := store.Get(r, "user")
 	if err != nil {
-		m=err.Error()
+		m := err.Error()
 		fmt.Println("error getting session:", m)
 		SendError(w, m)
-//		DBLogError(m,w,r)
+		//		DBLogError(m,w,r)
 		return
 	}
 	ses.Values["id"] = person.Name
 	ses.Values["session"] = person.SessionKey
 	ses.Save(r, w)
 	if err != nil {
-		m=err.Error()
+		m := err.Error()
 		fmt.Println("error:", m)
 		SendError(w, m)
 		//DBLogError(m,w,r)
@@ -371,7 +371,7 @@ func APIRegister(w http.ResponseWriter, r *http.Request) {
 	}
 	b, err := json.Marshal(&Message{"Success"})
 	if err != nil {
-		m=err.Error()
+		m := err.Error()
 		fmt.Println("erro mashaling:", m)
 		//DBLogError(m,w,r)
 		return
@@ -392,26 +392,24 @@ func SendError(w http.ResponseWriter, msg string) {
 logs errors into sql database
 queries the client for user information, and the system for time information, inserts into the log schema
 */
-func DBLogError(Message string, w http.ResponseWriter, r *http.request) (err error) {
-	if r != nil{
-	   person, err:=IsLoggedIn(w,r)
-      if err != nil{
-		   w.write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-		   Folder="NULL"
+func DBLogError(Message string, w http.ResponseWriter, r *http.Request) (err error) {
+	if r != nil {
+		person, err := IsLoggedIn(w, r)
+		if err != nil {
+			w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
+			Folder := "NULL"
+		} else {
+			Folder := &person.Folder
 		}
-		else{
-		   Folder:=&person.folder
-		}
+	} else {
+		Folder := "NULL"
 	}
-	else{
-	      Folder="NULL"
-	}
-	t:=Time.Now().Unix()
+	t := Time.Now().Unix()
 	log := ErrorLog{
 		Message,
 		t,
-		Folder
+		Folder,
 	}
-	DBWriteMap(LogError,structs.map(log))
-	return
+	DBWriteMap(LogError, structs.Map(log))
+	return nil
 }
