@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fatih/structs"
-	"gopkg.in/fsnotify.v1"
+	//"gopkg.in/fsnotify.v1"
 	"io"
 	"io/ioutil"
-	"log"
+	//"log"
 	"math/rand"
 	"os"
 	"path"
@@ -53,7 +53,7 @@ func ClearFiles() {
 					err = DBWrite(DeleteStored, args)
 					if err != nil {
 						fmt.Println(err.Error())
-						DBlogErrorLocal(err.Error(),s.Folder)
+						DBLogErrorLocal(err.Error(),s.Folder)
 						return
 					}
 				}
@@ -119,7 +119,7 @@ func AddProgram(folder string) (err error) {
 	prog.Folder = folder
 	files, err := ListDir(filepath.Join(progDir, folder))
 	if err != nil {
-		DBLogLocal(err.Error(),folder)
+		DBLogErrorLocal(err.Error(),folder)
 		return
 	}
 	prog.Files = strings.Join(files, ",")
@@ -202,13 +202,13 @@ func copyFileContents(src, dst string) (err error) {
 	fmt.Println("hard copying")
 	in, err := os.Open(src)
 	if err != nil {
-		DBLogLocal(err.Error(),src)
+		DBLogErrorLocal(err.Error(),src)
 		return
 	}
 	defer in.Close()
 	out, err := os.Create(dst)
 	if err != nil {
-		DBLogLocal(err.Error(),dst)
+		DBLogErrorLocal(err.Error(),dst)
 		return
 	}
 	defer func() {
@@ -333,7 +333,7 @@ func ReadFileType(folder, tp string) []File {
 		if filepath.Ext(f.Name()) == tp {
 			byts, err := ReadFile(path.Join(folder, f.Name()))
 			if err != nil {
-				DBLogErrorLocal(err.Error())
+				DBLogErrorLocal(err.Error(),folder)
 				fmt.Println(err.Error())
 			} else {
 				files = append(files, File{f.Name(), string(byts)})
@@ -362,7 +362,7 @@ func ReadFiles(folder string, fls []string) []File {
 		if members[f.Name()] {
 			byts, err := ReadFile(path.Join(folder, f.Name()))
 			if err != nil {
-				DBlogErrorLocal(err.Error(),folder)
+				DBLogErrorLocal(err.Error(),folder)
 				fmt.Println(err.Error())
 			} else {
 				if filepath.Ext(f.Name()) == ".png" {

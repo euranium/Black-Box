@@ -393,18 +393,16 @@ logs errors into sql database
 queries the client for user information, and the system for time information, inserts into the log schema
 */
 func DBLogError(Message string, w http.ResponseWriter, r *http.Request) (err error) {
+	Folder := "NULL"
 	if r != nil {
 		person, err := IsLoggedIn(w, r)
 		if err != nil {
 			w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
-			Folder := "NULL"
 		} else {
-			Folder := &person.Folder
+			Folder = person.Folder
 		}
-	} else {
-		Folder := "NULL"
 	}
-	t := Time.Now().Unix()
+	t := time.Now().Unix()
 	log := ErrorLog{
 		Message,
 		t,

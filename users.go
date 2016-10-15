@@ -95,7 +95,7 @@ func SetTempUser(w http.ResponseWriter, r *http.Request) (person *User, err erro
 	person = &User{}
 	ses, err := store.Get(r, "user")
 	if err != nil {
-		GBLogError(err.Error(),w,r)
+		DBLogError(err.Error(),w,r)
 		RemoveSession(w, r)
 		fmt.Println("error getting session:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
@@ -144,7 +144,7 @@ func SaveTemp(w http.ResponseWriter, r *http.Request, person *User) (err error) 
 	person.Hash = "none"
 	err = DBWriteMap(InsertUser, structs.Map(person))
 	if err != nil {
-		DBLogErrorLocal(err.Error(),w,r)
+		DBLogError(err.Error(),w,r)
 		fmt.Println("error:", err.Error())
 		w.Write([]byte(fmt.Sprintf("Error: %s\n", err.Error())))
 		return
@@ -153,7 +153,7 @@ func SaveTemp(w http.ResponseWriter, r *http.Request, person *User) (err error) 
 	ses.Values["session"] = person.SessionKey
 	err = ses.Save(r, w)
 	if err != nil {
-		DBErrorLog(err.Error(),w,r)
+		DBLogError(err.Error(),w,r)
 		fmt.Println("error:", err.Error())
 	}
 	return

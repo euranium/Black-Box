@@ -5,6 +5,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 	//"log"
 )
 
@@ -38,8 +39,8 @@ func RunCmd() {
 			var err error
 			// iterate over all commands needing to be run
 			for _, command := range input.Commands {
-				input := []string{"exec.py", input.Dir, command.ProgType, command.Program}
-				cmd := exec.Command("python", append(input, command.Input...)...)
+				inputCommands := []string{"exec.py", input.Dir, command.ProgType, command.Program}
+				cmd := exec.Command("python", append(inputCommands, command.Input...)...)
 				out, err := cmd.CombinedOutput()
 				if out != nil {
 					msg = append(msg, out...)
@@ -54,7 +55,7 @@ func RunCmd() {
 			msgMsg := ""
 			if err != nil {
 				errMsg = err.Error()
-				DBLogErrorLocal(err.Error(),input.dir)
+				DBLogErrorLocal(err.Error(),input.Dir)
 			}
 			if msg != nil {
 				msgMsg = string(msg[:])
