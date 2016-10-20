@@ -1,37 +1,28 @@
 /*
 	Name: Elizabeth Brooks
 	File: IndividualTraitOne
-	Modified: May 11, 2016
+	Modified: September 28, 2016
 */
 
 //Imports
 import java.util.Random;
 
-//A class to calculate the mean value of trait one for model two
-public class IndividualTraitOne {
+//A class to calculate the mean value of trait one for model three
+public class IndividualTraitOne{
 
 	//Class fields used to calculate the mean value of trait one
 	private Random randomSimulation; //For simulation of individual variable values
-    private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics class
+   	private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics class
 	private int numIterations; //The number of generations to be calculated
 	private int simPopSize; //The number of generations to be simulated for calc of mean fitness
 	private double traitOne; //The mean of trait one
-	private double traitTwo; //The mean of trait two
-	private double phenotypicVarianceTraitTwo; //The phenotypic vacriance of trait two
 	private double dose; //The UVB dose at the waters surface
-	private double meanSlopeReactionNorm; //The mean slope of the reaction norm of trait one with respect to the trait relater
-	private double meanInterceptReactionNorm; //The mean intercept of the reaction norm of trait one with respect to the trait relater
-	private double slopeReactionNorm; //The individual slope of the reaction norm of trait one with respect to the trait relater
-	private double interceptReactionNorm; //The individual intercept of the reaction norm of trait one with respect to the trait relater
-	private double phenotypicVarianceSlope; //The phenotypic variance of the slope of the reaction norm
-	private double phenotypicVarianceIntercept; //The phenotypic variance of the intercept of the reaction norm
-	private double standardDevianceSlope; //The standard deviance of the slope of the reaction norm
-	private double standardDevianceIntercept; //The standard deviance of the intercept of the reaction norm
+	private double functionTrait; //The mean functionTrait for UV penetration of the carapace
+	private double interceptReactionNorm; //The intercept of the reaction norm of trait one with respect to the trait relater
+	private double slopeReactionNorm; //The slope of the reaction norm of trait one with respect to the trait relater
 	private double slopeConcentration; //The slope relating concentration of melanin to change in UVB transmittance
 	private double transmittance; //The transmittance of a non-melanized Daphnia
-	private double attenuationCoefficient; //The attenuation coefficient
 	//Fields to store the values for calculation
-	private double exponent;
 	private double squareRootPart;
 	private double numeratorPart;
 	private double denominatorPart;
@@ -39,77 +30,198 @@ public class IndividualTraitOne {
 	//The class constructor to set the initial field values
 	public IndividualTraitOne(SpeciesCharacteristics speciesInputs)
 	{
-        //Initialize species characteristics
-        speciesValues = speciesInputs;
+      	//Call IndividualFitness (super) constructor
+      	super(speciesInputs);
+      	//Initialize species characteristics
+      	speciesValues = speciesInputs;
 		//Set initial values
-		numIterations = speciesValues.getNumIterations();
-		simPopSize = speciesValues.getSimPopSize();
-		traitTwo = speciesValues.getMeanTraitTwo();
-		phenotypicVarianceTraitTwo = speciesValues.getPhenotypicVarianceTraitTwo();
-		phenotypicVarianceSlope = speciesValues.getPhenotypicVarianceSlopeReactionNorm();
-		phenotypicVarianceIntercept = speciesValues.getPhenotypicVarianceInterceptReactionNorm();
-		interceptReactionNorm = speciesValues.getMeanInterceptReactionNorm();
-		slopeReactionNorm = speciesValues.getMeanSlopeReactionNorm();
-		dose = speciesValues.getDoseInitial();
-		attenuationCoefficient = speciesValues.getAttenuationCoefficient();
-		calcStandardDeviationSlope();
-		calcStandardDeviationIntercept();
+		numIterations = getNumIterationsInitial();
+		simPopSize = getSimPopSizeInitial();
+		functionTrait = getMeanFunctionTraitCurrent();
+		interceptReactionNorm = getMeanInterceptReactionNormCurrent();
+		slopeReactionNorm = getMeanSlopeReactionNormCurrent();
+      	dose = speciesValues.getDoseInitial();
+		transmittance = speciesValues.getTransmittance();
+		slopeConcentration = speciesValues.getSlopeConcentration();
 	}
+	
+	//Method to calculate the portion inside the square root
+	public void calcSquareRoot()
+	{
+		double parentheses = (-transmittance + (slopeConcentration * slopeReactionNorm * dose) - (slopeConcentration * interceptReactionNorm));
+		double parenSquared = (Math.pow(dose, 2)) * (Math.pow(parentheses, 2));
+		double firstHalfSquareRoot = ((4 * slopeConcentration * slopeReactionNorm * (Math.pow(dose, 2)) * functionTrait));
+		double insideSquareRoot = firstHalfSquareRoot + parenSquared;
+		squareRootPart = Math.sqrt(Math.abs(insideSquareRoot));
+		calcDenominator();
+	}
+	
+	//Method to calculate the denominator
+	public void calcDenominator()
+	{
+		double firstHalfDenominator = (transmittance * dose - (slopeConcentration * slopeReactionNorm * (Math.pow(dose,2)))
+				+ (slopeConcentration * dose * interceptReactionNorm));
+		denominatorPart = firstHalfDenominator + squareRootPart;
+		calcNumerator();
+	}
+	
+	//Method to calculate the numerator
+	private void calcNumerator()
+	{
+		numeratorPart = (2 * slopeReactionNorm * dose * functionTrait);
+	}
+	
+	//Method for finishing the calculations for trait one
+	public void calcTraitOne()
+	{
+		//Calculate the initial portions
+		calcSquareRoot();
 
-	//A method to calculate the standard deviation of the slope of the reaction norm
-	public void calcStandardDeviationSlope()
-	{
-		standardDevianceSlope = Math.sqrt(Math.abs(phenotypicVarianceSlope));
+		//Complete the calculations
+		double fraction = numeratorPart/denominatorPart;
+		traitOne = ((-slopeReactionNorm * dose) + interceptReactionNorm + fraction);
 	}
 	
-	//A method to calculate the standard deviation of the intercept of the reaction norm
-	public void calcStandardDeviationIntercept()
+	//Method to numerically calculate the derivation of the fitness function for the intercept of the reaction norm
+	public double numericallyCalcInterceptPartialDerivative(double nextGenMeanTraitOneInput, double meanSlopeReactionNormInput, 
+			double meanInterceptReactionNormInput, double meanFunctionTraitInput)
 	{
-		standardDevianceIntercept = Math.sqrt(Math.abs(phenotypicVarianceIntercept));
+		//Set the initial values
+		functionTrait = meanFunctionTraitInput;
+		interceptReactionNorm = meanInterceptReactionNormInput;
+		slopeReactionNorm = meanSlopeReactionNormInput;
+		traitOne = nextGenMeanTraitOneInput;
+		double stepSize = (meanSlopeReactionNormInput * 0.001);
+		//Calculate a small step up
+		interceptReactionNorm += stepSize;
+		calcTraitOne();
+		double stepUpValue = traitOne;
+
+		//Re-initialize
+		functionTrait = meanFunctionTraitInput;
+		interceptReactionNorm = meanInterceptReactionNormInput;
+		slopeReactionNorm = meanSlopeReactionNormInput;
+		traitOne = nextGenMeanTraitOneInput;
+		//Calculate a small step down
+		interceptReactionNorm -= stepSize;
+		calcTraitOne();
+		double stepDownValue = traitOne;
+		
+		//Calculate the partial derivative of the intercept
+		double interceptPartialDerivative = ((stepUpValue - stepDownValue)/(stepSize+stepSize));
+		return interceptPartialDerivative;
 	}
 	
-	//A method to calculate the exponent of base e
-	public void calculateExponent()
+	//Method to numerically calculate the derivation of the fitness function for the slope of the reaction norm
+	public double numericallyCalcSlopePartialDerivative(double nextGenMeanTraitOneInput, double meanSlopeReactionNormInput, 
+			double meanInterceptReactionNormInput, double meanFunctionTraitInput)
 	{
-		exponent = (-(traitTwo)*attenuationCoefficient);
+		//Set the initial values
+		functionTrait = meanFunctionTraitInput;
+		interceptReactionNorm = meanInterceptReactionNormInput;
+		slopeReactionNorm = meanSlopeReactionNormInput;
+		traitOne = nextGenMeanTraitOneInput;
+		double stepSize = (meanSlopeReactionNormInput * 0.001);
+		//Calculate a small step up
+		slopeReactionNorm += stepSize;
+		calcTraitOne();
+		double stepUpValue = traitOne;
+
+		//Re-initialize
+		functionTrait = meanFunctionTraitInput;
+		interceptReactionNorm = meanInterceptReactionNormInput;
+		slopeReactionNorm = meanSlopeReactionNormInput;
+		traitOne = nextGenMeanTraitOneInput;
+		//Calculate a small step down
+		slopeReactionNorm -= stepSize;
+		calcTraitOne();
+		double stepDownValue = traitOne;
+		
+		//Calculate the partial derivative of the slope
+		double slopePartialDerivative = ((stepUpValue - stepDownValue)/(stepSize+stepSize));
+		return slopePartialDerivative;
 	}
 	
-	//Method to calculate the individual value of trait one
-	public void calculateTraitOne()
+	//Method to numerically calculate the derivation of the fitness function for functionTrait of UV penetration
+	public double numericallyCalcFunctionTraitPartialDerivative(double nextGenMeanTraitOneInput, double meanSlopeReactionNormInput, 
+			double meanInterceptReactionNormInput, double meanFunctionTraitInput)
 	{
-		double parenthases;
-		calculateExponent();
-		parenthases = (dose*(Math.pow((Math.E), exponent))*(-(dose)));
-		traitOne = (interceptReactionNorm+slopeReactionNorm*(parenthases));
+		//Set the initial values
+		functionTrait = meanFunctionTraitInput;
+		interceptReactionNorm = meanInterceptReactionNormInput;
+		slopeReactionNorm = meanSlopeReactionNormInput;
+		traitOne = nextGenMeanTraitOneInput;
+		double stepSize = (meanFunctionTraitInput * 0.001);
+		//Calculate a small step up
+		functionTrait += stepSize;
+		calcTraitOne();
+		double stepUpValue = traitOne;
+
+		//Re-initialize
+		functionTrait = meanFunctionTraitInput;
+		interceptReactionNorm = meanInterceptReactionNormInput;
+		slopeReactionNorm = meanSlopeReactionNormInput;
+		traitOne = nextGenMeanTraitOneInput;
+		//Calculate a small step down
+		functionTrait -= stepSize;
+		calcTraitOne();
+		double stepDownValue = traitOne;
+		
+		//Calculate the partial derivative of trait one
+		double functionTraitPartialDerivative = ((stepUpValue - stepDownValue)/(stepSize+stepSize));
+		return functionTraitPartialDerivative;
 	}
 	
-	//A method to retrieve the mean value of trait one
-	public double getIndividualTraitOne(double meanTraitTwoInput, double meanSlopeReactionNormInput, double meanInterceptReactionNormInput)
+	//Method to calculate the individual value of functionTrait
+	public double getIndividualTraitOne()
 	{
-		//Set initial values
-		traitTwo = meanTraitTwoInput;
-		meanSlopeReactionNorm = meanSlopeReactionNormInput;
-		meanInterceptReactionNorm = meanInterceptReactionNormInput;
-		slopeReactionNorm = calcIndividualSlopeReactionNorm();
-		interceptReactionNorm = calcIndividualInterceptReactionNorm();
+		//Set the initial values
+		functionTrait = calcFunctionTraitInitial();
+		interceptReactionNorm = calcInterceptReactionNormInitial();
+		slopeReactionNorm = calcSlopeReactionNormInitial();
 		//Begin calculating the different portions of the equation
-		calculateTraitOne();
+		calcTraitOne();		
+		//Return the calculated value for trait one
 		return traitOne;
 	}
 	
-	//Methods to calc the individual simulated values for trait one
-	private double calcIndividualSlopeReactionNorm() 
+	//A method to calculate the standard deviation of the intercept of the reaction norm
+	public double calcStandardDeviationIntercept()
 	{
-		randomSimulation = new Random();
-		//simulation of normally distributed populations
-		return slopeReactionNorm = (randomSimulation.nextGaussian() * standardDevianceSlope + meanSlopeReactionNorm);
+		return Math.sqrt(Math.abs(getVarianceInterceptInitial()));
 	}
 	
-	private double  calcIndividualInterceptReactionNorm()
+	//A method to calculate the standard deviation of the slope of the reaction norm
+	public double calcStandardDeviationSlope()
+	{
+		return Math.sqrt(Math.abs(getVarianceSlopeInitial()));
+	}
+	
+	//A method to calculate the standard deviation of the UV functionTrait
+	public double calcStandardDeviationFunctionTrait(){
+		return Math.sqrt(Math.abs(getVarianceFunctionTraitInitial()));
+	}
+	
+	//Methods to calc the individual simulated values for trait one
+	private double calcSlopeReactionNormInitial() 
 	{
 		randomSimulation = new Random();
 		//simulation of normally distributed populations
-		return interceptReactionNorm = (randomSimulation.nextGaussian() * standardDevianceIntercept + meanInterceptReactionNorm);
+		return slopeReactionNorm = (randomSimulation.nextGaussian() * calcStandardDeviationSlope() + getMeanSlopeReactionNormCurrent());
+	}
+	
+	private double  calcInterceptReactionNormInitial()
+	{
+		randomSimulation = new Random();
+		//simulation of normally distributed populations
+		return interceptReactionNorm = (randomSimulation.nextGaussian() * calcStandardDeviationIntercept() + getMeanInterceptReactionNormCurrent());
+	}
+
+	private double calcFunctionTraitInitial()
+	{
+		randomSimulation = new Random();
+		//simulation of normally distributed populations
+		return functionTrait = (randomSimulation.nextGaussian() * calcStandardDeviationFunctionTrait() + getMeanFunctionTraitCurrent());
 	}
 
 	//Getter methods
@@ -129,6 +241,10 @@ public class IndividualTraitOne {
 		return dose;
 	}
    
+   public double getFunctionTrait() {
+		return functionTrait;
+	}
+   
    public double getInterceptReactionNorm() {
 		return interceptReactionNorm;
 	}
@@ -143,14 +259,6 @@ public class IndividualTraitOne {
    
    public double getTransmittance() {
 		return transmittance;
-	}
-
-	public double getStandardDevianceSlope() {
-		return standardDevianceSlope;
-	}
-
-	public double getStandardDevianceIntercept() {
-		return standardDevianceIntercept;
 	}
    
    //Setter methods
@@ -170,6 +278,10 @@ public class IndividualTraitOne {
 		dose = doseInput;
 	}
    
+   public void setFunctionTrait(double functionTraitInput) {
+		functionTrait = functionTraitInput;
+	}
+   
    public void setInterceptReactionNorm(double interceptReactionNormInput) {
 		interceptReactionNorm = interceptReactionNormInput;
 	}
@@ -184,13 +296,5 @@ public class IndividualTraitOne {
    
    public void setTransmittance(double transmittanceInput) {
 		transmittance = transmittanceInput;
-	}
-
-	public void getStandardDevianceSlope(double standardDevianceSlopeInput) {
-		standardDevianceSlope = standardDevianceSlopeInput;
-	}
-
-	public void getStandardDevianceIntercept(double standardDevianceInterceptInput) {
-		standardDevianceIntercept = standardDevianceInterceptInput;
 	}
 }

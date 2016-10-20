@@ -42,8 +42,8 @@ public class IndividualFitness {
 		//Set initial values
 		numIterations = speciesValues.getNumIterations();
 		simPopSize = speciesValues.getSimPopSize();
-		meanTraitOne = speciesValues.getMeanTraitOne();
-		meanTraitTwo = speciesValues.getMeanTraitTwo();
+		nextGenMeanTraitOne = speciesValues.getMeanTraitOne();
+		nextGenMeanTraitTwo = speciesValues.getMeanTraitTwo();
 		varianceTraitOne = speciesValues.getVarianceTraitOne();
 		varianceTraitTwo = speciesValues.getVarianceTraitTwo();
 		optimumTraitOne = speciesValues.getOptimumTraitOne();

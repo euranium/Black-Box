@@ -15,15 +15,16 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/test.css" rel="stylesheet">
+    <link href="css/other.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 
     <style>
-    body {
-        padding-top: 70px;
-        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-    }
+    <!--body {-->
+        <!--padding-top: 70px;-->
+        <!--/* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */-->
+    <!--}-->
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -37,22 +38,113 @@
 
 <body ng-app="">
 
-    <!-- Page Content -->
-    <div class="container">
-      <div ng-include="'/html/header.html'"></div>
-        <div class="row">
-            <div class="col-lg-12">
-                <h1>How to Use this Website</h1>
-                <hr>
-                <div class="list-group">
-                    <h4>info here</h4>
-                </div>
-            </div>
-        </div>
-        <!-- /.row -->
+
+  <!-- Sidebar -->
+  <!--<div id="sidebar" ng-controller="SideBarCtrl">-->
+    <!--<div id="prog">-->
+      <!--<img id="logo" src="img/logo.png">ModEvo-->
+    <!--</div>-->
+    <!--<div id="models">-->
+      <!--<div class="header">-->
+        <!--<i class="fa fa-cogs"></i>Models-->
+      <!--</div>-->
+      <!--<span ng-repeat="item in software track by $index">-->
+              <!--<div class="menu-item" ng-click="loadSoftware(item, $event)">-->
+            <!--{{item}}-->
+              <!--</div>-->
+      <!--</span>-->
+    <!--</div>-->
+
+    <!--<div id="results">-->
+      <!--<div class="header">-->
+        <!--<i class="fa fa-area-chart"></i>Results-->
+      <!--</div>-->
+      <!--<div class="menu-item" ng-show="results.length == 0">-->
+        <!--no results yet :(-->
+      <!--</div>-->
+
+      <!--<span ng-repeat="model in software track by $index" ng-hide="results.length == 0">-->
+        <!--<div class="subHeader">{{model}}</div>-->
+        <!--<span ng-repeat="item in results track by $index">-->
+            <!--<div class="menu-item" ng-click="loadResult(item.Name, $event)" ng-show="item.Type == model">-->
+              <!--{{item.Name}}-->
+            <!--</div>-->
+        <!--</span>-->
+      <!--</span>-->
+
+    <!--</div>-->
+
+  <!--</div>[> end of sidebar <]-->
+    <!--Page Content-->
+  <div id="dashWrapper">
+    <div id="nav" ng-controller="Nav">
+      <div id="navContent">
+        <a class="right" href="/people">People</a>
+        <a class="right" href="/contact">Contact</a>
+        <a class="right" href="/science">Science</a>
+		  <span class="right"> Quick Start</span>
+		  <a class="right" href="/dashboard">Computational Tools</a>
+      </div>
+    </div>
+
+    <!-- Templates get injected here -->
+    <div id="dash" ui-view>
 
     </div>
-    <!-- /.container -->
+
+
+  </div>
+	 <div class="container">
+		<div ng-include="'/html/header.html'"></div>
+		  <div class="row">
+				<div class="col-lg-12">
+					 <h1>How to Use this Website</h1>
+					 <hr>
+					 <div class="list-group">
+						  <h4>info here</h4>
+					 </div>
+				</div>
+		  </div>
+        </.row>
+
+    </div>
+    </.container>
+  <!-- Sidebar -->
+  <!--<div id="sidebar" ng-controller="SideBarCtrl">-->
+    <!--<div id="prog">-->
+      <!--<img id="logo" src="img/logo.png">ModEvo-->
+    <!--</div>-->
+    <!--<div id="models">-->
+      <!--<div class="header">-->
+        <!--<i class="fa fa-cogs"></i>Models-->
+      <!--</div>-->
+      <!--<span ng-repeat="item in software track by $index">-->
+              <!--<div class="menu-item" ng-click="loadSoftware(item, $event)">-->
+            <!--{{item}}-->
+              <!--</div>-->
+      <!--</span>-->
+    <!--</div>-->
+
+    <!--<div id="results">-->
+      <!--<div class="header">-->
+        <!--<i class="fa fa-area-chart"></i>Results-->
+      <!--</div>-->
+      <!--<div class="menu-item" ng-show="results.length == 0">-->
+        <!--no results yet :(-->
+      <!--</div>-->
+
+      <!--<span ng-repeat="model in software track by $index" ng-hide="results.length == 0">-->
+        <!--<div class="subHeader">{{model}}</div>-->
+        <!--<span ng-repeat="item in results track by $index">-->
+            <!--<div class="menu-item" ng-click="loadResult(item.Name, $event)" ng-show="item.Type == model">-->
+              <!--{{item.Name}}-->
+            <!--</div>-->
+        <!--</span>-->
+      <!--</span>-->
+
+    <!--</div>-->
+
+  <!--</div>[> end of sidebar <]-->
 
     <!-- jQuery Version 1.11.1 -->
     <script src="js/jquery.js"></script>
@@ -61,5 +153,38 @@
     <script src="js/bootstrap.min.js"></script>
 
 </body>
+
+<!-- jQuery -->
+<script src="js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="js/bootstrap.min.js"></script>
+
+<!-- Angular js stuff -->
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
+
+<!-- Charting Stuff -->
+<script src="bower_components/Chart.js/Chart.js"></script>
+<script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+
+<!-- Main controller scripts -->
+<script src="js/chartify.js"></script>
+<script src="js/parser.js"></script>
+<script src="js/download.js"></script>
+<script src="js/dashboard.js"></script>
+
+<!-- Factories -->
+<script src="js/Factories/auth.js"></script>
+<script src="js/Factories/models.js"></script>
+<script src="js/Factories/results.js"></script>
+
+<!-- Controllers -->
+<script src="js/Controllers/running.js"></script>
+<script src="js/Controllers/nav.js"></script>
+<script src="js/Controllers/result.js"></script>
+<script src="js/Controllers/model.js"></script>
+<script src="js/Controllers/sidebar.js"></script>
 
 </html>

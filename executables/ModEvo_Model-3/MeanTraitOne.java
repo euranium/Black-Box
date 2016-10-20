@@ -1,101 +1,139 @@
 /*
 	Name: Elizabeth Brooks
 	File: MeanTraitOne
-	Modified: May 11, 2016
+	Modified: June 24, 2016
 */
 
 //Imports
 import java.util.Random;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
-//A class to calculate the mean value of trait one for model two
-public class MeanTraitOne {
-
-	//Class fields used to calculate the mean value of trait one
-    private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics class
-    private MeanTraitOneAnalytical analyticalMeanObject; //Reference variable of the MeanTraitOneAnalytical class
-    private MeanTraitOneSimulation simulationMeanObject; //Reference variable of the MeanTraitOneSimulation class
-	private String meanSelection; //The user selection of mean trait one analyzation method
-	private double meanTraitOne; //The mean of trait one
-	private double meanTraitTwo; //The mean of trait two
-	private double meanSlopeReactionNorm; //The mean slope of the reaction norm of trait one with respect to the trait relater
-	private double meanInterceptReactionNorm; //The mean intercept of the reaction norm of trait one with respect to the trait relater
+//A class to calculate the mean value of trait one through simulation
+public class MeanTraitOne extends IndividualTraitOne{
 	
-	//The class constructor to set the initial field values
-	public MeanTraitOne(SpeciesCharacteristics speciesInputs)
+	//Class fields used to calculate the mean value of trait one
+	private Random randomSimulation; //For simulation of individual variable values
+    private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics class
+   	//private GaussianDistribution gaussianDistObject; //Reference variable of the GaussianDistribution class
+	private int numIterations; //The number of generations to be calculated
+	private int simPopSize; //The number of generations to be simulated for calc of mean fitness
+	//Variables for determining mean trait one through simulation
+	private double individualTraitOne;
+	private double meanTraitOne;
+	private double varianceTraitOne;
+	private double standardDevianceTraitOne;
+	private double[] traitOneValuesArray;
+
+	//The class constructor
+	public MeanTraitOne(SpeciesCharacteristics speciesInputs, double nextGenMeanTraitOneInput)
 	{
-        //Initialize reference variables
-        speciesValues = speciesInputs;
-        analyticalMeanObject = new MeanTraitOneAnalytical(speciesValues);
-        simulationMeanObject = new MeanTraitOneSimulation(speciesValues);
-		//Set initial values
-		meanSelection = speciesValues.getMeanSelection();
-		meanTraitOne = speciesValues.getMeanTraitOne();
-		meanTraitTwo = speciesValues.getMeanTraitTwo();
-		meanInterceptReactionNorm = speciesValues.getMeanInterceptReactionNorm();
-		meanSlopeReactionNorm = speciesValues.getMeanSlopeReactionNorm();
+      	//Call IndividualFitness (super) constructor
+      	super(speciesInputs);
+		//Initialize class fields
+		speciesValues = speciesInputs;
+		numIterations = speciesValues.getNumIterations();
+		simPopSize = speciesValues.getSimPopSize();
+		meanTraitOne = nextGenMeanTraitOneInput;
+		varianceTraitOne = speciesValues.getVarianceTraitOne();
+		calculateStandardDeviationTraitOne();
 	}
 	
-	//A method to retrieve the mean value of trait one
-	public double getMeanTraitOne(double meanTraitTwoInput, double meanSlopeReactionNormInput, 
-									double meanInterceptReactionNormInput, String meanSelectionInput)
+	//A method to calculate the standard deviation of trait one
+	public void calculateStandardDeviationTraitOne()
 	{
-		//Set initial values
-		meanTraitTwo = meanTraitTwoInput;
-		meanSlopeReactionNorm = meanSlopeReactionNormInput;
-		meanInterceptReactionNorm = meanInterceptReactionNormInput;
-		meanSelection = meanSelectionInput;
-		//Determine mean trait one using the user selected method
-		if(meanSelection.equals("analytical")){
-			meanTraitOne = analyticalMeanObject.getMeanTraitOneAnalytical(meanTraitTwo, meanSlopeReactionNorm, meanInterceptReactionNorm);
-		}else if(meanSelection.equals("simulation")){
-			meanTraitOne = simulationMeanObject.getMeanTraitOneSimulation(meanTraitTwo, meanSlopeReactionNorm, meanInterceptReactionNorm);
-		}else{ //Error message
-			System.out.println("Incorrect distribution name entered, program exited.");
+		standardDevianceTraitOne = Math.sqrt(Math.abs(varianceTraitOne));
+	}
+	
+	//A method to simulate as many populations for trait one as specified
+	public void calcSimulatedTraitOneValues()
+	{
+		traitOneValuesArray = new double[simPopSize];
+      	double traitOne;
+      	if(speciesValues.getDistributionName().equals("defaultdistribution")){
+			randomSimulation = new Random();
+			//A for loop to fill the array with a random number for trait one
+			//through the simulation of normally distributed populations
+			for(int i=0; i<traitOneValuesArray.length; i++){
+				//Send the appropriate values to the IndividualTraitOne class to recalculate a new mean for trait one
+				individualTraitOne = super.getIndividualTraitOne();
+				traitOne = (randomSimulation.nextGaussian() * standardDevianceTraitOne + individualTraitOne);
+	         //Make sure that the trait values do not fall below zero
+	         if(traitOne < 0){
+	           	traitOne = 0;
+	         }
+	         traitOneValuesArray[i] = traitOne;
+			}
+		}else if(speciesValues.getDistributionName().equals("gaussiandistribution")){
+			//gaussianDistObject.getGaussianDistribution();
+			System.out.println("Distribution not yet ready for use, program exited");
 			System.exit(0);
 		}
-		//Return the calculated mean trait one
-		return meanTraitOne;
+	}
+	
+	//Methods to return mean values
+	public double getMeanTraitOneSim(double meanTraitOneInput)
+	{
+		//Depending on user selection for trait distribution, determine the current mean fitness of the population
+		//Default distribution is the provided .nextGaussian function
+		
+		//A for loop to calculate the mean fitness
+		for(int i=0; i<traitOneValuesArray.length; i++){
+			meanTraitOne += traitOneValuesArray[i];
+		}
+		meanTraitOne /= simPopSize;
+
+      	return meanTraitOne;
 	}
 
 	//Getter methods
-	public double getMeanTraitOne() {
+   public double getMeanTraitOneSim() {
 		return meanTraitOne;
 	}
    
-   public double getMeanTraitTwo() {
-		return meanTraitTwo;
-	}
-
-   public double getMeanInterceptReactionNorm() {
-		return meanInterceptReactionNorm;
+   public double getVarianceTraitOneSim() {
+		return varianceTraitOne;
 	}
    
-   public double getMeanSlopeReactionNorm() {
-		return meanSlopeReactionNorm;
+   public double getStandardDevianceTraitOneSim() {
+		return standardDevianceTraitOne;
 	}
-
-	public String getMeanSelectionTraitOne() {
-		return meanSelection;
+   
+   public double getIndividualTraitOneSim() {
+		return individualTraitOne;
+	}
+   
+	public int getSimPopSizeSim() {
+		return simPopSize;
+	}
+	
+	public int getNumIterationsSim() {
+		return numIterations;
 	}
    
    //Setter methods
-	public void setMeanTraitOne(double meanTraitOneInput) {
+   public void setMeanTraitOneSim(double meanTraitOneInput) {
 		meanTraitOne = meanTraitOneInput;
 	}
-
-	public void setMeanTraitTwo(double meanTraitTwoInput) {
-		meanTraitTwo = meanTraitTwoInput;
+   
+   public void setVarianceTraitOneSim(double varianceTraitOneInput) {
+		varianceTraitOne = varianceTraitOneInput;
 	}
    
-   public void setMeanInterceptReactionNorm(double meanInterceptReactionNormInput) {
-		meanInterceptReactionNorm = meanInterceptReactionNormInput;
+   public void setStandardDevianceTraitOneSim(double standardDevianceTraitOneInput) {
+		standardDevianceTraitOne = standardDevianceTraitOneInput;
 	}
    
-   public void setMeanSlopeReactionNorm(double meanSlopeReactionNormInput) {
-		meanSlopeReactionNorm = meanSlopeReactionNormInput;
+   public void setIndividualTraitOneSim(double individualTraitOneInput) {
+		individualTraitOne = individualTraitOneInput;
 	}
-
-	public void setMeanSelectionTraitOne(String meanSelectionInput) {
-		meanSelection = meanSelectionInput;
+   
+	public void setSimPopSizeSim(int simPopSizeInput) {
+		simPopSize = simPopSizeInput;
+	}
+	
+	public void setNumIterationsSim(int numIterationsInput) {
+		numIterations = numIterationsInput;
 	}
 }

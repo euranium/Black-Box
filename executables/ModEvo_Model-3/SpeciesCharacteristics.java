@@ -1,7 +1,7 @@
 /*
 	Name: Elizabeth Brooks
 	File: SpeciesCharacteristics
-   Modified: May 11, 2016
+   Modified: June 30, 2016
 */
 
 //Imports
@@ -29,7 +29,6 @@ public class SpeciesCharacteristics {
 	private double phenotypicVarianceSlopeReactionNorm; //The phenotypic variance of the slope of the reaction norm
    private int numIterations; //The number of iterations the user would like the program run
 	private int simPopSize; //The population size of the simulated populations
-   private String meanSelection; //The user selection of mean trait one analyzation method
    private double[][] heritabilityMatrix; //Heritability matrix
    //NOTE: Specific to Daphnia
    private double attenuationCoefficient; //The attenuation coefficient
@@ -38,7 +37,9 @@ public class SpeciesCharacteristics {
    private double phenotypicVarianceFunctionTrait; //The phenotypic variance of the mean preference
    private double transmittance; //The transmittance of a non-melanized Daphnia
    private double slopeConcentration; //The slope relating concentration of melanin to change in UVB transmittance
-	private String distributionSelection; //The user selected distribution
+	private double distributionSlope; //The user selected distribution slope
+   private double distributionShift; //The user selected distribution shift
+   private double distributionMax; //The user selected distribution max
    //private double[] distributionArgs; //Array to store the arguments of the selected distribution
    //Class constructor to receive user input and set initial values for the model
    public SpeciesCharacteristics(String speciesInput, double meanTraitOneInput, double meanTraitTwoInput, double phenotypicVarianceTraitOneInput, 
@@ -46,7 +47,7 @@ public class SpeciesCharacteristics {
       double varianceTraitTwoInput, double attenuationCoefficientInput, double meanInterceptReactionNormInput, double meanSlopeReactionNormInput, 
       double phenotypicVarianceInterceptReactionNormInput, double phenotypicVarianceSlopeReactionNormInput, double doseInitialInput, double meanFunctionTraitInput, 
       double phenotypicVarianceFunctionTraitInput, double transmittanceInput, double slopeConcentrationInput, int numIterationsInput, int simPopSizeInput, 
-      String distributionSelectionInput, String meanSelectionInput)
+      double distributionSlope, double distributionShift, double distributionMax)
 	{
       //Initialize fields with input values
       species = speciesInput;
@@ -71,10 +72,9 @@ public class SpeciesCharacteristics {
       slopeConcentration = slopeConcentrationInput;
       numIterations = numIterationsInput;
       simPopSize = simPopSizeInput;
-      distributionSelection = distributionSelectionInput;
-      meanSelection = meanSelectionInput;
-      /*distributionArgs = new int[distributionArgsInput.length];
-      System.arraycopy(distributionArgsInput, 0, distributionArgs, 0, distributionArgsInput.length);*/
+      distributionSlope = distributionSlopeInput;
+      distributionShift = distributionShiftInput;
+      distributionMax = distributionMaxInput;
       //Initialize the 2D array with 3 rows and 3 columns and set the matrix values
       heritabilityMatrix = new double[][]{
          {0.5, 0, 0},
@@ -90,8 +90,8 @@ public class SpeciesCharacteristics {
       //Catch exceptions and write to file in TXT format
       try {
          //Determine which test number is being run for file naming
-         //int fileCount = 1;
-         String speciesPath = "speciesInputs_ModelTwo.txt";
+         int fileCount = 1;
+         String speciesPath = "speciesInputs_GeneralModel.txt";
          File speciesFile = new File(speciesPath);
          if (speciesFile.exists()){
             /*//Loop through the existing files
@@ -104,7 +104,7 @@ public class SpeciesCharacteristics {
             speciesFile.createNewFile();
             FileWriter fw = new FileWriter(speciesFile.getAbsoluteFile()); 
             //Write to file the header
-            fw.write("VariableName VariableValue\n");
+            fw.write("VariableName,VariableValue\n");
             String b;
             //Write to file VariableName,VariableValue
             fw.append("Species");
@@ -239,15 +239,21 @@ public class SpeciesCharacteristics {
             fw.append(b);
             fw.append("\n");
 
-            fw.append("DistributionSelection");
+            fw.append("DistributionSlope");
             fw.append(" ");
-            b = distributionSelection;
+            b = distributionSlope;
             fw.append(b);
             fw.append("\n");
 
-            fw.append("MeanTraitOneMethodSelection");
+            fw.append("DistributionShift");
             fw.append(" ");
-            b = meanSelection;
+            b = distributionShift;
+            fw.append(b);
+            fw.append("\n");  
+
+            fw.append("DistributionMax");
+            fw.append(" ");
+            b = distributionMax;
             fw.append(b);
             fw.append("\n");              
             //Close the file
@@ -257,7 +263,7 @@ public class SpeciesCharacteristics {
             speciesFile.createNewFile();
             FileWriter fw = new FileWriter(speciesFile.getAbsoluteFile()); 
             //Write to file the header
-            fw.write("VariableName VariableValue\n");
+            fw.write("VariableName,VariableValue\n");
             String b;
             //Write to file VariableName,VariableValue
             fw.append("Species");
@@ -392,17 +398,23 @@ public class SpeciesCharacteristics {
             fw.append(b);
             fw.append("\n");
 
-            fw.append("DistributionSelection");
+            fw.append("DistributionSlope");
             fw.append(" ");
-            b = distributionSelection;
+            b = distributionSlope;
             fw.append(b);
             fw.append("\n");
 
-            fw.append("MeanTraitOneMethodSelection");
+            fw.append("DistributionShift");
             fw.append(" ");
-            b = meanSelection;
+            b = distributionShift;
             fw.append(b);
-            fw.append("\n");
+            fw.append("\n");  
+
+            fw.append("DistributionMax");
+            fw.append(" ");
+            b = distributionMax;
+            fw.append(b);
+            fw.append("\n"); 
             //Close the file
             fw.close();
          }else{
@@ -482,17 +494,17 @@ public class SpeciesCharacteristics {
       return simPopSize;
    }
 
-   public String getDistributionSelection(){
-      return distributionSelection;
+   public String getDistributionSlope(){
+      return distributionSlope;
    }
 
-   public String getMeanSelection(){
-      return meanSelection;
+   public String getDistributionShift(){
+      return distributionShift;
    }
 
-   /*public double[] getDistributionArgs(){
-      return distributionArgs;
-   }*/
+   public String getDistributionMax(){
+      return distributionMax;
+   }
 
 	//NOTE: Specific to Daphnia
    public  double getDoseInitial(){
@@ -584,18 +596,17 @@ public class SpeciesCharacteristics {
       simPopSize = simPopSizeInput;
    }
 
-   public void setDistributionSelection(String distributionSelectionInput){
-      distributionSelection = distributionSelectionInput;
+   public void setDistributionSlope(String distributionSlopeInput){
+      distributionSlope = distributionSlopeInput;
    }
 
-   public void setMeanSelection(String meanSelectionInput){
-      meanSelection = meanSelectionInput;
+   public void setDistributionShift(String distributionShiftInput){
+      distributionShift = distributionShiftInput;
    }
 
-   /*public void setDistributionArgs(double[] distributionArgsInput){
-      distributionArgs = new int[distributionArgsInput.length];
-      System.arraycopy(distributionArgsInput, 0, distributionArgs, 0, distributionArgsInput.length);
-   }*/
+   public void setDistributionMax(String distributionMaxInput){
+      distributionMax = distributionMaxInput;
+   }
    
 	//NOTE: Specific to Daphnia
    public void setDoseInitial(double doseInitialInput){

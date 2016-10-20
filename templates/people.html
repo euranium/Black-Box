@@ -15,16 +15,16 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/test.css" rel="stylesheet">
+    <link href="css/other.css" rel="stylesheet">
 
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 
-    <style>
-    body {
-        padding-top: 70px;
-        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-    }
-    </style>
+    <!--<style>-->
+    <!--body {-->
+        <!--padding-top: 70px;-->
+        <!--/* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */-->
+    <!--}-->
+    <!--</style>-->
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -37,6 +37,24 @@
 
 <body ng-app="">
     <!-- Page Content -->
+  <div id="dashWrapper">
+    <div id="nav" ng-controller="Nav">
+      <div id="navContent">
+        <span class="right">People</span>
+        <a class="right" href="/contact">Contact</a>
+        <a class="right" href="/science">Science</a>
+		  <a class="right" href="/quickstart"> Quick Start</a>
+		  <a class="right" href="/dashboard">Computational Tools</a>
+      </div>
+    </div>
+
+    <!-- Templates get injected here -->
+    <div id="dash" ui-view>
+
+    </div>
+
+
+  </div>
     <div class="container">
       <div ng-include="'/html/header.html'"></div>
         <div class="row">
@@ -126,7 +144,7 @@
             <div class="col-lg-10">
                 <h3>Graham Roberts</h3>
                   <p>
-                    Grahm is an undergrad student working with Filip on a project to create a web platform for research studies and tools.
+                    Graham is an undergrad student working with Filip on a project to create a web platform for research studies and tools.
             </div>
         </div>
 
@@ -137,7 +155,7 @@
             <div class="col-lg-10">
                 <h3>Rebecca Hsieh</h3>
                   <p>
-                    Rebecca is an undergrad student working with Filip on a project to create a we platform for research studies and tools.
+                    Rebecca is an undergrad student working with Filip on a project to create a web platform for research studies and tools.
                  </p>
             </div>
         </div>
