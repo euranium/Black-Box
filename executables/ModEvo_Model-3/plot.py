@@ -67,7 +67,7 @@ file.write("set ylabel 'DVM'\n")
 file.write("set title 'fitness surface'\n")
 file.write("unset key\n")
 file.write("set palette rgbformulae 33,13,10\n")
-file.write("plot 'contourBase.dat' with image, 'contourLines.dat' w l lt -1 lw 1, \"< paste meanTraitOneValues_ModelTwo.txt meanTraitTwoValues_ModelTwo.txt\" using 2:4 with lines lw 2 lt 4\n")
+file.write("plot 'contourBase.dat' with image, 'contourLines.dat' w l lt -1 lw 1, \"< paste meanTraitOneValues_ModelThree.txt meanTraitTwoValues_ModelThree.txt\" using 2:4 with lines lw 2 lt 4\n")
 file.close();
 
 p = subprocess.Popen("gnuplot plot.gn", shell = True)

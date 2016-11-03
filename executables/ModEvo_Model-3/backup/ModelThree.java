@@ -1,7 +1,7 @@
 /*
 	Name: Elizabeth Brooks
 	File: ModelThree
-	Modified: October 29, 2016
+	Modified: June 24, 2016
 */
 
 //Imports
@@ -13,9 +13,9 @@ import java.io.IOException;
 //while also accounting for underlying developmental interactions
 public class ModelThree {
 
-   //Class fields to store variables
-   private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics class
-   private IndividualFitness individualFitnessObject; //Reference variable of the IndividualFitness class
+    //Class fields to store variables
+    private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics class
+    private IndividualFitness individualFitnessObject; //Reference variable of the IndividualFitness class
 	private MeanFitness meanFitnessObject; //Reference variable of the MeanFitness class
 	private MeanTraitOne meanTraitOneObject; //Reference variable of the MeanTraitOne class
 	private MeanTraitTwo meanTraitTwoObject; //Reference variable of the MeanTraitTwo class
@@ -23,11 +23,11 @@ public class ModelThree {
 	private IndividualTraitTwo individualTraitTwoObject; //Reference variable of the IndividualTraitTwo class
 	private int numIterations; //The number of iterations the user would like the models to be run for
 	private int simPopSize; //The number of generations to be simulated for calc of mean fitness
-   private double phenotypicVarianceTraitOne; //The phenotypic variance of trait two
+    private double phenotypicVarianceTraitOne; //The phenotypic variance of trait two
 	private double phenotypicVarianceTraitTwo; //The phenotypic variance of trait two
 	private double phenotypicVarianceInterceptReactionNorm; //The phenotypic variance of the intercept of the reaction norm
 	private double phenotypicVarianceSlopeReactionNorm; //The phenotypic variance of the slope of the reaction norm
-   private double phenotypicVarianceFunctionTrait; //The phenotypic variance of the phenotypic trait acting as a function of traits one and two
+    private double phenotypicVarianceFunctionTrait; //The phenotypic variance of the phenotypic trait acting as a function of traits one and two
 	private double[][] heritabilityMatrix; //Matrix of heritability values
 	private double meanFitness; //Mean fitness
 	//Fields to hold the values for calculating each generation's values
@@ -35,34 +35,19 @@ public class ModelThree {
 	private double nextGenMeanTraitTwo; //The mean of trait two
 	private double nextGenMeanInterceptReactionNorm; //The next generation's mean intercept of the reaction norm
 	private double nextGenMeanSlopeReactionNorm; //The next gerneration's mean value for the slope of the reaction norm
-   private double nextGenMeanFunctionTrait; //The next generation's mean value for the function of traits one and two
+    private double nextGenMeanFunctionTrait; //The next generation's mean value for the function of traits one and two
   	//Arrays to hold each generations calculated mean trait value
-   private double[] fitnessArray;
 	private double[] traitOneArray; //Array of mean values for the first trait
 	private double[] traitTwoArray; //Array of mean values for the second trait
 	private double[] slopeArray; //Array of mean slope values of the reaction norm
 	private double[] interceptArray; //Array of mean intercept values of the reaction norm
 	private double[] preferenceArray; //Array of mean preference values
-   //Variables for calculating vectors
-   private double traitTwoInterceptDerivative;
-	private double traitOneInterceptDerivative;
-   private double traitOneSlopeDerivative;
-	private double traitTwoSlopeDerivative;
-   private double traitOneFunctionTraitDerivative;
-	private double traitTwoFunctionTraitDerivative;
-   private double individualFitnessTraitOneDerivative;
-   private double individualFitnessTraitTwoDerivative;
-	private double fitnessInverse;
-	private double nextGenVectorPositionOne;
-   private double nextGenVectorPositionTwo;
-   private double nextGenVectorPositionThree;
-   private double[][] nextGenHeritabilityMatrix;
    
 	//The class constructor
 	public ModelThree(SpeciesCharacteristics speciesInputs)
 	{
 		//Initialize species characteristics
-      speciesValues = speciesInputs;
+        speciesValues = speciesInputs;
 		//Set initial values
 		numIterations = speciesValues.getNumIterations();
 		simPopSize = speciesValues.getSimPopSize();
@@ -72,9 +57,9 @@ public class ModelThree {
 		phenotypicVarianceTraitTwo = speciesValues.getPhenotypicVarianceTraitTwo();
 		nextGenMeanInterceptReactionNorm = speciesValues.getMeanInterceptReactionNorm();
 		nextGenMeanSlopeReactionNorm = speciesValues.getMeanSlopeReactionNorm();
-      nextGenMeanFunctionTrait = speciesValues.getMeanFunctionTrait();
-	   phenotypicVarianceInterceptReactionNorm = speciesValues.getPhenotypicVarianceInterceptReactionNorm();
-	   phenotypicVarianceSlopeReactionNorm = speciesValues.getPhenotypicVarianceSlopeReactionNorm();
+        nextGenMeanFunctionTrait = speciesValues.getMeanFunctionTrait();
+	    phenotypicVarianceInterceptReactionNorm = speciesValues.getPhenotypicVarianceInterceptReactionNorm();
+	    phenotypicVarianceSlopeReactionNorm = speciesValues.getPhenotypicVarianceSlopeReactionNorm();
 	}
 	
 	//Methods to run the model
@@ -84,9 +69,9 @@ public class ModelThree {
 		individualFitnessObject = new IndividualFitness(speciesValues);		
 		individualTraitOneObject = new IndividualTraitOne(speciesValues);
 		individualTraitTwoObject = new IndividualTraitTwo(speciesValues);
-		meanFitnessObject = new MeanFitness(speciesValues);
-		meanTraitOneObject = new MeanTraitOne(speciesValues);
-		meanTraitTwoObject = new MeanTraitTwo(speciesValues);
+		meanFitnessObject = new MeanFitness(speciesValues, nextGenMeanTraitOne, nextGenMeanTraitTwo);
+		meanTraitOneObject = new MeanTraitOne(speciesValues, nextGenMeanTraitOne);
+		meanTraitTwoObject = new MeanTraitTwo(speciesValues, nextGenMeanTraitTwo);
 		//Begin the model looping
 		setTraitArrays();
 	}
@@ -94,7 +79,6 @@ public class ModelThree {
 	//Add each generations mean trait values into the trait arrays
 	public void setTraitArrays()
 	{
-		fitnessArray = new double [numIterations];
 		traitOneArray = new double[numIterations];
 		traitTwoArray = new double[numIterations];
 		slopeArray = new double[numIterations];
@@ -102,17 +86,17 @@ public class ModelThree {
 		preferenceArray = new double[numIterations];
 		//A for loop to save each value calculated for the mean of trait one and two
 		for(int i=0;i<numIterations;i++){
-         fitnessArray[i] = meanFitness;
 			traitOneArray[i] = nextGenMeanTraitOne;
 			traitTwoArray[i] = nextGenMeanTraitTwo;
 			slopeArray[i] = nextGenMeanSlopeReactionNorm;
 			interceptArray[i] = nextGenMeanInterceptReactionNorm;
 			preferenceArray[i] = nextGenMeanFunctionTrait;
-			calcNextGenTraitOneTraitTwo();
-			calcNextGenInterceptSlopeFunctionTrait();
+			calcNextGenFitnessTraitOneTraitTwo();
+			calcNextGenMeanInterceptReactionNorm();
+			calcNextGenMeanSlopeReactionNorm();
+			calcNextGenMeanFunctionTrait();
 		}
       	//Write to CSV file trait values
-         writeFitnessFile();
       	writeTraitTwoFile();
       	writeTraitOneFile();
       	writeSlopeFile();
@@ -121,78 +105,68 @@ public class ModelThree {
    }
 	
 	//Send the new mean values of each trait to the IndividualFitness class for re calculation
-	public void calcNextGenTraitOneTraitTwo()
+	public void calcNextGenFitnessTraitOneTraitTwo()
 	{
-		nextGenMeanTraitOne = meanTraitOneObject.getMeanTraitOneSim(nextGenMeanSlopeReactionNorm, nextGenMeanInterceptReactionNorm, 
-         nextGenMeanFunctionTrait);
-		nextGenMeanTraitTwo = meanTraitTwoObject.getMeanTraitTwoSim(nextGenMeanSlopeReactionNorm, nextGenMeanInterceptReactionNorm, 
-         nextGenMeanFunctionTrait);
+		meanFitness = meanFitnessObject.getMeanFitnessSim(nextGenMeanTraitOne, 
+				nextGenMeanTraitTwo, nextGenMeanInterceptReactionNorm, nextGenMeanSlopeReactionNorm, nextGenMeanFunctionTrait);
+		nextGenMeanTraitOne = meanTraitOneObject.getMeanTraitOneSim(nextGenMeanTraitOne);
+		nextGenMeanTraitTwo = meanTraitTwoObject.getMeanTraitTwoSim(nextGenMeanTraitOne);
 	}
-   
-   //A method to determine which value to return from the heritability matrix
-	public void calcNextGenInterceptSlopeFunctionTrait()
+
+	//A method to calculate the mean intercept of the reaction norm 
+	public void calcNextGenMeanInterceptReactionNorm()
 	{
-      //Initialize constants
-      calcConstants();
-      //Multiply heritability matrix by the vector
-      calcFinalVectorValues();
-      //Calc next generation intercept, slope, and functuon trait values
-		nextGenMeanInterceptReactionNorm += nextGenVectorPositionOne;
-		nextGenMeanSlopeReactionNorm += nextGenVectorPositionTwo;
-		nextGenMeanFunctionTrait += nextGenVectorPositionThree;
+		calcNextGenFitnessTraitOneTraitTwo();
+		double traitTwoDerivative = individualTraitTwoObject.numericallyCalcInterceptPartialDerivative(nextGenMeanTraitTwo, nextGenMeanSlopeReactionNorm, 
+				nextGenMeanInterceptReactionNorm, nextGenMeanFunctionTrait);
+		double traitOneDerivative = individualTraitOneObject.numericallyCalcInterceptPartialDerivative(nextGenMeanTraitOne, nextGenMeanSlopeReactionNorm, 
+				nextGenMeanInterceptReactionNorm, nextGenMeanFunctionTrait);
+		double fitnessInverse = (1/meanFitness);
+		nextGenMeanInterceptReactionNorm += (calcHeritabilityMatrixValue("intercept")*fitnessInverse*
+				individualFitnessObject.numericallyCalcTraitTwoPartialDerivative(nextGenMeanTraitOne, nextGenMeanTraitTwo)*
+				traitTwoDerivative*phenotypicVarianceInterceptReactionNorm)+
+				(fitnessInverse*individualFitnessObject.numericallyCalcTraitOnePartialDerivative(nextGenMeanTraitOne, nextGenMeanTraitTwo)*
+				traitOneDerivative*phenotypicVarianceInterceptReactionNorm);
 	}
-   
-   //A method to determine which value to return from the heritability matrix
-	public void calcConstants()
+
+	//A method to calculate the mean slope of the reaction norm
+	public void calcNextGenMeanSlopeReactionNorm()
 	{
-      //Initialize values
-      meanFitness = meanFitnessObject.getMeanFitnessSim(nextGenMeanTraitOne, nextGenMeanTraitTwo);
-		traitTwoInterceptDerivative = individualTraitTwoObject.numericallyCalcInterceptPartialDerivative(nextGenMeanSlopeReactionNorm, 
+		calcNextGenFitnessTraitOneTraitTwo();
+		double traitOneDerivative = individualTraitOneObject.numericallyCalcSlopePartialDerivative(nextGenMeanTraitOne, nextGenMeanSlopeReactionNorm, 
 				nextGenMeanInterceptReactionNorm, nextGenMeanFunctionTrait);
-		traitOneInterceptDerivative = individualTraitOneObject.numericallyCalcInterceptPartialDerivative(nextGenMeanSlopeReactionNorm, 
+		double traitTwoDerivative = individualTraitTwoObject.numericallyCalcSlopePartialDerivative(nextGenMeanTraitTwo, nextGenMeanSlopeReactionNorm,
 				nextGenMeanInterceptReactionNorm, nextGenMeanFunctionTrait);
-      traitOneSlopeDerivative = individualTraitOneObject.numericallyCalcSlopePartialDerivative(nextGenMeanSlopeReactionNorm, 
-				nextGenMeanInterceptReactionNorm, nextGenMeanFunctionTrait);
-		traitTwoSlopeDerivative = individualTraitTwoObject.numericallyCalcSlopePartialDerivative(nextGenMeanSlopeReactionNorm,
-				nextGenMeanInterceptReactionNorm, nextGenMeanFunctionTrait);
-      traitOneFunctionTraitDerivative = individualTraitOneObject.numericallyCalcFunctionTraitPartialDerivative(nextGenMeanSlopeReactionNorm, 
-				nextGenMeanInterceptReactionNorm, nextGenMeanFunctionTrait);
-		traitTwoFunctionTraitDerivative = individualTraitTwoObject.numericallyCalcFunctionTraitPartialDerivative(nextGenMeanSlopeReactionNorm, 
-				nextGenMeanInterceptReactionNorm, nextGenMeanFunctionTrait);
-      individualFitnessTraitOneDerivative = individualFitnessObject.numericallyCalcTraitOnePartialDerivative(nextGenMeanTraitOne, nextGenMeanTraitTwo);
-      individualFitnessTraitTwoDerivative = individualFitnessObject.numericallyCalcTraitTwoPartialDerivative(nextGenMeanTraitOne, nextGenMeanTraitTwo);
-		fitnessInverse = (1/meanFitness);
+		double fitnessInverse = (1/meanFitness);
+		nextGenMeanInterceptReactionNorm += (calcHeritabilityMatrixValue("slope")*fitnessInverse*
+				individualFitnessObject.numericallyCalcTraitTwoPartialDerivative(nextGenMeanTraitOne, nextGenMeanTraitTwo)*
+				traitTwoDerivative*phenotypicVarianceSlopeReactionNorm)+
+				(fitnessInverse*individualFitnessObject.numericallyCalcTraitOnePartialDerivative(nextGenMeanTraitOne, nextGenMeanTraitTwo)*
+				traitOneDerivative*phenotypicVarianceSlopeReactionNorm);
 	}
-   
-   //A method to calculate the mean intercept of the reaction norm 
-	public void calcFinalVectorValues()
+
+	//A method to calculate the mean value of trait two
+	public void calcNextGenMeanFunctionTrait()
 	{
-      //Calc first vector position values
-		double vectorOnePositionOne = (fitnessInverse * individualFitnessTraitTwoDerivative * traitTwoInterceptDerivative);
-      double vectorOnePositionTwo = (fitnessInverse * individualFitnessTraitTwoDerivative * traitTwoSlopeDerivative);
-      double vectorOnePositionThree = (fitnessInverse * individualFitnessTraitTwoDerivative * traitTwoFunctionTraitDerivative);
-      //Calc second vector position values
-		double vectorTwoPositionOne = (fitnessInverse * individualFitnessTraitOneDerivative * traitOneInterceptDerivative);
-      double vectorTwoPositionTwo = (fitnessInverse * individualFitnessTraitOneDerivative * traitOneSlopeDerivative);
-      double vectorTwoPositionThree = (fitnessInverse * individualFitnessTraitOneDerivative * traitOneFunctionTraitDerivative);
-      //Calc final vector position values
-      double vectorPositionOne = vectorOnePositionOne + vectorTwoPositionOne;
-      double vectorPositionTwo = vectorOnePositionTwo + vectorTwoPositionTwo;
-      double vectorPositionThree = vectorOnePositionThree + vectorTwoPositionThree;
-      //Send vector values to be multiplied by heritability matrix values
-      multiplyMatrixByVector(vectorPositionOne, vectorPositionTwo, vectorPositionThree);      
+		calcNextGenFitnessTraitOneTraitTwo();
+		double traitOneDerivative = individualTraitOneObject.numericallyCalcFunctionTraitPartialDerivative(nextGenMeanTraitOne, nextGenMeanSlopeReactionNorm, 
+				nextGenMeanInterceptReactionNorm, nextGenMeanFunctionTrait);
+		double traitTwoDerivative = individualTraitTwoObject.numericallyCalcFunctionTraitPartialDerivative(nextGenMeanTraitTwo, nextGenMeanSlopeReactionNorm, 
+				nextGenMeanInterceptReactionNorm, nextGenMeanFunctionTrait);
+		double fitnessInverse = (1/meanFitness);
+		nextGenMeanInterceptReactionNorm += (calcHeritabilityMatrixValue("function trait")*fitnessInverse*
+				individualFitnessObject.numericallyCalcTraitTwoPartialDerivative(nextGenMeanTraitOne, nextGenMeanTraitTwo)*
+				traitTwoDerivative*phenotypicVarianceFunctionTrait)+
+				(fitnessInverse*individualFitnessObject.numericallyCalcTraitOnePartialDerivative(nextGenMeanTraitOne, nextGenMeanTraitTwo)*
+				traitOneDerivative*phenotypicVarianceFunctionTrait);
 	}
-   
-   //A method to calculate the mean intercept of the reaction norm 
-	public void multiplyMatrixByVector(double vectorPositionOneInput, double vectorPositionTwoInput, double vectorPositionThreeInput)
+
+	//A method to determine which value to return from the heritability matrix
+	public double calcHeritabilityMatrixValue(String variable)
 	{
-      //Initialize vector position values
-		double vectorPositionOne = vectorPositionOneInput;
-      double vectorPositionTwo = vectorPositionTwoInput;
-      double vectorPositionThree = vectorPositionThreeInput;
 		//Initialize the 2D array with 3 rows and 3 columns and set the matrix values
 		//Copy the matrix from the SpecieCharacteristics class
-		/*int tempLength = speciesValues.getHeritabilityMatrix().length;
+		int tempLength = speciesValues.getHeritabilityMatrix().length;
 		heritabilityMatrix = new double[tempLength][];
 		for(int m=0; m<tempLength; m++)
 		{
@@ -200,61 +174,23 @@ public class ModelThree {
 		  tempLength = speciesValues.getHeritabilityMatrix().length;
 		  heritabilityMatrix[m] = new double[tempLength];
 		  System.arraycopy(tempMatrix, 0, heritabilityMatrix[m], 0, tempLength);
-		}*/
-      heritabilityMatrix = new double[][]{
-         {0.5, 0, 0},
-	      {0, 0.5, 0},
-	      {0, 0, 0.5}
-      };
-		//Calc matrix values
-		double RowOneColumnOne = (vectorPositionOne * heritabilityMatrix[0][0]);
-      double RowOneColumnTwo = (vectorPositionTwo * heritabilityMatrix[0][1]);
-		double RowOneColumnThree = (vectorPositionThree * heritabilityMatrix[0][2]);
-		double RowTwoColumnOne = (vectorPositionOne * heritabilityMatrix[1][0]); 
-		double RowTwoColumnTwo = (vectorPositionTwo * heritabilityMatrix[1][1]);
-		double RowTwoColumnThree = (vectorPositionThree * heritabilityMatrix[1][2]);
-		double RowThreeColumnOne = (vectorPositionOne * heritabilityMatrix[2][0]);
-		double RowThreeColumnTwo = (vectorPositionTwo * heritabilityMatrix[2][1]);
-		double RowThreeColumnThree = (vectorPositionThree * heritabilityMatrix[2][2]);
-      //Calc final vector position values
-		nextGenVectorPositionOne = (RowOneColumnOne + RowOneColumnTwo + RowOneColumnThree);
-      nextGenVectorPositionTwo = (RowTwoColumnOne + RowTwoColumnTwo + RowTwoColumnThree);
-      nextGenVectorPositionThree = (RowThreeColumnOne + RowThreeColumnTwo + RowThreeColumnThree);
-	}
-   
-   //Method to write trait one values to a TXT file
-    public void writeFitnessFile()
-    {
-   	//Write to file the first traits values
-		//Catch exceptions and write to file in TXT format
-		try {
-         //Determine which test number is being run for file naming
-         //int fileCount = 1;
-         String meanFitnessPath = "meanFitnessValues_ModelThree.txt";
-         File meanFitnessFile = new File(meanFitnessPath);         
-         //Create meanTraitOneFile and file writer
-         FileWriter fwFitness = new FileWriter(meanFitnessFile.getAbsoluteFile()); 
-			meanFitnessFile.createNewFile();
-            //Write to file the header
-			fwFitness.write("Generation MeanFitness\n");
-			String aOne;
-			String bOne;			
-			for(int i=0, k=1;i<fitnessArray.length;i++, k++){
-				//Write to file generationNumber, traitOne
-			   	aOne = Integer.toString(k);
-			   	fwFitness.append(aOne);
-			   	fwFitness.append(" ");
-			   	bOne = Double.toString(fitnessArray[i]);
-			   	fwFitness.append(bOne);
-			   	fwFitness.append("\n");
-			}			
-			//Close the file
-			fwFitness.close();
-		} catch (IOException e) {
-		    System.err.format("IOException: %s%n", e);
 		}
-   }
-      
+		//Determine which matrix value to return based on String argument
+		if(variable.equals("intercept")){
+			return ((nextGenMeanInterceptReactionNorm * heritabilityMatrix[0][0]) + 
+					(nextGenMeanInterceptReactionNorm * heritabilityMatrix[0][1]) +
+					(nextGenMeanInterceptReactionNorm * heritabilityMatrix[0][2]));
+		}else if(variable.equals("slope")){
+			return ((nextGenMeanSlopeReactionNorm * heritabilityMatrix[1][0]) + 
+					(nextGenMeanSlopeReactionNorm * heritabilityMatrix[1][1]) +
+					(nextGenMeanSlopeReactionNorm * heritabilityMatrix[1][2]));
+		}else{//function trait
+			return ((nextGenMeanFunctionTrait * heritabilityMatrix[2][0]) + 
+					(nextGenMeanFunctionTrait * heritabilityMatrix[2][1]) +
+					(nextGenMeanFunctionTrait * heritabilityMatrix[2][2]));
+		}
+	}
+
 	//Method to write trait one values to a TXT file
     public void writeTraitOneFile()
     {

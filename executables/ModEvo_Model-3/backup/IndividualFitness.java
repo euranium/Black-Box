@@ -1,18 +1,14 @@
 /*
 	Name: Elizabeth Brooks
 	File: IndividualFitness
-	Modified: October 30, 2016
+	Modified: May 05, 2016
 */
-
-//Imports
-import java.security.SecureRandom;
 
 //A class to calculate the individual fitness 'w'
 public class IndividualFitness {
 
 	//Class fields to store variables
-   private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics
-   private SecureRandom randomSimulation; //For simulation of individual variable values
+    private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics
 	private double individualFitness; //Individual fitness
 	private double meanTraitOne; //Mean value of trait one
 	private double meanTraitTwo; //Mean value of trait two
@@ -37,25 +33,21 @@ public class IndividualFitness {
 	public double phenotypicVarianceTraitOneInitial;
 	public double phenotypicVarianceTraitTwoInitial;
 	public int simPopSize;
-   public double standardDeviationTraitOne;
-   public double standardDeviationTraitTwo;
 	
 	//The class constructor which will set the fields values
 	public IndividualFitness(SpeciesCharacteristics speciesInputs)
 	{
-      //Initialize species characteristics
-      speciesValues = speciesInputs;
+      	//Initialize species characteristics
+      	speciesValues = speciesInputs;
 		//Set initial values
 		numIterations = speciesValues.getNumIterations();
 		simPopSize = speciesValues.getSimPopSize();
-		meanTraitOne = speciesValues.getMeanTraitOne();
-		meanTraitTwo = speciesValues.getMeanTraitTwo();
+		nextGenMeanTraitOne = speciesValues.getMeanTraitOne();
+		nextGenMeanTraitTwo = speciesValues.getMeanTraitTwo();
 		varianceTraitOne = speciesValues.getVarianceTraitOne();
 		varianceTraitTwo = speciesValues.getVarianceTraitTwo();
 		optimumTraitOne = speciesValues.getOptimumTraitOne();
 		optimumTraitTwo = speciesValues.getOptimumTraitTwo();
-      standardDeviationTraitOne = calcStandardDeviationTraitOne();
-      standardDeviationTraitTwo = calcStandardDeviationTraitTwo();
 	}
    
 	//Method to calculate the value of the first exponent
@@ -99,7 +91,7 @@ public class IndividualFitness {
 	}
 	
 	//Method to calculate the total value of the individual fitness 'w'
-	public double calcIndividualFitness(double meanTraitOneInput, double meanTraitTwoInput)
+	public void calcIndividualFitness(double meanTraitOneInput, double meanTraitTwoInput)
 	{
 		meanTraitOne = meanTraitOneInput;
 		meanTraitTwo = meanTraitTwoInput;
@@ -112,7 +104,7 @@ public class IndividualFitness {
 		//Calculate the value of the section of the equation after the addition sign
 		double sectionTwo = (fractionTwo*Math.pow((Math.E), exponentTwo));
 		//Calculate the value of w by adding the two sections together
-		return individualFitness = (sectionOne+sectionTwo);
+		individualFitness = (sectionOne+sectionTwo);
 	}
 	
 	//Method to numerically calculate the derivation of the fitness function for trait one
@@ -120,27 +112,19 @@ public class IndividualFitness {
 	{
 		//Set initial values
 		meanTraitOne = meanTraitOneInput;
-		/*double tempMeanTraitOne = meanTraitOne;
-      if(tempMeanTraitOne == 0){
-         System.out.println("meanTraitOne = 0 at numericallyCalcTraitTwoPartialDerivative");
-      }
-      while(tempMeanTraitOne == 0){ //Will cause h = 0
-         tempMeanTraitOne = calcIndividualTraitOne(tempMeanTraitOne);
-      }
-		double stepSize = (tempMeanTraitOne * 0.01); //Small time step?*/
-      double stepSize = 0.1;
+		stepSize = (meanTraitOneInput * 0.00001);
 		//Calculate a small step up
-      double stepUpMeanTraitOne = meanTraitOne;
 		meanTraitOne += stepSize;
-		stepUpValue = getIndividualFitness(stepUpMeanTraitOne, meanTraitTwoInput);		
+		getIndividualFitness(meanTraitOne, meanTraitTwoInput);
+		stepUpValue = individualFitness;		
+		//Re-initialize
+		meanTraitOne = meanTraitOneInput;
 		//Calculate a small step down
-		double stepDownMeanTraitOne = meanTraitOne;
-      stepDownMeanTraitOne -= stepSize;
-      /*double h = (meanTraitOne - stepDownMeanTraitOne);*/
-		getIndividualFitness(stepDownMeanTraitOne, meanTraitTwoInput);
-		stepDownValue = getIndividualFitness(stepDownMeanTraitOne, meanTraitTwoInput);
+		meanTraitOne -= stepSize;
+		getIndividualFitness(meanTraitOne, meanTraitTwoInput);
+		stepDownValue = individualFitness;
 		//Calculate the partial derivative of trait one
-		traitOnePartialDerivative = ((stepUpValue - stepDownValue)/(2*stepSize));
+		traitOnePartialDerivative = ((stepUpValue - stepDownValue)/(stepSize+stepSize));
 		return traitOnePartialDerivative;
 	}
 	
@@ -149,27 +133,19 @@ public class IndividualFitness {
 	{
 		//Set initial values
 		meanTraitTwo = meanTraitTwoInput;
-      /*double tempMeanTraitTwo = meanTraitTwo;
-      if(tempMeanTraitTwo == 0){
-         System.out.println("meanTraitTwo = 0 at numericallyCalcTraitTwoPartialDerivative");
-      }
-      while(tempMeanTraitTwo == 0){ //Will cause h = 0
-         tempMeanTraitTwo = calcIndividualTraitTwo(tempMeanTraitTwo);
-      }
-		double stepSize = (tempMeanTraitTwo * 0.01); //Small time step?*/
-      double stepSize = 0.1;
+		stepSize = (meanTraitTwoInput * 0.00001);
 		//Calculate a small step up
-		double stepUpMeanTraitTwo = meanTraitTwo;
-      stepUpMeanTraitTwo += stepSize;
-		getIndividualFitness(meanTraitOneInput, stepUpMeanTraitTwo);
-		stepUpValue = getIndividualFitness(meanTraitOneInput, stepUpMeanTraitTwo);
+		meanTraitTwo += stepSize;
+		getIndividualFitness(meanTraitOneInput, meanTraitTwo);
+		stepUpValue = individualFitness;
+		//Re-initialize
+		meanTraitTwo = meanTraitTwoInput;
 		//Calculate a small step down
-		double stepDownMeanTraitTwo = meanTraitTwo;
-      stepDownMeanTraitTwo -= stepSize;
-      /*double h = (meanTraitTwo - stepDownMeanTraitTwo);*/
-		stepDownValue = getIndividualFitness(meanTraitOneInput, stepDownMeanTraitTwo);
+		meanTraitTwo -= stepSize;
+		getIndividualFitness(meanTraitOneInput, meanTraitTwo);
+		stepDownValue = individualFitness;
 		//Calculate the partial derivative of trait two
-		traitTwoPartialDerivative = ((stepUpValue - stepDownValue)/(2*stepSize));
+		traitTwoPartialDerivative = ((stepUpValue - stepDownValue)/(stepSize+stepSize));
 		return traitTwoPartialDerivative;
 	}
 	
@@ -182,40 +158,8 @@ public class IndividualFitness {
 		varianceTraitTwo = speciesValues.getVarianceTraitTwo();
 		optimumTraitTwo = speciesValues.getOptimumTraitTwo();
         //Calculate the individual fitness based on the given mean trait values
-		return calcIndividualFitness(meanTraitOneInput, meanTraitTwoInput);
-	}
-   
-   //A method to calculate the standard deviation of the intercept of the reaction norm
-	public double calcStandardDeviationTraitOne()
-	{
-		return Math.sqrt(speciesValues.getPhenotypicVarianceTraitOne());
-	}
-	
-	//A method to calculate the standard deviation of the slope of the reaction norm
-	public double calcStandardDeviationTraitTwo()
-	{
-		return Math.sqrt(speciesValues.getPhenotypicVarianceTraitTwo());
-	}
-   
-   //Methods to calc the individual simulated values for trait one
-	private double calcIndividualTraitOne(double nextGenMeanTraitOneInput) 
-	{
-      //Set the initial values
-		double meanTraitOneInput = nextGenMeanTraitOneInput;
-		randomSimulation = new SecureRandom();
-		//simulation of normally distributed populations
-      double individualTraitOne;
-		return individualTraitOne = (randomSimulation.nextGaussian() * standardDeviationTraitOne + meanTraitOneInput);
-	}
-	
-	private double  calcIndividualTraitTwo(double nextGenMeanTraitTwoInput)
-	{
-      //Set the initial values
-		double meanTraitTwoInput = nextGenMeanTraitTwoInput;
-		randomSimulation = new SecureRandom();
-		//simulation of normally distributed populations
-      double individualTraitTwo;
-		return individualTraitTwo = (randomSimulation.nextGaussian() * standardDeviationTraitTwo + meanTraitTwoInput);
+		calcIndividualFitness(meanTraitOneInput, meanTraitTwoInput);
+		return individualFitness;
 	}
 	
     //Getter methods

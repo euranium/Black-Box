@@ -150,6 +150,16 @@ func science(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func publications(w http.ResponseWriter, r *http.Request) {
+	file, err := ReadFile(path.Join(templateDir, "publications.html"))
+	if err != nil {
+		w.Write([]byte("error"))
+		return
+	}
+	w.Write(file)
+	return
+}
+
 func quickstart(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "quickstart.html"))
 	if err != nil {

@@ -38,6 +38,12 @@ var RouteList = Routes{
 		people,
 	},
 	Route{
+		"publications",
+		"GET",
+		"/publications",
+		publications,
+	},
+	Route{
 		"userHome",
 		"GET",
 		"/dashboard",

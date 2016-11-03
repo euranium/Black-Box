@@ -1,227 +1,243 @@
 /*
 	Name: Elizabeth Brooks
 	File: IndividualTraitOne
-	Modified: September 28, 2016
+	Modified: October 30, 2016
 */
 
 //Imports
-import java.util.Random;
+import java.security.SecureRandom;
 
-//A class to calculate the mean value of trait one for model three
-public class IndividualTraitOne{
+//A class to calculate the mean value of trait one for model two
+public class IndividualTraitOne {
 
 	//Class fields used to calculate the mean value of trait one
-	private Random randomSimulation; //For simulation of individual variable values
-   	private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics class
+	private SecureRandom randomSimulation; //For simulation of individual variable values
+   private SpeciesCharacteristics speciesValues; //Reference variable of the SpeciesCharacteristics class
 	private int numIterations; //The number of generations to be calculated
 	private int simPopSize; //The number of generations to be simulated for calc of mean fitness
-	private double traitOne; //The mean of trait one
 	private double dose; //The UVB dose at the waters surface
-	private double functionTrait; //The mean functionTrait for UV penetration of the carapace
-	private double interceptReactionNorm; //The intercept of the reaction norm of trait one with respect to the trait relater
-	private double slopeReactionNorm; //The slope of the reaction norm of trait one with respect to the trait relater
 	private double slopeConcentration; //The slope relating concentration of melanin to change in UVB transmittance
 	private double transmittance; //The transmittance of a non-melanized Daphnia
-	//Fields to store the values for calculation
-	private double squareRootPart;
-	private double numeratorPart;
-	private double denominatorPart;
+   private double standardDeviationSlope;
+   private double standardDeviationIntercept;
+   private double standardDeviationFunctionTrait;
 	
 	//The class constructor to set the initial field values
 	public IndividualTraitOne(SpeciesCharacteristics speciesInputs)
 	{
-      	//Call IndividualFitness (super) constructor
-      	super(speciesInputs);
-      	//Initialize species characteristics
-      	speciesValues = speciesInputs;
+      //Initialize species characteristics
+      speciesValues = speciesInputs;
 		//Set initial values
-		numIterations = getNumIterationsInitial();
-		simPopSize = getSimPopSizeInitial();
-		functionTrait = getMeanFunctionTraitCurrent();
-		interceptReactionNorm = getMeanInterceptReactionNormCurrent();
-		slopeReactionNorm = getMeanSlopeReactionNormCurrent();
-      	dose = speciesValues.getDoseInitial();
+		numIterations = speciesValues.getNumIterations();
+		simPopSize = speciesValues.getSimPopSize();
+      dose = speciesValues.getDoseInitial();
 		transmittance = speciesValues.getTransmittance();
 		slopeConcentration = speciesValues.getSlopeConcentration();
+      standardDeviationSlope = calcStandardDeviationSlope();
+      standardDeviationIntercept = calcStandardDeviationIntercept();
+      standardDeviationFunctionTrait = calcStandardDeviationFunctionTrait();
 	}
 	
 	//Method to calculate the portion inside the square root
-	public void calcSquareRoot()
+	public double calcSquareRoot(double individualSlopeReactionNormInput, double individualInterceptReactionNormInput, double individualFunctionTraitInput)
 	{
-		double parentheses = (-transmittance + (slopeConcentration * slopeReactionNorm * dose) - (slopeConcentration * interceptReactionNorm));
+      //Set initial values
+		double individualFunctionTrait = individualFunctionTraitInput;
+		double individualSlopeReactionNorm = individualSlopeReactionNormInput;
+		double individualInterceptReactionNorm = individualInterceptReactionNormInput;
+		double parentheses = (-transmittance + (slopeConcentration * individualSlopeReactionNorm * dose) - (slopeConcentration * individualInterceptReactionNorm));
 		double parenSquared = (Math.pow(dose, 2)) * (Math.pow(parentheses, 2));
-		double firstHalfSquareRoot = ((4 * slopeConcentration * slopeReactionNorm * (Math.pow(dose, 2)) * functionTrait));
+		double firstHalfSquareRoot = ((4 * slopeConcentration * individualSlopeReactionNorm * (Math.pow(dose, 2)) * individualFunctionTrait));
 		double insideSquareRoot = firstHalfSquareRoot + parenSquared;
-		squareRootPart = Math.sqrt(Math.abs(insideSquareRoot));
-		calcDenominator();
+		double squareRootPart = Math.sqrt(Math.abs(insideSquareRoot));
+      return squareRootPart;
 	}
 	
 	//Method to calculate the denominator
-	public void calcDenominator()
+	public double calcDenominator(double individualSlopeReactionNormInput, double individualInterceptReactionNormInput, double individualFunctionTraitInput, 
+      double squareRootPartInput)
 	{
-		double firstHalfDenominator = (transmittance * dose - (slopeConcentration * slopeReactionNorm * (Math.pow(dose,2)))
-				+ (slopeConcentration * dose * interceptReactionNorm));
-		denominatorPart = firstHalfDenominator + squareRootPart;
-		calcNumerator();
+      //Set initial values
+      double squareRootPart = squareRootPartInput;
+      double individualFunctionTrait = individualFunctionTraitInput;
+		double individualSlopeReactionNorm = individualSlopeReactionNormInput;
+		double individualInterceptReactionNorm = individualInterceptReactionNormInput;
+		double firstHalfDenominator = (transmittance * dose - (slopeConcentration * individualSlopeReactionNorm * (Math.pow(dose,2)))
+				+ (slopeConcentration * dose * individualInterceptReactionNorm));
+		double denominatorPart = firstHalfDenominator + squareRootPart;
+      return denominatorPart;
 	}
 	
 	//Method to calculate the numerator
-	private void calcNumerator()
+	private double calcNumerator(double individualSlopeReactionNormInput, double individualFunctionTraitInput)
 	{
-		numeratorPart = (2 * slopeReactionNorm * dose * functionTrait);
+      //Set initial values
+		double individualFunctionTrait = individualFunctionTraitInput;
+		double individualSlopeReactionNorm = individualSlopeReactionNormInput;
+		double numeratorPart = (2 * individualSlopeReactionNorm * dose * individualFunctionTrait);
+      return numeratorPart;
 	}
 	
 	//Method for finishing the calculations for trait one
-	public void calcTraitOne()
+	public double calcTraitOne(double individualSlopeReactionNormInput, double individualInterceptReactionNormInput, double individualFunctionTraitInput)
 	{
+      //Set initial values
+      double traitOne;
+      double individualFunctionTrait = individualFunctionTraitInput;
+		double individualSlopeReactionNorm = individualSlopeReactionNormInput;
+		double individualInterceptReactionNorm = individualInterceptReactionNormInput;
 		//Calculate the initial portions
-		calcSquareRoot();
-
+		double squareRootPart = calcSquareRoot(individualSlopeReactionNorm, individualInterceptReactionNorm, individualFunctionTrait);
+      double numeratorPart = calcNumerator(individualSlopeReactionNorm, individualFunctionTrait);
+		double denominatorPart = calcDenominator(individualSlopeReactionNorm, individualInterceptReactionNorm, individualFunctionTrait, squareRootPart);
 		//Complete the calculations
 		double fraction = numeratorPart/denominatorPart;
-		traitOne = ((-slopeReactionNorm * dose) + interceptReactionNorm + fraction);
+      //Return individual trait one value
+		return traitOne = ((-individualSlopeReactionNorm * dose) + individualInterceptReactionNorm + fraction);
 	}
 	
 	//Method to numerically calculate the derivation of the fitness function for the intercept of the reaction norm
-	public double numericallyCalcInterceptPartialDerivative(double nextGenMeanTraitOneInput, double meanSlopeReactionNormInput, 
-			double meanInterceptReactionNormInput, double meanFunctionTraitInput)
+	public double numericallyCalcInterceptPartialDerivative(double meanSlopeReactionNormInput, double meanInterceptReactionNormInput, double meanFunctionTraitInput)
 	{
 		//Set the initial values
-		functionTrait = meanFunctionTraitInput;
-		interceptReactionNorm = meanInterceptReactionNormInput;
-		slopeReactionNorm = meanSlopeReactionNormInput;
-		traitOne = nextGenMeanTraitOneInput;
-		double stepSize = (meanSlopeReactionNormInput * 0.001);
+		double meanFunctionTrait = meanFunctionTraitInput;
+		double meanInterceptReactionNorm = meanInterceptReactionNormInput;
+		double meanSlopeReactionNorm = meanSlopeReactionNormInput;
+		/*double tempMeanInterceptReactionNorm = meanInterceptReactionNorm;
+      while(tempMeanInterceptReactionNorm == 0){ //Will cause h = 0
+         tempMeanInterceptReactionNorm = calcIndividualSlopeReactionNorm(tempMeanInterceptReactionNorm);
+      }
+		double stepSize = (tempMeanInterceptReactionNorm * 0.01); //Small time step?*/
+      double stepSize = 0.1;
 		//Calculate a small step up
-		interceptReactionNorm += stepSize;
-		calcTraitOne();
-		double stepUpValue = traitOne;
-
-		//Re-initialize
-		functionTrait = meanFunctionTraitInput;
-		interceptReactionNorm = meanInterceptReactionNormInput;
-		slopeReactionNorm = meanSlopeReactionNormInput;
-		traitOne = nextGenMeanTraitOneInput;
+		double stepUpInterceptReactionNorm = meanInterceptReactionNorm;
+      stepUpInterceptReactionNorm += stepSize;
+		double stepUpValue = getIndividualTraitOne(meanSlopeReactionNorm, stepUpInterceptReactionNorm, meanFunctionTrait);
 		//Calculate a small step down
-		interceptReactionNorm -= stepSize;
-		calcTraitOne();
-		double stepDownValue = traitOne;
-		
+		double stepDownInterceptReactionNorm = meanInterceptReactionNorm;
+      stepDownInterceptReactionNorm -= stepSize;
+      /*double h = (meanInterceptReactionNorm - stepDownInterceptReactionNorm);*/
+		double stepDownValue = getIndividualTraitOne(meanSlopeReactionNorm, stepDownInterceptReactionNorm, meanFunctionTrait);
 		//Calculate the partial derivative of the intercept
-		double interceptPartialDerivative = ((stepUpValue - stepDownValue)/(stepSize+stepSize));
+		double interceptPartialDerivative = ((stepUpValue - stepDownValue)/(2*stepSize));
 		return interceptPartialDerivative;
 	}
 	
 	//Method to numerically calculate the derivation of the fitness function for the slope of the reaction norm
-	public double numericallyCalcSlopePartialDerivative(double nextGenMeanTraitOneInput, double meanSlopeReactionNormInput, 
-			double meanInterceptReactionNormInput, double meanFunctionTraitInput)
+	public double numericallyCalcSlopePartialDerivative(double meanSlopeReactionNormInput, double meanInterceptReactionNormInput, double meanFunctionTraitInput)
 	{
 		//Set the initial values
-		functionTrait = meanFunctionTraitInput;
-		interceptReactionNorm = meanInterceptReactionNormInput;
-		slopeReactionNorm = meanSlopeReactionNormInput;
-		traitOne = nextGenMeanTraitOneInput;
-		double stepSize = (meanSlopeReactionNormInput * 0.001);
+		double meanFunctionTrait = meanFunctionTraitInput;
+		double meanInterceptReactionNorm = meanInterceptReactionNormInput;
+		double meanSlopeReactionNorm = meanSlopeReactionNormInput;
+	   /*double tempMeanSlope = meanSlopeReactionNorm;
+      while(tempMeanSlope == 0){ //Will cause h = 0
+         tempMeanSlope = calcIndividualSlopeReactionNorm(tempMeanSlope);
+      }
+      double stepSize = (tempMeanSlope * 0.01); //Small time step?*/
+      double stepSize = 0.1;
 		//Calculate a small step up
-		slopeReactionNorm += stepSize;
-		calcTraitOne();
-		double stepUpValue = traitOne;
-
-		//Re-initialize
-		functionTrait = meanFunctionTraitInput;
-		interceptReactionNorm = meanInterceptReactionNormInput;
-		slopeReactionNorm = meanSlopeReactionNormInput;
-		traitOne = nextGenMeanTraitOneInput;
+		double stepUpSlopeReactionNorm = meanSlopeReactionNorm;
+      stepUpSlopeReactionNorm += stepSize;
+		double stepUpValue = getIndividualTraitOne(stepUpSlopeReactionNorm, meanInterceptReactionNorm, meanFunctionTrait);
 		//Calculate a small step down
-		slopeReactionNorm -= stepSize;
-		calcTraitOne();
-		double stepDownValue = traitOne;
-		
+		double stepDownSlopeReactionNorm = meanSlopeReactionNorm;
+      stepDownSlopeReactionNorm -= stepSize;
+      /*double h = (meanSlopeReactionNorm - stepDownSlopeReactionNorm);*/
+		double stepDownValue = getIndividualTraitOne(stepDownSlopeReactionNorm, meanInterceptReactionNorm, meanFunctionTrait);
 		//Calculate the partial derivative of the slope
-		double slopePartialDerivative = ((stepUpValue - stepDownValue)/(stepSize+stepSize));
+		double slopePartialDerivative = ((stepUpValue - stepDownValue)/(2*stepSize));
 		return slopePartialDerivative;
 	}
 	
 	//Method to numerically calculate the derivation of the fitness function for functionTrait of UV penetration
-	public double numericallyCalcFunctionTraitPartialDerivative(double nextGenMeanTraitOneInput, double meanSlopeReactionNormInput, 
-			double meanInterceptReactionNormInput, double meanFunctionTraitInput)
+	public double numericallyCalcFunctionTraitPartialDerivative(double meanSlopeReactionNormInput, double meanInterceptReactionNormInput, double meanFunctionTraitInput)
 	{
 		//Set the initial values
-		functionTrait = meanFunctionTraitInput;
-		interceptReactionNorm = meanInterceptReactionNormInput;
-		slopeReactionNorm = meanSlopeReactionNormInput;
-		traitOne = nextGenMeanTraitOneInput;
-		double stepSize = (meanFunctionTraitInput * 0.001);
+		double meanFunctionTrait = meanFunctionTraitInput;
+		double meanInterceptReactionNorm = meanInterceptReactionNormInput;
+		double meanSlopeReactionNorm = meanSlopeReactionNormInput;
+		/*double tempMeanFunctionTrait = meanFunctionTrait;
+      while(tempMeanFunctionTrait == 0){ //Will cause h = 0
+         tempMeanFunctionTrait = calcIndividualSlopeReactionNorm(tempMeanFunctionTrait);
+      }
+		double stepSize = (tempMeanFunctionTrait * 0.01); //Small time step?*/
+      double stepSize = 0.1;
 		//Calculate a small step up
-		functionTrait += stepSize;
-		calcTraitOne();
-		double stepUpValue = traitOne;
-
-		//Re-initialize
-		functionTrait = meanFunctionTraitInput;
-		interceptReactionNorm = meanInterceptReactionNormInput;
-		slopeReactionNorm = meanSlopeReactionNormInput;
-		traitOne = nextGenMeanTraitOneInput;
+		double stepUpFunctionTrait = meanFunctionTrait;
+      stepUpFunctionTrait += stepSize;
+		double stepUpValue = getIndividualTraitOne(meanSlopeReactionNorm, meanInterceptReactionNorm, stepUpFunctionTrait);
 		//Calculate a small step down
-		functionTrait -= stepSize;
-		calcTraitOne();
-		double stepDownValue = traitOne;
-		
+		double stepDownFunctionTrait = meanFunctionTrait;
+      stepDownFunctionTrait -= stepSize;
+      /*double h = (meanFunctionTrait - stepDownFunctionTrait);*/
+		double stepDownValue = getIndividualTraitOne(meanSlopeReactionNorm, meanInterceptReactionNorm, stepDownFunctionTrait);
 		//Calculate the partial derivative of trait one
-		double functionTraitPartialDerivative = ((stepUpValue - stepDownValue)/(stepSize+stepSize));
+		double functionTraitPartialDerivative = ((stepUpValue - stepDownValue)/(2*stepSize));
 		return functionTraitPartialDerivative;
 	}
 	
 	//Method to calculate the individual value of functionTrait
-	public double getIndividualTraitOne()
+	public double getIndividualTraitOne(double nextGenMeanSlopeReactionNormInput, double nextGenMeanInterceptReactionNormInput, double nextGenMeanFunctionTraitInput)
 	{
 		//Set the initial values
-		functionTrait = calcFunctionTraitInitial();
-		interceptReactionNorm = calcInterceptReactionNormInitial();
-		slopeReactionNorm = calcSlopeReactionNormInitial();
-		//Begin calculating the different portions of the equation
-		calcTraitOne();		
+      double meanFunctionTrait = nextGenMeanFunctionTraitInput;
+		double meanInterceptReactionNorm = nextGenMeanInterceptReactionNormInput;
+		double meanSlopeReactionNorm = nextGenMeanSlopeReactionNormInput;
+      double individualFunctionTrait;
+		double individualSlopeReactionNorm;
+		double individualInterceptReactionNorm;
+      //Calc individual values
+		individualFunctionTrait = calcIndividualFunctionTrait(meanFunctionTrait);
+		individualInterceptReactionNorm = calcIndividualInterceptReactionNorm(meanInterceptReactionNorm);
+		individualSlopeReactionNorm = calcIndividualSlopeReactionNorm(meanSlopeReactionNorm);
 		//Return the calculated value for trait one
-		return traitOne;
+		return calcTraitOne(individualSlopeReactionNorm, individualInterceptReactionNorm, individualFunctionTrait);		
 	}
 	
 	//A method to calculate the standard deviation of the intercept of the reaction norm
 	public double calcStandardDeviationIntercept()
 	{
-		return Math.sqrt(Math.abs(getVarianceInterceptInitial()));
+		return Math.sqrt(Math.abs(speciesValues.getPhenotypicVarianceInterceptReactionNorm()));
 	}
 	
 	//A method to calculate the standard deviation of the slope of the reaction norm
 	public double calcStandardDeviationSlope()
 	{
-		return Math.sqrt(Math.abs(getVarianceSlopeInitial()));
+		return Math.sqrt(Math.abs(speciesValues.getPhenotypicVarianceSlopeReactionNorm()));
 	}
 	
 	//A method to calculate the standard deviation of the UV functionTrait
 	public double calcStandardDeviationFunctionTrait(){
-		return Math.sqrt(Math.abs(getVarianceFunctionTraitInitial()));
+		return Math.sqrt(Math.abs(speciesValues.getPhenotypicVarianceFunctionTrait()));
 	}
 	
 	//Methods to calc the individual simulated values for trait one
-	private double calcSlopeReactionNormInitial() 
+	private double calcIndividualSlopeReactionNorm(double nextGenMeanSlopeReactionNormInput) 
 	{
-		randomSimulation = new Random();
+      //Set the initial values
+		double meanSlopeReactionNorm = nextGenMeanSlopeReactionNormInput;
+		randomSimulation = new SecureRandom();
 		//simulation of normally distributed populations
-		return slopeReactionNorm = (randomSimulation.nextGaussian() * calcStandardDeviationSlope() + getMeanSlopeReactionNormCurrent());
+		return (randomSimulation.nextGaussian() * standardDeviationSlope + meanSlopeReactionNorm);
 	}
 	
-	private double  calcInterceptReactionNormInitial()
+	private double  calcIndividualInterceptReactionNorm(double nextGenMeanInterceptReactionNormInput)
 	{
-		randomSimulation = new Random();
+      //Set the initial values
+		double meanInterceptReactionNorm = nextGenMeanInterceptReactionNormInput;
+		randomSimulation = new SecureRandom();
 		//simulation of normally distributed populations
-		return interceptReactionNorm = (randomSimulation.nextGaussian() * calcStandardDeviationIntercept() + getMeanInterceptReactionNormCurrent());
+		return (randomSimulation.nextGaussian() * standardDeviationIntercept + meanInterceptReactionNorm);
 	}
 
-	private double calcFunctionTraitInitial()
+	private double calcIndividualFunctionTrait(double nextGenMeanFunctionTraitInput)
 	{
-		randomSimulation = new Random();
+      //Set the initial values
+      double meanFunctionTrait = nextGenMeanFunctionTraitInput;
+		randomSimulation = new SecureRandom();
 		//simulation of normally distributed populations
-		return functionTrait = (randomSimulation.nextGaussian() * calcStandardDeviationFunctionTrait() + getMeanFunctionTraitCurrent());
+		return (randomSimulation.nextGaussian() * standardDeviationFunctionTrait + meanFunctionTrait);
 	}
 
 	//Getter methods
@@ -232,25 +248,9 @@ public class IndividualTraitOne{
    public int getSimPopSize() {
 		return simPopSize;
 	}
-   
-   public double getTraitOneInitial() {
-		return traitOne;
-	}
-   
+      
    public double getDose() {
 		return dose;
-	}
-   
-   public double getFunctionTrait() {
-		return functionTrait;
-	}
-   
-   public double getInterceptReactionNorm() {
-		return interceptReactionNorm;
-	}
-   
-   public double getSlopeReactionNorm() {
-		return slopeReactionNorm;
 	}
    
    public double getSlopeConcentration() {
@@ -270,26 +270,10 @@ public class IndividualTraitOne{
 		simPopSize = simPopSizeInput;
 	}
    
-   public void setTraitOneInitial(double traitOneInitialInput) {
-		traitOne = traitOneInitialInput;
-	}
-   
    public void setDose(double doseInput) {
 		dose = doseInput;
 	}
-   
-   public void setFunctionTrait(double functionTraitInput) {
-		functionTrait = functionTraitInput;
-	}
-   
-   public void setInterceptReactionNorm(double interceptReactionNormInput) {
-		interceptReactionNorm = interceptReactionNormInput;
-	}
-   
-   public void setSlopeReactionNorm(double slopeReactionNormInput) {
-		slopeReactionNorm = slopeReactionNormInput;
-	}
-   
+      
    public void setSlopeConcentration(double slopeConcentrationInput) {
 		slopeConcentration = slopeConcentrationInput;
 	}
