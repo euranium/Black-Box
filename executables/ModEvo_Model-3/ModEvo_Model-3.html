@@ -2,7 +2,6 @@
   <div class="panel-heading">
     <h3 class="panel-title">ModEvo Model 3</h3>
   </div>
-
   <div class="panel-body" style="height:auto;">
 
 
@@ -136,7 +135,7 @@
     </div>
 
     <div class="col-xs-4 form-group">
-      <label for="numIterations">Num Gnerations</label>
+      <label for="numIterations">Num Generations</label>
       <input name="21" type="number" step="0.001" class="form-control sending" id="numIterations" value="25">
     </div>
 
@@ -145,12 +144,6 @@
       <label for="simPopSize">simPopSize</label>
       <input name="22" type="number" step="0.001" class="form-control sending" id="simPopSize" value="50">
     </div>
-
-    <div class="col-xs-4 form-group">
-      <label for="meanSelection">meanSelection</label>
-      <input name="23" type="text" class="form-control sending" id="meanSelection" value="analytical">
-    </div>
-    <br>
 
     <div class="col-xs-4 form-group">
       <button ng-click="send('ModEvo_Model-3')" class="btn btn-primary" ng-class="{true: 'disabled'}[working == true]">Submit</button>
