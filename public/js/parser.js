@@ -46,6 +46,11 @@ function parse(data, folder){
           rt.graphs.push(buildSingleGraph(items[i]))
         }
       }
+      else if(data.Name == "ModEvo_Model-3"){
+        if(items[i].Name.split(".")[0] == "meanFitnessValues_ModelThree" || items[i].Name.split(".")[0] == "meanTraitOneValues_ModelThree" | items[i].Name.split(".")[0] == "meanTraitTwoValues_ModelThree"){
+          rt.graphs.push(buildSingleGraph(items[i]))
+        }
+      }
     }
 
   }
