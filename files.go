@@ -248,7 +248,7 @@ get the contents of a file,
 func ReadFile(path string) (file []byte, err error) {
 	file, err = ioutil.ReadFile(path)
 	if err != nil {
-		DBLogErrorLocal(err.Error(), path)
+//		DBLogErrorLocal(err.Error(), path)
 		return
 	}
 	return

@@ -110,5 +110,5 @@ func DBLogErrorLocal(Message, Folder string) {
 	args[0]=Message
 	args=append(args,time.Now().Unix())
 	args=append(args,Folder)
-	DBWrite(LogError, args)	
+//	DBWrite(LogError, args)	
 }

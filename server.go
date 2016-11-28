@@ -21,6 +21,7 @@ var (
 	waitOn      = 1
 	UserDir     = "users/"
 	templateDir = "templates/"
+	publicDir   = "public/publication/"
 	progDir     = "executables/"
 	Tasks       = make(chan Submit, 64)
 	Signal      = make(chan os.Signal, 1)
@@ -162,6 +163,17 @@ func publications(w http.ResponseWriter, r *http.Request) {
 
 func quickstart(w http.ResponseWriter, r *http.Request) {
 	file, err := ReadFile(path.Join(templateDir, "quickstart.html"))
+	if err != nil {
+		w.Write([]byte("error"))
+		//DBLogError(err.Error(),w,r)
+		return
+	}
+	w.Write(file)
+	return
+}
+
+func poster(w http.ResponseWriter, r *http.Request) {
+	file, err := ReadFile(path.Join(publicDir, "IntegratedInformationSciences.png"))
 	if err != nil {
 		w.Write([]byte("error"))
 		//DBLogError(err.Error(),w,r)

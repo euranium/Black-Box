@@ -68,6 +68,12 @@ var RouteList = Routes{
 		quickstart,
 	},
 	Route{
+		"poster",
+		"GET",
+		"/poster",
+		poster,
+	},
+	Route{
 		"register",
 		"GET",
 		"/register",
