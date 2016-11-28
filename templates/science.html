@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Publications</title>
+    <title>ModEvo: The Science</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -65,27 +65,360 @@
                 <hr>
                 <div class="list-group">
 						 <h3>Our Program</h3>
-						    <hr>
-					       <p>We have developed a codebase, ModEvo, that impliments a novel mathematical framework derived by Rice for predicting the evolution of phenotypic traits that share at least some underlying developmental factors.  Additionally, the object-oriented code base is generalized to allow users to easily develop custom models for studying the evolution of a pokemon.</p>
-                      <p>With our program, users can develop custom simulations for analyzing the evolution of multiple phenotypic traits by allowing non-additive developmental interactions between specific traits.  Simulations of evolutionary processes using our updated framework may aid in the study of phenotypic evolution, multilevel selection, and social evolution for the fields of evolutionary developmental biology, quantitative genetics and ecology.  The simulations produced by ModEvo may be used to analyze the strength of selection on the co-variance of traits, as well as the constancy of the G-matrix by comparative analysis to traditional, G-matrix based models.</p>
-                   <h3>Significance</h3>
-						    <hr>
-                      <p>A primary goal of evolutionary biology is to predict the effects of selection on the evolution of traits.  The multivariate evolutionary response of a population depends upon patterns of inheretece as well as the strength and direction of selection.  The additive genetic variance-covariance matrix (G-matrix), which summarizes the distribution of genetic variance among multiple traits, is a general concept in evolutionary theory and quantitative genetics.  The geometry of the G-matrix quantifies genetic constraints that hinder, facilitate, or bias evoluion towards "genetic lines of least resistance," the direction in which most genetic variation exists. However, the predictive power of the G-matrix based upon models depends upon the stability of the matrix, which is not clearly understood.</p>
-                      <p>Shared developmental processes represent a principal contributor to the geometry of the G-matrix.  In fact, the G-martix is generally assumed to efficiently and satisfactorily capture the developmental association between traits for the purposes of predicting evolutionary trajectories.  To predict evolution in response to selection, the G-matrix is assumed to either remain constant or change proportionally to the original matrices. However, nonadditive developmental interactions can dramatically alter genetic variances and co-variances of traits, rendering aproaches based upon a constant G-matrix questionable.</p>
-                   <h3>Background</h3>
-						    <hr>
-                      <p>A revolutionary mathematical and conceptual framework derived by Sean Rice explicitly incorporates the effects of non-additive developmental interactions on the evolution of traits.  This framework encompasses quantitative genetics as a special case. but is far more flexible, allowing for the exploration of the effects of different types of selection, under essentially any form of genetic and developmental architecture.</p>
-                      <p>A central concept of the framework is the phenotypic landscape, which is constructed by plotting the value of a phenotype against the values of the underlying genetic and environmental factors that interact in its development</p>
-                      <p>The phenotypic landscape in figure 1 shows the melanic pigmentation in <em>Daphnia Melanica</em>, a species of freshwater zooplankton, as a function of average daytime depth (diel vertical migration, DVM) and sensitivity to induction via UVB radiation.  The strength and direction of selection is captured by the individual fitness surface, which describes the expected reproductive success of an individual as a function of its trait values.</p>
-                      <p>The fitness surface in Figure 2, given by equation 1, depicts the expected fitness surface of <em>Daphnia melanica</em> in the presence of fish predators, based on its melanin pigmentation and tendency to move downwards in the water columns (DVM).  As represented in Figure 2, there exists a value of those two traits such that a maximum fitness is attained, depicted by the peak (plus sign).</p>
-                   <h3>Program Development</h3>
+							 <p>We have developed a codebase, ModEvo, that impliments a novel mathematical framework derived by Rice<sub>8</sub> for predicting the evolution of phenotypic traits that share at least some underlying developmental factors.  Our updated modles rely on a well-defined phenotype landscape to specify trait values as a function of underlying developmental factors<sub>11</sub>Additionally, the object-oriented code base is generalized to allow users to easily develop custom models for studying the evolution of an organism.</p>
+							 <p>With our program, users can develop custom simulations for analyzing the evolution of multiple phenotypic traits by allowing non-additive developmental interactions between specific traits.  Simulations of evolutionary processes using our updated framework may aid in the study of phenotypic evolution, multilevel selection, and social evolution for the fields of evolutionary developmental biology, quantitative genetics, and ecology<sub>11,8</sub>.  The simulations produced by ModEvo may be used to analyze the strength of selection on the co-variance of traits, as well as the constancy of the G-matrix by comparative analysis to traditional, G-matrix based models.</p>
 							 <hr>
-                      <p>We have developed an object-oriented code infrastructure that impliments the mathematical framework of Sean Rice, allowing a user to test hypotheses regarding the evolutionary consequences of non-linear developmental interaction.  As a case study, we have designed three models of increasing developmental complexity for projecting developmental trajectories specific to high-alpine populations of <em>Daphnia melanica</em>. ModEvo, can be extended to produce custom models for analyzing the evolution of trait means and co-variances for a given species of organisms and specific set of underlying genetic and environmental factors.</p>
-                      <p>As a first-step, we have developed in the Java programming language a traditional, G-Matrix based model (Model One: Classic) for predicting the evolution of melanin (Equation 2) and DVM (Equation 3) over time, based on the current genetic co-variance of these traits and the natural selection imposed by a novel fish predator.  The variables and initial values used for testing Model One are in Table 1.</p>
-                      <p>Next, we incorporated the updated mathematical and conceptual framework derived by Rice nto two increasingly advanced models to account for "developmental entanglement" DVM (Equation 4) and melanin (Equation 5). In the seond models (Model Two: Tanning), developmental entanglement arises from the fact that DVM influences exposure to UV radiation, which decays exponentially with depth in the water, and UV radiation stimulates production of melanin. The variable and initial values used for testing Model Two are given in Table 2.</p>
+                   <h3>Significance</h3>
+						 <p>A primary goal of evolutionary biology is to predict the effects of selection on the evolution of traits.  The multivariate evolutionary response of a population depends upon patterns of inheretece as well as the strength and direction of selection.  The additive genetic variance-covariance matrix (G-matrix), which summarizes the distribution of genetic variance among multiple traits, is a general concept in evolutionary theory and quantitative genetics<sub>1,8,7</sub>.  The geometry of the G-matrix quantifies genetic constraints that hinder, facilitate, or bias evoluion towards "genetic lines of least resistance," the direction in which most genetic variation exists<sub>14</sub>. However, the predictive power of the G-matrix based models depends upon the stability of the matrix, which is not clearly understood<sub>2,1,14</sub>.</p>
+						 <p>Shared developmental processes represent a principal contributor to the geometry of the G-matrix<sub>15</sub>.  In fact, the G-martix is generally assumed to efficiently and satisfactorily capture the developmental association between traits for the purposes of predicting evolutionary trajectories.  To predict evolution in response to selection, the G-matrix is assumed to either remain constant or change proportionally to the original matrices<sub>2,1,12</sub>. However, nonadditive developmental interactions can dramatically alter genetic variances and co-variances of traits<sub>3,13</sub>, rendering aproaches based upon a constant G-matrix questionable<sub>4,5</sub>.</p>
+						 <hr>
+                   <h3>Background</h3>
+						 <p>A revolutionary mathematical and conceptual framework derived by Sean Rice<sub>10,9,8,16</sub> explicitly incorporates the effects of non-additive developmental interactions on the evolution of traits.  This framework encompasses quantitative genetics as a special case, but is far more flexible, allowing for the exploration of the effects of different types of selection, under essentially any form of genetic and developmental architecture.</p>
+						 <p>A central concept of the framework is the phenotypic landscape, which is constructed by plotting the value of a phenotype against the values of the underlying genetic and environmental factors that interact in its development<sub>10</sub>.</p>
+                      <p>The phenotypic landscape in Figure 1 shows the melanic pigmentation in <em>Daphnia Melanica</em>, a species of freshwater zooplankton, as a function of average daytime depth (diel vertical migration, DVM) and sensitivity to induction via UVB radiation.  The strength and direction of selection is captured by the individual fitness surface, which describes the expected reproductive success of an individual as a function of its trait values.</p>
+							 <div class="container">
+								 <div class="row">
+									 <div class="span4"></div>
+							       <div id="Figure 1" class="span4">
+										 <figure>
+								          <img id="Figure 1" class="center-block" src="img/Figures/Figure1.png" style="width:480px" align="middle">
+										    <figcaption>Figure 1</figcaption>
+										 </figure>
+									 </div>
+                            <div class="span4"></div>
+							    </div>	
+							 </div>
+                      <p>The fitness surface in Figure 2, given by Equation 1, depicts the expected fitness surface of <em>Daphnia melanica</em> in the presence of fish predators, based on its melanin pigmentation and tendency to move downward in the water column (DVM).  As represented in Figure 2, there exists a value of those two traits such that a maximum fitness is attained, depicted by the peak (plus sign).</p>
+							 <div class="container">
+								 <div class="row">
+									 <div class="span4"></div>
+							       <div id="Figure 2" class="span4">
+										 <figure>
+								          <img id="Figure 2" class="center-block" src="img/Figures/Figure2.png" style="width:480px" align="middle">
+										    <figcaption>Figure 2</figcaption>
+										 </figure>
+									 </div>
+                            <div class="span4"></div>
+							    </div>	
+							 </div>
+							 <div class="container">
+								 <div class="row">
+									 <div class="span4"></div>
+							       <div id="Equation 1" class="span4">
+										 <figure>
+								          <img id="Equation 1" class="center-block" src="img/Figures/EQ1.png"  align="middle">
+										    <figcaption>Figure 1</figcaption>
+										 </figure>
+									 </div>
+                            <div class="span4"></div>
+							    </div>	
+							 </div>
+							 <hr>
+                   <h3>Program Development</h3>
+						 <p>We have developed an object-oriented code infrastructure that impliments the mathematical framework of Sean Rice, allowing a user to test hypotheses regarding the evolutionary consequences of non-linear developmental interaction.  As a case study, we have designed three models of increasing developmental complexity for projecting evolutionary trajectories specific to high-alpine populations of <em>Daphnia melanica</em>. ModEvo, can be extended to produce custom models for analyzing the evolution of trait means and co-variances for a given species of organisms and specific set of underlying genetic and environmental factors<sub>10</sub>.</p>
+                      <p>As a first step, we have developed in the Java programming language a traditional, G-Matrix based model (Model One: Classic) for predicting the evolution of melanin (Equation 2) and DVM (Equation 3) over time, based on the current genetic co-variance of these traits and the natural selection imposed by a novel fish predator.  The variables and initial values used for testing Model One are given in Table 1.</p>
+							          <table border="1" style="margin:1em auto">
+								          <tr>
+									          <td><strong>Parameter</strong></td>
+									          <td><strong>Initial Value</strong></td>
+								          </tr>
+								          <tr>
+									          <td>Mean Melanin (ug/mm)</td>
+									          <td>2.5</td>
+								          </tr>
+								          <tr>
+									          <td>Mean DVM (meters)</td>
+									          <td>1</td>
+								          </tr>
+								          <tr>
+									          <td>Mean Population Fitness</td>
+									          <td>N/A, Equation 1</td>
+								          </tr>
+								          <tr>
+									          <td>Phenotypic Variance of Melanin</td>
+									          <td>0.04</td>
+								          </tr>
+								          <tr>
+									          <td>Phenotypic variance od DVM</td>
+									          <td>0.2</td>
+								          </tr>
+								          <tr>
+									          <td>Optimum value of DVM</td>
+									          <td>0.4</td>
+								          </tr>
+								          <tr>
+									          <td>Variance of Gaussian Function Relating Melanin to fitness</td>
+									          <td>100</td>
+								          </tr>
+								          <tr>
+									          <td>Variance of Gaussian Function Relating DVM to Fitness</td>
+									          <td>500</td>
+								          </tr>
+								          <tr>
+									          <td>Heritability</td>
+									          <td>0.5</td>
+								          </tr>
+							             </table>
+							 <div class="container">
+								 <div class="row">
+									 <div class="span4"></div>
+							       <div id="Equation 2" class="span4">
+										 <figure>
+								          <img id="Equation 2" class="center-block" src="img/Figures/EQ2.png" align="middle">
+										    <figcaption>Equation 2</figcaption>
+										 </figure>
+									 </div>
+                            <div class="span4"></div>
+							    </div>	
+							 </div>
+							 <div class="container">
+								 <div class="row">
+									 <div class="span4"></div>
+							       <div id="Equation 3" class="span4">
+										 <figure>
+								          <img id="Equation 3" class="center-block" src="img/Figures/EQ3.png" align="middle">
+										    <figcaption>Equation 3</figcaption>
+										 </figure>
+									 </div>
+									 <div class="span4"></div>
+								 </div>
+							 </div>
+                      <p>Next, we incorporated the updated mathematical and conceptual framework derived by Rice into two increasingly advanced models to account for "developmental entanglement" DVM (Equation 4) and melanin (Equation 5). In the seond model (Model Two: Tanning), developmental entanglement arises from the fact that DVM influences exposure to UV radiation, which decays exponentially with depth in the water, and UV radiation stimulates production of melanin. The variable and initial values used for testing Model Two are given in Table 2.</p>
+							    <table border="1" style="margin:1em auto">
+									 <tr>
+										 <th>Parameter</th>
+										 <th>Initial Value</th>
+									 </tr>
+									 <tr>
+										 <td>Mean Melanin (ug/mm)</td>
+										 <td>2.5</td>
+									 </tr>
+									 <tr>
+										 <td>Mean DVM (meters)</td>
+										 <td>1</td>
+									 </tr>
+									 <tr>
+										 <td>Mean Population Fitness</td>
+										 <td>N/A, Equation 1</td>
+									 </tr>
+									 <tr>
+										 <td>Mean Slope of Reaction Norm of Melanin with Respect to UVB</td>
+									    <td>0</td>
+									 </tr>
+									 <tr>
+										 <td>Mean Intercept of Reaction Norm of Melanin with respect to UVB</td>
+										 <td>2.5</td>
+									 </tr>
+									 <tr>
+										 <td>Phenotypic Variance of Melanin</td>
+										 <td>0.04</td>
+									 </tr>
+									 <tr>
+										 <td>Phenotypic Variance of DVM</td>
+                               <td>0.2</td>
+									 </tr>
+									 <tr>
+										 <td>Optimum Value of Melanin</td>
+										 <td>0.4</td>
+									 </tr>
+									 <tr>
+										 <td>Optimum Value of DVM</td>
+										 <td>12</td>
+									 </tr>
+									 <tr>
+										 <td>Variance of Gaussian Function Relating Melanin to Fitness</td>
+										 <td>100</td>
+									 </tr>
+									 <tr>
+										 <td>Variance of Gaussian Function Relating DVM to Fitness</td>
+										 <td>500</td>
+									 </tr>
+									 <tr>
+										 <td>Heritability</td>
+										 <td>0.5</td>
+									 </tr>
+									 <tr>
+										 <td>Attenuation Coefficient</td>
+										 <td>0.26</td>
+									 </tr>
+									 <tr>
+										 <td>UVB Dose at Water Surface</td>
+										 <td>27.9<MATH>Wh/m<sup>2</sup></MATH></td>
+									 </tr>
+								 </table>
+							 <div class="container">
+								 <div class="row">
+									 <div class="span4"></div>
+							       <div id="Equation 4" class="span4">
+										 <figure>
+								          <img id="Equation 4" class="center-block" src="img/Figures/EQ4.png" align="middle">
+										    <figcaption>Equation 4</figcaption>
+										 </figure>
+									 </div>
+									 <div class="span4"></div>
+								 </div>
+							 </div>
+							 <div class="container">
+								 <div class="row">
+									 <div class="span4"></div>
+							       <div id="Equation 5" class="span4">
+										 <figure>
+								          <img id="Equation 5" class="center-block" src="img/Figures/EQ5.png" align="middle">
+										    <figcaption>Equation 5</figcaption>
+										 </figure>
+									 </div>
+									 <div class="span4"></div>
+								 </div>
+							 </div>
                       <p>The third model (Model Three: Tolerance) extends this entanglement (Equation 6) by allowing DVM (Equation 7) to be determined by behavioral avoidance of UV penetration, which is itself partially determined by melanin (Equation 8). The variables and initial values used for testing Model Three are given in Table 3.</p>
-                      <p>Models Two and Three incorporate underlying developmental factors to project changes from generation <em>t</em> to generation <em>t+1</em> due to directional selection.  Evolutionary dynamics depend upon the partial derivatives of the fitness landscape, which is constructed by plotting the fitness values as a function of the two traits under investigation.</p>
+							    <table border="1" style="margin:1em auto">
+									 <tr>
+										 <th>Parameter</th>
+										 <th>Initial Value</th>
+									 </tr>
+									 <tr>
+										 <td>Mean Melanin (ug/mm)</td>
+										 <td>N/A, Equation 8</td>
+									 <tr>
+										 <td>Mean DVM (Meters)</td>
+										 <td>N/A, Equation 7</td>
+									 </tr>
+									 <tr>
+										 <td>Mean Population Fitness</td>
+										 <td>N/A, Equation 1</td>
+									 </tr>
+									 <tr>
+										 <td>Mean Slope of Reaction Norm of Melanin with Respect to UVB</td>
+										 <td>0</td>
+									 </tr>
+									 <tr>
+										 <td>Mean Intercept of Reaction Norm of Melanin with Respect to UVB</td>
+										 <td>2.5</td>
+									 </tr>
+									 <tr>
+										 <td>Mean Preference for UV Penetration of the Carapace</td>
+										 <td>10<MATH>Wh/m<sup>2</sup></MATH></td>
+									 </tr>
+									 <tr>
+										 <td>Phenotypic Variance of Intercept</td>
+										 <td>0.2</td>
+									 </tr>
+									 <tr>
+										 <td>Phenotypc Variance of Slope</td>
+										 <td>0.04</td>
+									 </tr>
+									 <tr>
+										 <td>Phenotypic Variance of Preference for UV Penetration</td>
+										 <td>0.5</td>
+									 </tr>
+									 <tr>
+										 <td>Optimum Value of Melanin</td>
+										 <td>0.4</td>
+									 </tr>
+									 <tr>
+										 <td>Optimum Value of DVM</td>
+										 <td>12</td>
+									 </tr>
+									 <tr>
+										 <td>Variance of Gaussian Function Relating Melanin to Fitness</td>
+										 <td>100</td>
+									 </tr>
+									 <tr>
+										 <td>Variance of Gaussian Function Relating DVM to Fitness</td>
+										 <td>500</td>
+									 </tr>
+									 <tr>
+										 <td>Heritability</td>
+										 <td>0.5</td>
+									 </tr>
+									 <tr>
+										 <td>Attenuation Coefficient</td>
+										 <td>0.26</td>
+									 </tr>
+									 <tr>
+										 <td>UVB Dose at Water Surface</td>
+										 <td>27.9 <MATH>Wh/m<sup>2</sup></MATH></td>
+									 </tr>
+									 <tr>
+										 <td>Transmittance of Non-Melanized Daphnia</td>
+										 <td>0.8</td>
+									 </tr>
+									 <tr>
+										 <td>Slope Relating Concentration of Melanin to Change in UVB Transmittance</td>
+										 <td>-0.16</td>
+									 </tr>
+								 </table>
+							 <div class="container">
+								 <div class="row">
+									 <div class="span4"></div>
+							       <div id="Equation 6" class="span4">
+										 <figure>
+								          <img id="Equation 6" class="center-block" src="img/Figures/EQ6.png" align="middle">
+										    <figcaption>Equation 6</figcaption>
+										 </figure>
+									 </div>
+									 <div class="span4"></div>
+								 </div>
+							 </div>
+							 <div class="container">
+								 <div class="row">
+									 <div class="span4"></div>
+							       <div id="Equation 7" class="span4">
+										 <figure>
+								          <img id="Equation 7" class="center-block" src="img/Figures/EQ7.png" align="middle">
+										    <figcaption>Equation 7</figcaption>
+										 </figure>
+									 </div>
+									 <div class="span4"></div>
+								 </div>
+							 </div>
+							 <div class="container">
+								 <div class="row">
+									 <div class="span4"></div>
+							       <div id="Equation 8" class="span4">
+										 <figure>
+								          <img id="Equation 8" class="center-block" src="img/Figures/EQ8.png" align="middle">
+										    <figcaption>Equation 8</figcaption>
+										 </figure>
+									 </div>
+									 <div class="span4"></div>
+								 </div>
+							 </div>
+                      <p>Models Two and Three incorporate underlying developmental factors to project changes from generation <em>t</em> to generation <em>t+1</em> due to directional selection.  Evolutionary dynamics depend upon the partial derivatives of the phenotypic landscape, which is constructed by plotting trait values as a function of underlying developmental factors, and partial derivatives of the fitness landscape, which is constructed by plotting the fitness values as a function of the two traits under investigation.</p>
                       <p>All three models are deterministic. However, mean population values and derivatives of the phenotypic landscape for Model Three are estimated via simulation, due to the complexity of the set of biologically relevant roots used for the system of equations describing these traits.  These mean trait values are then passed to the functions that calculate the new mean values in the next generation; this itterative process is used to predict the evolutionary response of both traits and is shown in the class structure diagram for ModEvo (Figure 3).
+							 <div class="container">
+								 <div class="row">
+									 <div class="span4"></div>
+							       <div id="Figure 3" class="span4">
+										 <figure>
+								          <img id="Figure" class="center-block" src="img/Figures/Figure3.png" align="middle">
+										    <figcaption>Figure 3</figcaption>
+										 </figure>
+									 </div>
+									 <div class="span4"></div>
+								 </div>
+							 </div>
+							 <h3>References</h3>
+							 <div class="container">
+								 <ol>
+									 <li><p>S. J. Arnold, R. B&#xFC;rger, P. A. Hohenlohe, B. C. Ajie, and A. G. Jones. "Understanding the evolution and stability of the g-matrix." <em>Evolution</em>, 62(10):2451-2461, 2008.</p></li>
+									 <li><p>M. Bj&#xF6;rklund, A. Husby, and L. Gustaffson. "Rapid and unpredictable changes of the g-matrix in a natural bird population over 25 years." <em>Journal of Evolutionary Biology</em>, 26(1):1-13,2013.</p></li>
+									 <li><p>A. J. Carter, J. Hermisson, and T. F. Hanses. "The Role of Epistatic Gene Interactions in the Response to Selection and the Evolution of Evolvability." <em>Theoretical Population Biology</em>, 68(3):179-196, 2005.</p></li>
+									 <li><p>F. Eroukhmanoff. "Just howmuch is the G-Matrix Actually Constraining Adaption?" <em>Evolutionary Biology</em>, 36(3):323-326, 2009.</p></li>
+									 <li><p>T. F. Hansen. "The Evolution of Genetic Architecture." <em>Annual Review of Ecology, Evolution, and Systematics</em> Pages 123-157, 2006.</p></li>
+									 <li><p>A. G. Jones, S. J. Arnold, and R. B&#xFC;rger. "Stability of the G-Matrix in a Population Experiencing Pleiotropic Mutation, Stabilization Selection, and Genetic Drift." <em>Evolution</em> 57(8):1747-1760, 2003.</p></li>
+									 <li><p>R. Lande and S. J. Arnold. "The Measurement of Selection on Correlated Characters."<em>Evolution</em>, pages 1210-1226, 1983.</p></li>
+									 <li><p>S. H. Rice. "a General Population Genetic Theory for the Evolution of Developmental Interactions." <em>Proceedings of the National Academy of Sciences</em>, 99(24):15518-15523, 2002. 10</p></li>
+									 <li><p>S. H. Rice. "Developmental associations between traits: Covariance and Beyond" <em>Genetics</em> 166(1):513-526, 2004.</p></li>
+									 <li><p><em>Evolutionary Theory: Mathematical and Conceptual Foundations</em>, Sinaur Associations Sunderland, MA, 2004.</p></li>
+									 <li><p>S. H. Rice. "The G-Matrix as one Piece of the Phenotypic Evolution Puzzle." <em>Evolutionary Biology</em>35(2):106-107,2008</p></li>
+									 <li><p>D. Roff. "The Evolution of the G-Matrix: Selection or Drift?" <em>Heredity</em>, 84(2):135-142,1000.</p></li>
+									 <li><p>I. Salazar-ciudad and J. Jernvall. How different types of pattern formation mechanisms affect the evolution of form and development." <em>Evolution & Development</em> 6(1):6-16, 2004</p></li>
+									 <li><p>D. Schluter. "Adaptive Radiation along Genetic Lines of Least-Resistance." <em>Evolution</em>, pages 1766-1774, 1996.</p></li>
+									 <li><p>J. M. Smith, R. Burian, S. Kauffman, P. Alberch, J. Cambell, B. Goodwin, R. Lande, D. Raup, and L. Wolpert. "Develpomental constraints and Evolution: a Perspective from the Mountain Lake Conference on Development and Evolution." <em>Quarterly Review of Biology</em></li> pages 265-287, 1985.</p></li>
+									 <li><p>J. B. Wolf. "The Geometry of Phenotypic Evolution in Developmental Hyperspace." <em>Proceedings of the National Academy of Sciences</em>, 99(25):15849-15851,2002.</p></li>
+								 </ol>
+							 </div>
                 </div>
             </div>
         </div>
