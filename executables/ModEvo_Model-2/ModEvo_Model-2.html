@@ -39,82 +39,108 @@
       <label for="species">Species</label>
       <input name="1" type="text" class="form-control sending" id="species" value="Daphnia">
     </div>
+    <div class="col-xs-12"> 
+    <div class="col-xs-6">
+        <h3>Phenotypic Landscape Parameters</h3>
+        <div class="col-xs-6">
+            <div class="col-xs-12 form-group">
+                <label for="meanTraitOne">Mean Melanin</label>
+                <input name="2" type="number" step="0.001" class="form-control sending" id="meanTraitOne" value="2.5">
+            </div>
 
-    <div class="col-xs-4 form-group">
-      <label for="meanTraitOne">Mean Melanin</label>
-      <input name="2" type="number" step="0.001" class="form-control sending" id="meanTraitOne" value="2.5">
+            <div class="col-xs-12 form-group">
+                <label for="phenotypicVarianceTraitOne">Phenotypic Variance Melanin</label>
+                <input name="4" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceTraitOne" value="0.04">
+            </div>
+
+            <div class="col-xs-12 form-group">
+                <label for="meanInterceptReactionNorm">Mean Melanin Intercept</label>
+                <input name="12" type="number" step="0.001" class="form-control sending" id="meanInterceptReactionNorm" value="2.5">
+            </div>
+
+            <div class="col-xs-12 form-group">
+                <label for="phenotypicVarianceInterceptReactionNorm">Variance Melanin Intercept</label>
+                <input name="14" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceInterceptReactionNorm" value="0.2">
+            </div>
+
+            <div class="col-xs-12 form-group">
+                <label for="meanSlopeReactionNorm">Mean Melanin Slope</label>
+                <input name="13" type="number" step="0.001" class="form-control sending" id="meanSlopeReactionNorm" value="0.0">
+            </div>
+
+            <div class="col-xs-12 form-group">
+                <label for="phenotypicVarianceSlopeReactionNorm">Variance Melanin Slope</label>
+                <input name="15" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceSlopeReactionNorm" value="0.2">
+            </div>
+        </div>
+
+        <div class="col-xs-6">
+            <div class="col-xs-12 form-group">
+                <label for="meanTraitTwo">Mean DVM</label>
+                <input name="3" type="number" step="0.001" class="form-control sending" id="meanTraitTwo" value="1.0">
+            </div>
+
+            <div class="col-xs-12 form-group">
+                <label for="phenotypicVarianceTraitTwo">Phenotypic Variance DVM</label>
+                <input name="5" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceTraitTwo" value="0.2">
+            </div>
+
+            <div class="col-xs-12 form-group">
+               <label for="doseInitial">UV Dose at Surface</label>
+               <input name="16" type="number" step="0.001" class="form-control sending" id="doseInitial" value="27.9">
+            </div>
+
+            <div class="col-xs-12 form-group">
+                <label for="attenuationCoefficient">Attenuation Coefficient</label>
+                <input name="11" type="number" step="0.001" class="form-control sending" id="attenuationCoefficient" value="0.24">
+            </div>
+        </div>
     </div>
 
-    <div class="col-xs-4 form-group">
-      <label for="meanTraitTwo">Mean DVM</label>
-      <input name="3" type="number" step="0.001" class="form-control sending" id="meanTraitTwo" value="1.0">
-    </div>
+    <div class="col-xs-3">
+        <h3>Fitness Landscape Parameters</h3>
+    
+        <div class="col-xs-12 form-group">
+            <label for="optimumTraitOne">Optimum Melanin</label>
+            <input name="7" type="number" step="0.001" class="form-control sending" id="optimumTraitOne" value="0.4">
+        </div>
 
-    <div class="col-xs-4 form-group">
-      <label for="phenotypicVarianceTraitOne">Phenotypic Variance Melanin</label>
-      <input name="4" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceTraitOne" value="0.04">
-    </div>
+        <div class="col-xs-12 form-group">
+            <label for="varianceTraitOne">Variance Melanin</label>
+            <input name="9" type="number" step="0.001" class="form-control sending" id="varianceTraitOne" value="100.0">
+        </div>
 
-    <div class="col-xs-4 form-group">
-      <label for="phenotypicVarianceTraitTwo">Phenotypic Variance DVM</label>
-      <input name="5" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceTraitTwo" value="0.2">
-    </div>
+        <div class="col-xs-12 form-group">
+            <label for="optimumTraitTwo">Optimum DVM</label>
+            <input name="8" type="number" step="0.001" class="form-control sending" id="optimumTraitTwo" value="12.0">
+        </div>
 
-    <div class="col-xs-4 form-group">
-      <label for="heritability">heritability</label>
-      <input name="6" type="number" step="0.001" class="form-control sending" id="heritability" value="0.5">
+        <div class="col-xs-12 form-group">
+            <label for="varianceTraitTwo">Variance DVM</label>
+            <input name="10" type="number" step="0.001" class="form-control sending" id="varianceTraitTwo" value="500.0">
+        </div>
     </div>
+   
+    <div class="col-xs-3">
+        <h3>Additional Parameters</h3>
 
-    <div class="col-xs-4 form-group">
-      <label for="optimumTraitOne">Optimum Melanin</label>
-      <input name="7" type="number" step="0.001" class="form-control sending" id="optimumTraitOne" value="0.4">
+        <div class="col-xs-12 form-group">
+            <label for="numIterations">Number of Generations</label>
+            <input name="21" type="number" step="0.001" class="form-control sending" id="numIterations" value="25">
+        </div>
+
+        <div class="col-xs-12 form-group">
+            <label for="simPopSize">simulated Population Size</label>
+            <input name="22" type="number" step="0.001" class="form-control sending" id="simPopSize" value="50">
+        </div>
+
+        <div class="col-xs-12 form-group">
+            <label for="heritability">heritability</label>
+            <input name="6" type="number" step="0.001" class="form-control sending" id="heritability" value="0.5">
+        </div>
     </div>
-
-    <div class="col-xs-4 form-group">
-      <label for="optimumTraitTwo">Optimum DVM</label>
-      <input name="8" type="number" step="0.001" class="form-control sending" id="optimumTraitTwo" value="12.0">
     </div>
-
-    <div class="col-xs-4 form-group">
-      <label for="varianceTraitOne">Variance Melanin</label>
-      <input name="9" type="number" step="0.001" class="form-control sending" id="varianceTraitOne" value="100.0">
-    </div>
-
-    <div class="col-xs-4 form-group">
-      <label for="varianceTraitTwo">Variance DVM</label>
-      <input name="10" type="number" step="0.001" class="form-control sending" id="varianceTraitTwo" value="500.0">
-    </div>
-
-    <div class="col-xs-4 form-group">
-      <label for="attenuationCoefficient">Attenuation Coefficient</label>
-      <input name="11" type="number" step="0.001" class="form-control sending" id="attenuationCoefficient" value="0.24">
-    </div>
-
-    <div class="col-xs-4 form-group">
-      <label for="meanInterceptReactionNorm">Mean Melanin Intercept</label>
-      <input name="12" type="number" step="0.001" class="form-control sending" id="meanInterceptReactionNorm" value="2.5">
-    </div>
-
-    <div class="col-xs-4 form-group">
-      <label for="meanSlopeReactionNorm">Mean Melanin Slope</label>
-      <input name="13" type="number" step="0.001" class="form-control sending" id="meanSlopeReactionNorm" value="0.0">
-    </div>
-
-    <div class="col-xs-4 form-group">
-      <label for="phenotypicVarianceInterceptReactionNorm">Phenotypic Variance Intercept Reaction Norm</label>
-      <input name="14" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceInterceptReactionNorm" value="0.2">
-    </div>
-
-    <div class="col-xs-4 form-group">
-      <label for="phenotypicVarianceSlopeReactionNorm">Phenotypic Variance Slope Reaction Norm</label>
-      <input name="15" type="number" step="0.001" class="form-control sending" id="phenotypicVarianceSlopeReactionNorm" value="0.2">
-    </div>
-
-    <div class="col-xs-4 form-group">
-      <label for="doseInitial">UV Dose at Surface</label>
-      <input name="16" type="number" step="0.001" class="form-control sending" id="doseInitial" value="27.9">
-    </div>
-
+    <br>
     <div class="col-xs-4 form-group">
       <label for="meanPreference">Mean Preference</label>
       <input name="17" type="number" step="0.001" class="form-control sending" id="meanPreference" value="10.0">
@@ -135,19 +161,9 @@
       <input name="20" type="number" step="0.001" class="form-control sending" id="slopeConcentration" value="-0.14">
     </div>
 
-    <div class="col-xs-4 form-group">
-      <label for="numIterations">Num Gnerations</label>
-      <input name="21" type="number" step="0.001" class="form-control sending" id="numIterations" value="25">
-    </div>
-
 
     <div class="col-xs-4 form-group">
-      <label for="simPopSize">simPopSize</label>
-      <input name="22" type="number" step="0.001" class="form-control sending" id="simPopSize" value="50">
-    </div>
-
-    <div class="col-xs-4 form-group">
-      <label for="meanSelection">meanSelection</label>
+      <label for="meanSelection">Mean Selection</label>
       <input name="23" type="text" class="form-control sending" id="meanSelection" value="analytical">
     </div>
     <br>
