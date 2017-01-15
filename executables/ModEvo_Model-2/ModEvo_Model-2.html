@@ -6,32 +6,32 @@
   <div class="panel-body" style="height:auto;">
 
 
-    <div class="col-md-12">
-      <div class="col-xs-4 form-group">
+    <!--<div class="col-md-12">-->
+      <!--<div class="col-xs-4 form-group">-->
 
-        <div class="row">
-          <label for="chartSelector">Choose Charting Type</label>
-          <br>
-          <select ng-model="graphType" id="chartSelector" ng-options="x for x in types" ng-change="loadData()"></select>
-        </div>
+        <!--<div class="row">-->
+          <!--<label for="chartSelector">Choose Charting Type</label>-->
+          <!--<br>-->
+          <!--<select ng-model="graphType" id="chartSelector" ng-options="x for x in types" ng-change="loadData()"></select>-->
+        <!--</div>-->
 
-        <div class="row" ng-show="graphType == 3">
-            <label for="chartOption1">Max</label>
-            <input name="24" type="number" step="0.001" class="form-control" id="chartOption1" ng-model="max" ng-change="loadData()">
-            <label for="chartOption2">Slope</label>
-            <input name="24" type="number" step="0.001" class="form-control" id="chartOption2" ng-model="slope" ng-change="loadData()">
-            <label for="chartOption3">Shift</label>
-            <input name="24" type="number" step="0.001" class="form-control" id="chartOption3" ng-model="shift" ng-change="loadData()">
-          </div>
-        </div>
+        <!--<div class="row" ng-show="graphType == 3">-->
+            <!--<label for="chartOption1">Max</label>-->
+            <!--<input name="24" type="number" step="0.001" class="form-control" id="chartOption1" ng-model="max" ng-change="loadData()">-->
+            <!--<label for="chartOption2">Slope</label>-->
+            <!--<input name="24" type="number" step="0.001" class="form-control" id="chartOption2" ng-model="slope" ng-change="loadData()">-->
+            <!--<label for="chartOption3">Shift</label>-->
+            <!--<input name="24" type="number" step="0.001" class="form-control" id="chartOption3" ng-model="shift" ng-change="loadData()">-->
+          <!--</div>-->
+        <!--</div>-->
 
 
 
-      <div class="col-md-8">
-        <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series" chart-click="onClick" chart-options="opt"></canvas>
-      </div>
+      <!--<div class="col-md-8">-->
+        <!--<canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series" chart-click="onClick" chart-options="opt"></canvas>-->
+      <!--</div>-->
 
-    </div><!--end of top col-md-12 group-->
+    <!--</div>[>end of top col-md-12 group<]-->
 
     <br>
 
@@ -91,12 +91,12 @@
     </div>
 
     <div class="col-xs-4 form-group">
-      <label for="meanInterceptReactionNorm">Mean Intercept Reaction Norm</label>
+      <label for="meanInterceptReactionNorm">Mean Melanin Intercept</label>
       <input name="12" type="number" step="0.001" class="form-control sending" id="meanInterceptReactionNorm" value="2.5">
     </div>
 
     <div class="col-xs-4 form-group">
-      <label for="meanSlopeReactionNorm">Mean Slope Reaction Norm</label>
+      <label for="meanSlopeReactionNorm">Mean Melanin Slope</label>
       <input name="13" type="number" step="0.001" class="form-control sending" id="meanSlopeReactionNorm" value="0.0">
     </div>
 
@@ -111,7 +111,7 @@
     </div>
 
     <div class="col-xs-4 form-group">
-      <label for="doseInitial">Dose Initial</label>
+      <label for="doseInitial">UV Dose at Surface</label>
       <input name="16" type="number" step="0.001" class="form-control sending" id="doseInitial" value="27.9">
     </div>
 

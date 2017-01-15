@@ -5,32 +5,32 @@
   <div class="panel-body" style="height:auto;">
 
 
-    <div class="col-md-12">
-      <div class="col-xs-4 form-group">
+    <!--<div class="col-md-12">-->
+      <!--<div class="col-xs-4 form-group">-->
 
-        <div class="row">
-          <label for="chartSelector">Choose Charting Type</label>
-          <br>
-          <select ng-model="graphType" id="chartSelector" ng-options="x for x in types" ng-change="loadData()"></select>
-        </div>
+        <!--<div class="row">-->
+          <!--<label for="chartSelector">Choose Charting Type</label>-->
+          <!--<br>-->
+          <!--<select ng-model="graphType" id="chartSelector" ng-options="x for x in types" ng-change="loadData()"></select>-->
+        <!--</div>-->
 
-        <div class="row" ng-show="graphType == 3">
-            <label for="chartOption1">Max</label>
-            <input name="24" type="number" step="0.001" class="form-control" id="chartOption1" ng-model="max" ng-change="loadData()">
-            <label for="chartOption2">Slope</label>
-            <input name="24" type="number" step="0.001" class="form-control" id="chartOption2" ng-model="slope" ng-change="loadData()">
-            <label for="chartOption3">Shift</label>
-            <input name="24" type="number" step="0.001" class="form-control" id="chartOption3" ng-model="shift" ng-change="loadData()">
-          </div>
-        </div>
+        <!--<div class="row" ng-show="graphType == 3">-->
+            <!--<label for="chartOption1">Max</label>-->
+            <!--<input name="24" type="number" step="0.001" class="form-control" id="chartOption1" ng-model="max" ng-change="loadData()">-->
+            <!--<label for="chartOption2">Slope</label>-->
+            <!--<input name="24" type="number" step="0.001" class="form-control" id="chartOption2" ng-model="slope" ng-change="loadData()">-->
+            <!--<label for="chartOption3">Shift</label>-->
+            <!--<input name="24" type="number" step="0.001" class="form-control" id="chartOption3" ng-model="shift" ng-change="loadData()">-->
+          <!--</div>-->
+        <!--</div>-->
 
 
 
-      <div class="col-md-8">
-        <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series" chart-click="onClick" chart-options="opt"></canvas>
-      </div>
+      <!--<div class="col-md-8">-->
+        <!--<canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="true" chart-series="series" chart-click="onClick" chart-options="opt"></canvas>-->
+      <!--</div>-->
 
-    </div><!--end of top col-md-12 group-->
+    <!--</div>[>end of top col-md-12 group<]-->
 
     <br>
 
@@ -75,12 +75,12 @@
     </div>
 
     <div class="col-xs-4 form-group">
-      <label for="varianceTraitOne">Variance Melanin</label>
+      <label for="varianceTraitOne">Fitness Variance Melanin</label>
       <input name="9" type="number" step="0.001" class="form-control sending" id="varianceTraitOne" value="100.0">
     </div>
 
     <div class="col-xs-4 form-group">
-      <label for="varianceTraitTwo">Variance DVM</label>
+      <label for="varianceTraitTwo">Fitness Variance DVM</label>
       <input name="10" type="number" step="0.001" class="form-control sending" id="varianceTraitTwo" value="500.0">
     </div>
 
